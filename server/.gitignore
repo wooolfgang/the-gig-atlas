@@ -1,0 +1,11 @@
+
+# yarn/npm
+node_modules/
+**.log
+**.lock
+
+# babel, compiled
+lib/
+
+# config
+.env

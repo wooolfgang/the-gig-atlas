@@ -1,0 +1,13 @@
+{
+  "packages": [
+    "server",
+    "client"
+  ],
+  "version": "0.0.0",
+  "command": {
+    "bootstrap": {
+      "npmClient": "yarn",
+      "npmClientArgs": []
+    }
+  }
+}
