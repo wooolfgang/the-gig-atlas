@@ -9,6 +9,10 @@ async function createApp() {
     return app;
   }
 
+  const users = await prisma.users();
+
+  console.log("prisma users: ", users);
+
   app = express()
     .use('/users', services.users.usersRoute(prisma))
     .use(services.errors.logErrorHandlers);
