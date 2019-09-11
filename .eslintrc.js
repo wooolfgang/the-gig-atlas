@@ -18,6 +18,13 @@ module.exports = {
   },
   plugins: ["react", "prettier"],
   rules: {
-    "prettier/prettier": "error"
+    "prettier/prettier": [
+      "error",
+      {
+        trailingComma: "es5",
+        singleQuote: true,
+        printWidth: 80
+      }
+    ]
   }
 };
