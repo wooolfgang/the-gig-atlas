@@ -9,10 +9,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.0",
+    "apollo-boost": "^0.4.4",
     "dotenv": "^8.1.0",
+    "graphql": "^14.5.4",
     "next": "^9.0.5",
     "react": "^16.9.0",
-    "react-dom": "^16.9.0"
+    "react-dom": "^16.9.0",
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "@types/next": "^8.0.6",
