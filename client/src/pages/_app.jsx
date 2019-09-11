@@ -1,6 +1,6 @@
 import React from 'react';
-import App, { Container } from 'next/app';
-import { ApolloProvider } from 'react-apollo';
+import App from 'next/app';
+import { ApolloProvider } from '@apollo/react-hooks';
 import withApollo from '../components/withApollo';
 
 export default withApollo(
@@ -17,11 +17,9 @@ export default withApollo(
     render() {
       const { Component, pageProps, apolloClient } = this.props;
       return (
-        <Container>
-          <ApolloProvider client={apolloClient}>
-            <Component {...pageProps} />
-          </ApolloProvider>
-        </Container>
+        <ApolloProvider client={apolloClient}>
+          <Component {...pageProps} />
+        </ApolloProvider>
       );
     }
   }
