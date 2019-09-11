@@ -9,5 +9,6 @@
       "npmClient": "yarn",
       "npmClientArgs": []
     }
-  }
+  },
+  "useWorkspaced": true
 }

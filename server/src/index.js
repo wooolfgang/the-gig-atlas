@@ -10,7 +10,7 @@ import config from '../config';
 
     const server = app.listen(port, () => {
       console.log(`App Live! http://localhost:${port}/`);
-    })
+    });
   } catch (e) {
     console.error(`Failed to run server,`, e);
   }

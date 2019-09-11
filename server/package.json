@@ -1,5 +1,5 @@
 {
-  "name": "dev-capita-server",
+  "name": "server",
   "version": "1.0.0",
   "description": "server source codes",
   "main": "index.js",
@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "build": "babel --root-mode upward src --out-dir lib",
-    "dev": "NODE_ENV=dev nodemon --exec node babel-register.js"
+    "dev": "NODE_ENV=dev nodemon --exec node babel-register.js",
+    "lint": "eslint -c .eslintrc ./"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",

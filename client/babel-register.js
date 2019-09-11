@@ -4,9 +4,7 @@
  */
 
 require('@babel/register')({
-    // extends: './.babelrc',
-    ignore: [/node_modules/],
-    rootMode: 'upward',
+  // extends: './.babelrc',
+  ignore: [/node_modules/],
+  rootMode: 'upward',
 });
-
-require('./src/index');

@@ -5,17 +5,15 @@ import services from './services';
 let app;
 
 async function createApp() {
-    if (app) {
-        return app;
-    }
-
-    app = express()
-        .use('/users', services.users.usersRoute(prisma))
-
-        .use(services.errors.logErrorHandlers)
-    ;
-
+  if (app) {
     return app;
+  }
+
+  app = express()
+    .use('/users', services.users.usersRoute(prisma))
+    .use(services.errors.logErrorHandlers);
+
+  return app;
 }
 
 export default createApp;
