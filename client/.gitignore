@@ -9,3 +9,6 @@ lib/
 
 # config
 .env
+
+#next
+.next/

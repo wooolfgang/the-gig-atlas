@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "dev": "next ./src",
+    "build": "next build",
+    "start": "next start"
+  },
   "dependencies": {
     "dotenv": "^8.1.0",
     "next": "^9.0.5",
