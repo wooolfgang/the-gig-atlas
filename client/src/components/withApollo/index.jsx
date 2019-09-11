@@ -1,6 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
-import { getDataFromTree } from 'react-apollo';
+import { getDataFromTree } from '@apollo/react-ssr';
 import nookies from 'nookies';
 import initApollo from '../../utils/apollo';
 
