@@ -1,7 +1,13 @@
 import express from 'express';
 
-function usersRoute(_db) {
+function usersRoute(prisma) {
   const router = express.Router();
+
+  router.get('/', async (req, res) => {
+    const users = await prisma.users();
+
+    res.json(users);
+  });
 
   return router;
 }
