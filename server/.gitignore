@@ -8,3 +8,6 @@ lib/
 
 # private config
 .env
+
+generated/
+privates/
