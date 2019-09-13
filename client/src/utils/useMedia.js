@@ -6,8 +6,12 @@ const isClient = process.browser;
 
 function useMedia(config = { debounceTime: null }) {
   const { debounceTime } = config;
-  const [width, setWidth] = useState(isClient && document.body.clientWidth);
-  const [height, setHeight] = useState(isClient && document.body.clientWidth);
+  const [width, setWidth] = useState(
+    isClient ? document.body.clientWidth : sizes.giant
+  );
+  const [height, setHeight] = useState(
+    isClient ? document.body.clientHeight : sizes.giant
+  );
 
   function onMediaChange() {
     setWidth(document.body.clientWidth);

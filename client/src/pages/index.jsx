@@ -5,26 +5,35 @@ import PropTypes from 'prop-types';
 import Nav from '../components/Nav';
 import GigsList from '../components/GigsList';
 import useInterval from '../utils/useInterval';
+import useMedia from '../utils/useMedia';
+import media from '../utils/media';
 
 const HeaderContainer = styled.header`
   width: 675px;
   max-width: 100vw;
   min-height: 25vh;
   margin: auto;
-  margin-top: 50px;
   position: relative;
   text-align: center;
+
+  ${media.phone`
+    min-height: 30vh;
+  `};
+
+  ${media.xsPhone`
+    min-height: 35vh;
+  `};
 `;
 
 const H1 = styled.h1`
   font-weight: 600;
   font-size: 2.15rem;
-  line-height: 46px;
+  line-height: 2.875rem;
 `;
 
 const P = styled(animated.p)`
   font-size: 1.2rem;
-  line-height: 27px;
+  line-height: 1.6875rem;
   text-align: center;
   color: ${props => props.theme.color.d2};
 `;
@@ -44,6 +53,10 @@ const GigsGrid = styled.div`
   padding: 2.5rem 1.5rem;
   box-sizing: border-box;
   flex-direction: column;
+
+  h2 {
+    margin: 2rem 0 1rem 0;
+  }
 `;
 
 const Search = styled.input`
@@ -91,17 +104,27 @@ AnimatedText.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const TransitionTexts = () => {
+const TransitionTexts = ({ size }) => {
   const [index, set] = React.useState(0);
+
+  let top = 35;
+
+  if (size === 'tablet') {
+    top = 70;
+  } else if (size === 'phone') {
+    top = 75;
+  } else if (size === 'xsPhone') {
+    top = 80;
+  }
 
   useInterval(() => {
     set(index === pages.length - 1 ? 0 : index + 1);
   }, 5000);
 
   const transitions = useTransition(index, p => p, {
-    from: { opacity: 0, top: '35px' },
-    enter: { opacity: 1, top: '45px' },
-    leave: { opacity: 0, top: '55px' },
+    from: { opacity: 0, top: top + 0 },
+    enter: { opacity: 1, top: top + 5 },
+    leave: { opacity: 0, top: top + 10 },
   });
 
   return transitions.map(({ item, props, key }) => {
@@ -113,33 +136,45 @@ const TransitionTexts = () => {
           ...props,
           position: 'absolute',
           width: '100%',
+          top,
         }}
       />
     );
   });
 };
 
-const Header = () => {
+const Header = ({ size }) => {
   return (
     <HeaderContainer>
       <H1>Find gigs that let’s you move forward.</H1>
-      <TransitionTexts />
+      <TransitionTexts size={size} />
     </HeaderContainer>
   );
 };
 
-const Index = () => (
-  <div>
-    <Nav />
-    <Header />
-    <GigsContainer>
-      <GigsGrid>
-        <Search type="search" placeholder="Search for design, dev gigs" />
-        <h2 style={{ margin: '25px 0' }}>Our Latest Gigs</h2>
-        <GigsList gigs={[{}, {}, {}, {}, {}, {}]} />
-      </GigsGrid>
-    </GigsContainer>
-  </div>
-);
+Header.propTypes = {
+  size: PropTypes.string,
+};
+
+Header.defaultProps = {
+  size: '',
+};
+
+const Index = () => {
+  const { size } = useMedia();
+  return (
+    <div>
+      <Nav size={size} />
+      <Header size={size} />
+      <GigsContainer>
+        <GigsGrid>
+          <Search type="search" placeholder="Search for design, dev gigs" />
+          <h2>Our Latest Gigs</h2>
+          <GigsList gigs={[{}, {}, {}, {}, {}, {}]} size={size} />
+        </GigsGrid>
+      </GigsContainer>
+    </div>
+  );
+};
 
 export default Index;
