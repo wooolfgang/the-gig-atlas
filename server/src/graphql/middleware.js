@@ -10,7 +10,7 @@ const resolvers = fileLoader('./**/resolver.js');
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-const middleware = graphHttp((req) => ({
+const middleware = graphHttp(req => ({
   schema,
   context: { prisma, req },
   graphiql: !!config.hasGraphiQl,

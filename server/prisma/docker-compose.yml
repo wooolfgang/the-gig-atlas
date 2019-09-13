@@ -4,10 +4,11 @@ services:
     image: prismagraphql/prisma:1.34
     restart: always
     ports:
-      - '4567:4567'
+      - '4466:4466'
     environment:
       PRISMA_CONFIG: |
-        port: 4567
+        managementApiSecret: 2$D%7&^l;x.#{/@!
+        port: 4466
         databases:
           default:
             connector: postgres
@@ -30,6 +31,6 @@ volumes:
 # $ sytemctl start docker
 # $ sudo docker-compose -f prisma/docker-compose.yml up -d
 # initial configure prisma
-# 
+# $ prisma init prisma --endpoint http://localhost:4466
 # $ prisma deploy
 # $ prisma generate
