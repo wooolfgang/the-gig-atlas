@@ -23,12 +23,30 @@ export default createGlobalStyle`
 
   }
 
-  h1 { font-size: 2em; }
-  h2 { font-size: 1.5em; }
-  h3 { font-size: 1.17em; }
-  h4 { font-size: 1.12em; }
-  h5 { font-size: .83em; }
-  h6 { font-size: .75em; }
+  h1 { 
+    font-size: 2em;
+    font-weight: 600;
+  }
+  h2 { 
+    font-size: 1.5em;
+    font-weight: 600;
+   }
+  h3 { 
+    font-size: 1.17em; 
+    font-weight: 600;
+  }
+  h4 { 
+    font-size: 1.12em;
+    font-weight: 600;
+  }
+  h5 { 
+    font-size: .83em; 
+    font-weight: 600;
+  }
+  h6 { 
+    font-size: .75em; 
+    font-weight: 600;
+  }
   a,span,p {
     font-size: 1rem;
   }
