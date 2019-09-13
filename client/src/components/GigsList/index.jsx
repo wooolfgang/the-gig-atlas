@@ -2,11 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GigCard from '../GigCard';
 
-/* 
-  This is temporary hardcode-values until we have the final 
-  schema from the backend 
-*/
-
 const avatars = [
   'https://randomuser.me/api/portraits/women/18.jpg',
   'https://randomuser.me/api/portraits/women/23.jpg',
@@ -37,7 +32,9 @@ const jobTypes = ['Contract', 'Full-Time', 'Part-Time'];
 
 const random = max => Math.floor(Math.random() * max);
 
-const GigsList = ({ gigs }) => {
+const GigsList = ({ gigs, size }) => {
+  const isMobile = size === 'xsPhone' || size === 'phone' || size === 'tablet';
+
   return gigs.map((g, i) => {
     const src = avatars[random(avatars.length)];
     const title = titles[random(titles.length)];
@@ -52,22 +49,20 @@ const GigsList = ({ gigs }) => {
       ...g,
       avatarSrc: src,
       title,
-      technologies,
+      technologies: technologies.filter(t => t !== null),
       postedAt: new Date().toISOString(),
       projectType,
       jobType,
       location: 'Remote',
     };
-    return <GigCard key={gig.id} {...gig} margin="0 0 12px 0" />;
+    return (
+      <GigCard key={gig.id} gig={gig} margin="0 0 12px 0" isMobile={isMobile} />
+    );
   });
 };
 
 GigsList.propTypes = {
-  gigs: PropTypes.arrayOf({
-    title: PropTypes.string,
-    postedAt: PropTypes.string,
-    avatarUrl: PropTypes.string,
-  }),
+  gigs: PropTypes.arrayOf(PropTypes.object),
 };
 
 GigsList.defaultProps = {
