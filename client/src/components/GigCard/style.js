@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 
 export const Card = styled.div`
-  height: 111px;
-  padding: 12px;
+  min-height: 111px;
+  padding: 0.75rem;
   box-sizing: border-box;
   background: ${props => props.theme.color.d6};
-  display: flex;
-  transition: all 200ms ease-in-out;
+  transition: all 150ms ease-in-out;
 
   :focus,
   :hover {
@@ -15,15 +14,28 @@ export const Card = styled.div`
   }
 `;
 
+export const Flex = styled.div`
+  display: flex;
+`;
+
 export const Avatar = styled.img`
   border-radius: 50%;
-  width: 63px;
-  height: 63px;
+  width: 4em;
+  height: 4em;
 `;
 
 export const Title = styled.h4`
   margin: 0px;
-  margin-bottom: 8px;
+  margin-bottom: 0.3em;
+  font-size: 1.15em;
+`;
+
+export const Tech = styled.small`
+  background-color: ${props => props.theme.color.p2};
+  margin-left: 4px;
+  padding: 3px 5px;
+  font-size: 0.825em;
+  box-sizing: border-box;
 `;
 
 export const Row = styled.div`
@@ -33,9 +45,18 @@ export const Row = styled.div`
   justify-content: center;
 `;
 
-export const Tech = styled.small`
-  background-color: ${props => props.theme.color.p2};
-  margin-left: 4px;
-  padding: 3px 5px;
-  box-sizing: border-box;
+export const FirstRow = styled(Row)`
+  padding: 0.5rem;
+`;
+
+export const SecondRow = styled(Row)``;
+
+export const ThirdRow = styled(Row)`
+  direction: rtl;
+`;
+
+export const Centered = styled.div`
+  display: flex;
+  flex-direction: column;
+  direction: rtl;
 `;

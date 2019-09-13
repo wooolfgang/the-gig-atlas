@@ -7,9 +7,9 @@ export default createGlobalStyle`
     font-size: 16px;
     color: ${color.d1};
 
-    ${media.xsPhone`
+    ${media.phone`
       font-size: 14px;
-    `};
+    `}
   }
  
   body {
