@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
 
-const sizes = {
+export const sizes = {
   xsPhone: 320,
   phone: 412,
   tablet: 768,
