@@ -4,23 +4,24 @@
 
 import dotenv from 'dotenv';
 
-dotenv.config(); // loads secret .env variables
+// loads secret .env variables
+dotenv.config();
 
 const env = process.env.NODE_ENV;
 
 const dev = {
   app: {
-    port: parseInt(process.env.SECRET_DEV_PORT, 10) || 8080,
+    port: 8080,
   },
   hasGraphiQl: true,
 };
 
 const staging = {
-// to be filled
+  // to be filled
 };
 
 const production = {
-// to be filled
+  // to be filled
 };
 
 const config = {

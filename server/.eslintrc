@@ -1,6 +1,9 @@
 {
-    "extends": "../.eslintrc.js",
-    "env": {
-        "node": true
-    }
+  "extends": "../.eslintrc.js",
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "arrow-parens": "off"
+  }
 }

@@ -4,7 +4,7 @@ module.exports = {
     es6: true,
     node: true
   },
-  extends: ["airbnb", "prettier"], //"eslint:recommended",
+  extends: ["prettier", "airbnb"], //"eslint:recommended",
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly"
@@ -26,5 +26,5 @@ module.exports = {
         printWidth: 80
       }
     ]
-  }
+  },
 };
