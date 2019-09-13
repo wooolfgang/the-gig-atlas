@@ -3,11 +3,13 @@ import { useTransition, animated } from 'react-spring';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Nav from '../components/Nav';
+import GigsList from '../components/GigsList';
 import useInterval from '../utils/useInterval';
 
 const HeaderContainer = styled.header`
   width: 675px;
   max-width: 100vw;
+  min-height: 25vh;
   margin: auto;
   margin-top: 50px;
   position: relative;
@@ -27,11 +29,48 @@ const P = styled(animated.p)`
   color: ${props => props.theme.color.d2};
 `;
 
+const GigsContainer = styled.div`
+  background-color: ${props => props.theme.color.d5};
+  width: 100%;
+  min-height: 70vh;
+  height: auto;
+`;
+
+const GigsGrid = styled.div`
+  width: 750px;
+  max-width: 100vw;
+  display: flex;
+  margin: auto;
+  padding: 2.5rem 1.5rem;
+  box-sizing: border-box;
+  flex-direction: column;
+`;
+
+const Search = styled.input`
+  width: 100%;
+  background: ${props => props.theme.color.d6};
+  border: none;
+  border: 1px solid ${props => props.theme.color.d2};
+  box-sizing: border-box;
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  height: 40px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+
+  :hover,
+  :focus {
+    outline: none;
+    border: none;
+    border: 2px solid ${props => props.theme.color.s1};
+  }
+`;
+
 const pages = [
   props => (
     <AnimatedText
       {...props}
-      text="We bridge the gap between client and freelancers No vendor lock-in, choose your own payment system and forms of communication."
+      text="We bridge the gap between client and freelancers. No vendor lock-in, choose your own payment system and forms of communication."
     />
   ),
   props => (
@@ -93,6 +132,13 @@ const Index = () => (
   <div>
     <Nav />
     <Header />
+    <GigsContainer>
+      <GigsGrid>
+        <Search type="search" placeholder="Search for design, dev gigs" />
+        <h2 style={{ margin: '25px 0' }}>Our Latest Gigs</h2>
+        <GigsList gigs={[{}, {}, {}, {}, {}, {}]} />
+      </GigsGrid>
+    </GigsContainer>
   </div>
 );
 
