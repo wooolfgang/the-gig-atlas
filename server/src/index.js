@@ -4,12 +4,10 @@ import config from './config';
 (async () => {
   try {
     const app = await createApp();
-    const port = config.app?port?
+    const port = config.app.port;
 
-    app.listen(port, () => {
-      console.log(`App Live! http://localhost:${port}/`);
-    });
-  } catch(e) {
-    console.error(`Failed to run server,`, e);
+    app.listen(port, () => console.log(`App Live! http://localhost:${port}/`));
+  } catch (e) {
+    console.error('Failed to run server,', e);
   }
 })();

@@ -1,0 +1,18 @@
+type Query {
+  employers: [Employer]!
+  searchEmployers(name: String!): [Employer]!
+}
+
+type Employer implements User {
+  id: ID
+  name: String!
+  email: String!
+  createdAt: Date
+  employerType: EmployerType!
+  gigs: [Gig]!
+}
+
+enum EmployerType {
+  PERSONAL
+  COMPANY
+}

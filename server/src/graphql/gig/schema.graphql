@@ -1,0 +1,31 @@
+type Gig {
+  id: ID
+  title: String!
+  description: String!
+  technologies: [String]! # temporary as array of string
+  projectType: ProjectType!
+  paymentType: PaymentType!
+  minFee: Float!
+  maxFee: Float!
+  jobType: JobType!
+  locatioRestriction: String
+  employer: Employer!
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+}
+
+enum PaymentType {
+  HOURLY
+  FIXED
+} 
+
+enum ProjectType {
+  GREENFIELD
+  MAINTENANCE
+  CONSULTING
+}
+
