@@ -1,4 +1,61 @@
-type User {
+
+type Admin  {
   id: ID! @id
   name: String!
+  email: String! @unique
+  createdAt: DateTime! @createdAt
+}
+
+type Freelanceer {
+  id: ID! @id
+  name: String!
+  email: String! @unique
+  createdAt: DateTime! @createdAt
+}
+
+type Employer {
+  id: ID! @id
+  name: String!
+  email: String! @unique
+  createdAt: DateTime! @createdAt
+
+  employerType: EmployerType!
+  gigs: [Gig]! @relation(name: "GigsOfEmployer", onDelete: CASCADE)
+}
+
+enum EmployerType {
+  PERSONAL
+  COMPANY
+}
+
+type Gig {
+  id: ID! @id
+  title: String!
+  description: String!
+  technologies: [String]! @scalarList(strategy: RELATION)
+  projectType: ProjectType!
+  paymentType: PaymentType!
+  minFee: Float!
+  maxFee: Float!
+  jobType: JobType!
+  locatioRestriction: String
+  employer: Employer! @relation(name: "GigsOfEmployer")
+  createdAt: DateTime! @createdAt
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+}
+
+enum PaymentType {
+  HOURLY
+  FIXED
+} 
+
+enum ProjectType {
+  GREENFIELD
+  MAINTENANCE
+  CONSULTING
 }

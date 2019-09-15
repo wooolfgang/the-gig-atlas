@@ -32,5 +32,6 @@ volumes:
 # $ sudo docker-compose -f prisma/docker-compose.yml up -d
 # initial configure prisma
 # $ prisma init prisma --endpoint http://localhost:4466
+# $ export PRISMA_MANAGEMENT_API_SECRET="2$D%7&^l;x.#{/@!"
 # $ prisma deploy
 # $ prisma generate

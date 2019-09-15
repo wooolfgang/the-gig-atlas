@@ -1,0 +1,11 @@
+type Query {
+  admin(id: ID!): Admin
+  admins: [Admin]!
+}
+
+type Admin implements User {
+  id: ID
+  name: String
+  email: String
+  createdAt: Date
+}

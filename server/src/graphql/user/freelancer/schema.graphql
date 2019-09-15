@@ -1,0 +1,12 @@
+type Query {
+  Freelancer(id: ID!): Freelancer
+  freelancers: [Freelancer]!
+  searchFreelancers(name: String!): [Freelancer]!
+}
+
+type Freelancer implements User {
+  id: ID
+  name: String
+  email: String
+  createdAt: Date
+}

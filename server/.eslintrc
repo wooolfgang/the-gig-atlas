@@ -4,6 +4,8 @@
     "node": true
   },
   "rules": {
-    "arrow-parens": "off"
+    "arrow-parens": "off",
+    "implicit-arrow-linebreak": "off",
+    "prefer-destructuring": "off"
   }
 }
