@@ -20,7 +20,7 @@ export const StepContainer = styled.div`
   `};
 
   #step {
-    font-size: 0.8em;
+    font-size: 0.925em;
   }
 
   #title {
@@ -30,7 +30,7 @@ export const StepContainer = styled.div`
   }
 
   #description {
-    font-size: 0.9em;
+    font-size: 0.875em;
   }
 `;
 
