@@ -11,7 +11,7 @@ const Nav = ({ size }) => {
         <NavLinks>
           <NavLink href="/freelancers">Freelancers</NavLink>
           <NavLink href="/gigs">Find Gigs</NavLink>
-          <NavLink href="/gig/create">
+          <NavLink href="/gig/software/create">
             <PostGigButton>Post A Gig</PostGigButton>
           </NavLink>
         </NavLinks>
