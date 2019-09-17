@@ -9,7 +9,7 @@
 
 interface User {
   id: ID
-  name: String
-  email: String
+  name: String!
+  email: String!
   createdAt: Date
 }

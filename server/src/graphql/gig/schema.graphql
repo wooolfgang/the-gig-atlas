@@ -29,3 +29,15 @@ enum ProjectType {
   CONSULTING
 }
 
+input GigInput {
+  title: String!
+  description: String!
+  technologies: [String]! # temporary as array of string
+  projectType: ProjectType!
+  paymentType: PaymentType!
+  minFee: Float!
+  maxFee: Float!
+  jobType: JobType!
+  locatioRestriction: String
+}
+

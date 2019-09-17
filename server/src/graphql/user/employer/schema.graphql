@@ -3,11 +3,18 @@ type Query {
   searchEmployers(name: String!): [Employer]!
 }
 
+type Mutation {
+  newEmployer(info: EmployerInput!): Employer
+  # updateEmployerInfo(info: EmployerInput!): Boolean!
+  deleteEmployer(id: ID): Employer
+}
+
 type Employer implements User {
   id: ID
   name: String!
   email: String!
   createdAt: Date
+ 
   employerType: EmployerType!
   gigs: [Gig]!
 }
@@ -15,4 +22,11 @@ type Employer implements User {
 enum EmployerType {
   PERSONAL
   COMPANY
+}
+
+input EmployerInput {
+  name: String!
+  email: String!
+  employerType: EmployerType!
+  gig: GigInput
 }
