@@ -13,6 +13,7 @@ export const color = {
   d4: '#E5E5E5',
   d5: '#F6F6F4',
   d6: '#FAFAFA',
+  d7: '#FFFFFF',
 };
 
 const theme = {
