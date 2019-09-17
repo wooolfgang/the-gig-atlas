@@ -1,5 +1,7 @@
 import express from 'express';
+import morgan from 'morgan';
 import gqlMiddleware from './graphql/middleware';
+import config from './config';
 
 let app;
 
@@ -8,7 +10,9 @@ async function createApp() {
     return app;
   }
 
-  app = express().use('/gql', gqlMiddleware);
+  app = express()
+    .use(morgan(config.morgan))
+    .use('/gql', gqlMiddleware);
 
   return app;
 }
