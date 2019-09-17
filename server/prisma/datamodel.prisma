@@ -32,7 +32,7 @@ type Gig {
   id: ID! @id
   title: String!
   description: String!
-  technologies: [String]! @scalarList(strategy: RELATION)
+  technologies: [String!]! @scalarList(strategy: RELATION)
   projectType: ProjectType!
   paymentType: PaymentType!
   minFee: Float!
@@ -58,4 +58,5 @@ enum ProjectType {
   GREENFIELD
   MAINTENANCE
   CONSULTING
+  TESTING
 }

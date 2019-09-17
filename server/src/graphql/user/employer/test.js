@@ -10,6 +10,16 @@ describe('employer crud', () => {
       name: 'nico',
       email: 'nico@gmail.com',
       employerType: 'PERSONAL',
+      gig: {
+        title: 'Testing App',
+        description: 'testing my app',
+        technologies: ['js', 'jest'],
+        projectType: 'TESTING',
+        paymentType: 'FIXED',
+        minFee: 100.0,
+        maxFee: 200.0,
+        jobType: 'CONTRACT',
+      },
     };
 
     const {
@@ -23,6 +33,9 @@ describe('employer crud', () => {
               id
               name
               email
+              gigs {
+                id
+              }
             }
           }
         `,
@@ -36,16 +49,12 @@ describe('employer crud', () => {
     } = await axios.post(testUrl, {
       query: `
           mutation {
-            deleteEmployer(id: "${newEmployer.id}") {
-              id
-              name
-              email
-            }
+            deleteEmployer(id: "${newEmployer.id}")
           }
         `,
     });
 
     expect(newEmployer.email).toBe(info.email);
-    expect(deleteEmployer.id).toBe(newEmployer.id);
+    expect(deleteEmployer).toBe(true);
   });
 });

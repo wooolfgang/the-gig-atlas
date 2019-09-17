@@ -25,6 +25,10 @@ module.exports = {
         singleQuote: true,
         printWidth: 80
       }
-    ]
+    ],
+    /**
+     * ignore all unused variables that starts with underscore(e.g. const _foo = !0)
+     */
+    'no-unused-vars': ["error", { "argsIgnorePattern": "^_" }],
   },
 };
