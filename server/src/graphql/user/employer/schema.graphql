@@ -5,8 +5,7 @@ type Query {
 
 type Mutation {
   newEmployer(info: EmployerInput!): Employer
-  # updateEmployerInfo(info: EmployerInput!): Boolean!
-  deleteEmployer(id: ID): Employer
+  deleteEmployer(id: ID): Boolean!
 }
 
 type Employer implements User {

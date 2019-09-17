@@ -1,3 +1,13 @@
+type Query {
+  gigs: [Gig]!
+  searchGigs(search: String!): [Gig]!
+}
+
+type Mutation {
+  newGig(info: GigInput!): Gig
+  deleteGig(id: ID): Gig
+}
+
 type Gig {
   id: ID
   title: String!
@@ -27,6 +37,7 @@ enum ProjectType {
   GREENFIELD
   MAINTENANCE
   CONSULTING
+  TESTING
 }
 
 input GigInput {
