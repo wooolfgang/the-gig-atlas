@@ -4,6 +4,7 @@ import Router, { useRouter } from 'next/router';
 import Nav from '../../../components/Nav';
 import Stepper from '../../../components/Stepper';
 import EnterGigDetails from '../../../components/EnterGigDetails';
+import media from '../../../utils/media';
 
 const Container = styled.div`
   background: ${props => props.theme.color.d5};
@@ -14,7 +15,12 @@ const Container = styled.div`
 const StepperContainer = styled.div`
   width: 900px;
   max-width: 100vw;
+  box-sizing: border-box;
   margin: auto;
+
+  ${media.phone`
+    padding: 1em;
+  `}
 `;
 
 const FormContainer = styled.div`
@@ -25,6 +31,10 @@ const FormContainer = styled.div`
   padding: 2em;
   box-sizing: border-box;
   background: ${props => props.theme.color.d7};
+
+  ${media.phone`
+    padding: 1em;
+  `}
 `;
 
 const Post = () => {
