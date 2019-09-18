@@ -1,3 +1,5 @@
+import { css } from 'styled-components';
+
 export const color = {
   /* primary colors */
   p1: '#FFE000',
@@ -22,5 +24,27 @@ export const color = {
 const theme = {
   color,
 };
+
+export const InputStyles = css`
+  box-sizing: border-box;
+  font-size: 1rem;
+  border: none;
+  box-shadow: inset 0px 4px 20px rgba(0, 0, 0, 0.05);
+  background: ${props => props.theme.color.d6};
+  border: 1px solid ${props => props.theme.color.d4};
+
+  ${props =>
+    props.selected &&
+    `
+    outline: 0;
+    border: 1px solid ${props.theme.color.s1};
+  `}
+
+  :hover,
+  :focus {
+    outline: 0;
+    border: 1px solid ${props => props.theme.color.s1};
+  }
+`;
 
 export default theme;
