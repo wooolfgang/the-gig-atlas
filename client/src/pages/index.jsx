@@ -3,9 +3,9 @@ import { useTransition, animated } from 'react-spring';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Nav from '../components/Nav';
+import { MediaConsumer } from '../components/MediaProvider';
 import GigsList from '../components/GigsList';
 import useInterval from '../utils/useInterval';
-import useMedia from '../utils/useMedia';
 import media from '../utils/media';
 
 const HeaderContainer = styled.header`
@@ -143,37 +143,32 @@ const TransitionTexts = ({ size }) => {
   });
 };
 
-const Header = ({ size }) => {
+const Header = () => {
   return (
-    <HeaderContainer>
-      <H1>Find gigs that let’s you move forward.</H1>
-      <TransitionTexts size={size} />
-    </HeaderContainer>
+    <MediaConsumer>
+      {({ size }) => (
+        <HeaderContainer>
+          <H1>Find gigs that let’s you move forward.</H1>
+          <TransitionTexts size={size} />
+        </HeaderContainer>
+      )}
+    </MediaConsumer>
   );
 };
 
-Header.propTypes = {
-  size: PropTypes.string,
-};
-
-Header.defaultProps = {
-  size: '',
-};
-
 const Index = () => {
-  const { size } = useMedia();
   return (
-    <div>
-      <Nav size={size} />
-      <Header size={size} />
+    <>
+      <Nav />
+      <Header />
       <GigsContainer>
         <GigsGrid>
           <Search type="search" placeholder="Search for design, dev gigs" />
           <h2>Our Latest Gigs</h2>
-          <GigsList gigs={[{}, {}, {}, {}, {}, {}]} size={size} />
+          <GigsList gigs={[{}, {}, {}, {}, {}, {}]} />
         </GigsGrid>
       </GigsContainer>
-    </div>
+    </>
   );
 };
 

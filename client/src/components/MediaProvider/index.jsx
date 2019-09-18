@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { sizes } from './media';
-import debounce from './debounce';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { sizes } from '../../utils/media';
+import debounce from '../../utils/debounce';
 
-const isClient = process.browser;
+const isClient = !!process.browser;
 
 function useMedia(config = { debounceTime: null }) {
   const { debounceTime } = config;
@@ -51,4 +52,19 @@ function useMedia(config = { debounceTime: null }) {
   };
 }
 
-export default useMedia;
+const MediaContext = React.createContext({});
+
+const MediaProvider = ({ children }) => {
+  const media = useMedia();
+  return (
+    <MediaContext.Provider value={media}>{children}</MediaContext.Provider>
+  );
+};
+
+MediaProvider.propTypes = {
+  children: PropTypes.element.isRequired,
+};
+
+const MediaConsumer = MediaContext.Consumer;
+
+export { MediaConsumer, MediaProvider, useMedia };
