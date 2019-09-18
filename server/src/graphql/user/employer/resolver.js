@@ -1,3 +1,5 @@
+import { transformGigInput } from '../../gig/resolver';
+
 export default {
   Query: {
     employers: (_, _args, ctx) => ctx.prisma.employers(),
@@ -6,17 +8,15 @@ export default {
   },
   Mutation: {
     newEmployer: async (_, { info }, { prisma }, gqlinfo) => {
-      let create;
+      let create = info;
+
       if (info.gig) {
         const { gig, ...employer } = info;
 
-        gig.technologies = { set: gig.technologies };
         create = {
-          gigs: { create: [gig] },
+          gigs: { create: [transformGigInput(gig)] },
           ...employer,
         };
-      } else {
-        create = info;
       }
 
       return prisma.createEmployer(create, gqlinfo);

@@ -3,25 +3,37 @@ import axios from 'axios';
 import config from '../../../config';
 
 const testUrl = config.testUrl;
+const info = {
+  name: 'nico',
+  email: 'nico@gmail.com',
+  employerType: 'PERSONAL',
+  gig: {
+    title: 'Testing App',
+    description: 'testing my app',
+    technologies: ['js', 'jest'],
+    projectType: 'TESTING',
+    paymentType: 'FIXED',
+    minFee: 100.0,
+    maxFee: 200.0,
+    jobType: 'CONTRACT',
+  },
+};
+
+let employerId;
+
+afterAll(() => {
+  axios.post(testUrl, {
+    query: `
+        mutation {
+          deleteEmployer(id: "${employerId}")
+        }
+      `,
+  });
+});
 
 describe('employer crud', () => {
+  console.log("employer test set")
   it('add and remove employer', async () => {
-    const info = {
-      name: 'nico',
-      email: 'nico@gmail.com',
-      employerType: 'PERSONAL',
-      gig: {
-        title: 'Testing App',
-        description: 'testing my app',
-        technologies: ['js', 'jest'],
-        projectType: 'TESTING',
-        paymentType: 'FIXED',
-        minFee: 100.0,
-        maxFee: 200.0,
-        jobType: 'CONTRACT',
-      },
-    };
-
     const {
       data: {
         data: { newEmployer },
@@ -41,6 +53,8 @@ describe('employer crud', () => {
         `,
       variables: { info },
     });
+
+    employerId = newEmployer.id;
 
     const {
       data: {
