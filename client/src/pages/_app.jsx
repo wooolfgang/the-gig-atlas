@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import withApollo from '../components/withApollo';
 import theme from '../utils/theme';
 import GlobalStyle from '../utils/globalStyle';
+import { MediaProvider } from '../components/MediaProvider';
 
 export default withApollo(
   class MyApp extends App {
@@ -40,7 +41,9 @@ export default withApollo(
           </style>
           <GlobalStyle />
           <ThemeProvider theme={theme}>
-            <Component {...pageProps} />
+            <MediaProvider>
+              <Component {...pageProps} />
+            </MediaProvider>
           </ThemeProvider>
         </ApolloProvider>
       );
