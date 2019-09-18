@@ -14,6 +14,9 @@ export const color = {
   d5: '#F6F6F4',
   d6: '#FAFAFA',
   d7: '#FFFFFF',
+
+  /* error colors */
+  e1: '#cc0000',
 };
 
 const theme = {
