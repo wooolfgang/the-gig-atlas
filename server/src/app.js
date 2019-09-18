@@ -3,14 +3,8 @@ import morgan from 'morgan';
 import gqlMiddleware from './graphql/middleware';
 import config from './config';
 
-let app;
-
 async function createApp() {
-  if (app) {
-    return app;
-  }
-
-  app = express()
+  const app = express()
     .use(morgan(config.morgan))
     .use('/gql', gqlMiddleware);
 

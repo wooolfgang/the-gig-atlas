@@ -4,7 +4,7 @@ type Query {
 }
 
 type Mutation {
-  newGig(info: GigInput!): Gig
+  newGig(employerId: ID!, info: GigInput!): Gig
   deleteGig(id: ID): Gig
 }
 

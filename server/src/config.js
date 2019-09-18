@@ -14,6 +14,7 @@ const dev = {
     port: 8080,
     morgan: 'dev',
   },
+  hasGraphiQl: true,
   gqlDebugger: error => {
     console.log(error);
 
@@ -24,7 +25,6 @@ const dev = {
       path: error.path,
     };
   },
-  hasGraphiQl: true,
 };
 
 const test = {
@@ -33,6 +33,7 @@ const test = {
     morgan: 'dev',
   },
   testUrl: 'http://localhost:8080/gql',
+  isConnectionJump: true,
 };
 
 const staging = {

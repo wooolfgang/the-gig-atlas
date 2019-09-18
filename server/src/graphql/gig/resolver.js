@@ -1,3 +1,12 @@
+export function transformGigInput(gigInput) {
+  return {
+    ...gigInput,
+    technologies: {
+      set: gigInput.technologies || [],
+    },
+  };
+}
+
 export default {
   Query: {
     gigs: (_, args, { prisma }) => prisma.gigs(),
@@ -5,18 +14,23 @@ export default {
       prisma.gigs({ where: { title_contains: search } }),
   },
   Mutation: {
-    newGig: async (_, { info }, { prisma }) => {
-      const res = await prisma.createGig(info);
+    newGig: (_, { employerId, info }, { prisma }) => {
+      const create = {
+        employer: {
+          connect: { id: employerId },
+        },
+        ...transformGigInput(info),
+      };
 
-      console.log("new gig: ", res);
-
-      return res;
+      return prisma.createGig(create);
     },
     deleteGig: async (_, args, { prisma }) => {
-      const res = await prisma.deleteGig(args);
+      prisma.deleteGig(args);
 
-      console.log('delted gig', res);
-      return res;
+      return true;
     },
+  },
+  Gig: {
+    employer: ({ id }, _, { prisma }) => prisma.gig({ id }).employer(),
   },
 };
