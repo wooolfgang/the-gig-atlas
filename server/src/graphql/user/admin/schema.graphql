@@ -9,3 +9,9 @@ type Admin implements User {
   email: String!
   createdAt: Date
 }
+
+input AdminInput {
+  name: String!
+  email: String!
+  password: String!
+}

@@ -1,0 +1,8 @@
+# type Query {
+
+# }
+
+type Mutation {
+  adminSignup(input: AdminInput!): Authentication!
+  adminLogin(email: String!, password: String!): Authentication!
+}
