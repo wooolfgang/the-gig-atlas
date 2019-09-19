@@ -6,6 +6,17 @@ export const Price = styled.span`
   font-size: 1.4rem;
 `;
 
+export const Back = styled.button`
+  background: none;
+  border: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
 export const Next = styled.button`
   border: none;
   background: #ffe000;
