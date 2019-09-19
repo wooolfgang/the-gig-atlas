@@ -1,22 +1,10 @@
-import { rule } from 'graphql-shield';
-import jwt from 'jsonwebtoken';
-import config from '../../../../config';
-
-const verifyAdmin = rule()(async (_, _args, ctx) => {
-  const token = ctx.req.get('Authorization');
-  try {
-    const payload = jwt.verify(token, config.adminSecret);
-
-    ctx.admin = payload;
-  } catch (e) {
-    return e;
-  }
-
-  return true;
-});
+import { allow } from 'graphql-shield';
+import verifyAdmin from './verifyAdmin';
 
 export default {
   Mutation: {
     adminSignup: verifyAdmin,
+    adminLogin: allow,
   },
+  AuthPayload: allow,
 };

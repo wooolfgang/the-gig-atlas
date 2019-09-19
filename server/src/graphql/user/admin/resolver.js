@@ -4,9 +4,14 @@ export default {
     admin: (_, { id }, { prisma }) => prisma.admin({ id }),
   },
   Mutation: {
-    // newAdmin: (_, { input }, { prisma }) => {
+    deleteAdmin: async (_, { id }, { prisma, admin }) => {
+      if (id !== admin.id) {
+        throw new Error('Athorization failed');
+      }
 
-    //   return prisma.crateAdmin(input);
-    // },
+      const res = await prisma.deleteAdmin({ id });
+
+      return !!res;
+    },
   },
 };

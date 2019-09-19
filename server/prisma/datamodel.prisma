@@ -39,7 +39,7 @@ type Gig {
   minFee: Float!
   maxFee: Float!
   jobType: JobType!
-  locatioRestriction: String
+  locationRestriction: String
   employer: Employer! @relation(name: "GigsOfEmployer")
   createdAt: DateTime! @createdAt
 }
