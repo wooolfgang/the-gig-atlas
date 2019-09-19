@@ -1,0 +1,4 @@
+{
+  "ext": "js, json, env, .babelrc, graphql",
+  "ignore": ["*.test.js", "test.js", "fixtures/*"]
+}
