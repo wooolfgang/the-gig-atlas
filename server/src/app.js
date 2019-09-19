@@ -1,21 +1,12 @@
 import express from 'express';
-import { prisma } from '../generated/prisma-client';
-import services from './services';
-
-let app;
+import morgan from 'morgan';
+import gqlMiddleware from './graphql/middleware';
+import config from './config';
 
 async function createApp() {
-  if (app) {
-    return app;
-  }
-
-  const users = await prisma.users();
-
-  console.log("prisma users: ", users);
-
-  app = express()
-    .use('/users', services.users.usersRoute(prisma))
-    .use(services.errors.logErrorHandlers);
+  const app = express()
+    .use(morgan(config.morgan))
+    .use('/gql', gqlMiddleware);
 
   return app;
 }
