@@ -23,6 +23,7 @@ const dev = {
   hasGraphiQl: true,
   hasDebug: true,
   gqlDebugger: error => {
+    // eslint-disable-next-line no-console
     console.log(error);
 
     return {
@@ -36,6 +37,7 @@ const dev = {
 
 const test = {
   app: {
+    // temporary not being used as it does not countain server debug
     port: 7070,
     morgan: 'dev',
   },
