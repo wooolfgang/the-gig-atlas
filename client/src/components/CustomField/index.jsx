@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RadioCards from '../RadioCards';
 import RadioGroups from '../RadioButtons';
+import Select from '../Select';
 import {
   Textarea,
   Input,
@@ -27,6 +28,8 @@ const CustomField = ({
     InputComponent = RadioCards;
   } else if (type === 'radiogroups') {
     InputComponent = RadioGroups;
+  } else if (type === 'select') {
+    InputComponent = Select;
   } else {
     InputComponent = Input;
   }
