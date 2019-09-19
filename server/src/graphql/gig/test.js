@@ -73,8 +73,6 @@ describe('Gig crud', () => {
       variables: { employerId: employer.id, info: gigInfo },
     });
 
-    console.log("the new gig: ", newGig);
-
     expect(newGig).toEqual({
       id: newGig.id,
       title: gigInfo.title,

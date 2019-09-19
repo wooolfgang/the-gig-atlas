@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import config from '../src/config';
 
 module.exports = {

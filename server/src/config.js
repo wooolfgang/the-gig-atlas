@@ -7,7 +7,13 @@ import dotenv from 'dotenv';
 // loads secret .env variables
 dotenv.config();
 
-const env = process.env.NODE_ENV;
+const { NODE_ENV, ADMIN_SECRET, EMPLOYER_SECRET } = process.env;
+
+const fromEnv = {
+  env: NODE_ENV,
+  adminSecret: ADMIN_SECRET,
+  employerSecret: EMPLOYER_SECRET,
+};
 
 const dev = {
   app: {
@@ -15,6 +21,7 @@ const dev = {
     morgan: 'dev',
   },
   hasGraphiQl: true,
+  hasDebug: true,
   gqlDebugger: error => {
     console.log(error);
 
@@ -34,6 +41,7 @@ const test = {
   },
   testUrl: 'http://localhost:8080/gql',
   isConnectionJump: true,
+  hasDebug: true,
 };
 
 const staging = {
@@ -51,8 +59,11 @@ const config = {
   test,
 };
 
-if (!config[env]) {
-  throw new Error('Invalid NODE_ENV value');
+if (!config[NODE_ENV]) {
+  // eslint-disable-next-line prettier/prettier
+  throw new Error(`Config Error, NODE_ENV="${NODE_ENV}", [dev|staging|production|test]`);
+  // eslint-disable-next-line no-unreachable
+  process.exit(1);
 }
 
-export default config[env];
+export default { ...config[NODE_ENV], ...fromEnv };

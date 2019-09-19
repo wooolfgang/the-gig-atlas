@@ -13,3 +13,8 @@ interface User {
   email: String!
   createdAt: Date
 }
+
+type Authentication {
+  token: String!
+  id: ID!
+}

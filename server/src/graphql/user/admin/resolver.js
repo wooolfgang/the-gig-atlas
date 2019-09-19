@@ -1,5 +1,12 @@
 export default {
   Query: {
-    admins: (_parent, args, ctx) => ctx.prisma.admins(args),
+    admins: (_, args, ctx) => ctx.prisma.admins(args),
+    admin: (_, { id }, { prisma }) => prisma.admin({ id }),
+  },
+  Mutation: {
+    // newAdmin: (_, { input }, { prisma }) => {
+
+    //   return prisma.crateAdmin(input);
+    // },
   },
 };

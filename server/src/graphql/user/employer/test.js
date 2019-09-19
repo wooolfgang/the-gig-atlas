@@ -19,20 +19,7 @@ const info = {
   },
 };
 
-let employerId;
-
-afterAll(() => {
-  axios.post(testUrl, {
-    query: `
-        mutation {
-          deleteEmployer(id: "${employerId}")
-        }
-      `,
-  });
-});
-
 describe('employer crud', () => {
-  console.log("employer test set")
   it('add and remove employer', async () => {
     const {
       data: {
@@ -53,8 +40,6 @@ describe('employer crud', () => {
         `,
       variables: { info },
     });
-
-    employerId = newEmployer.id;
 
     const {
       data: {
