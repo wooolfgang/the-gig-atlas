@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import Nav from '../../../components/Nav';
 import Stepper from '../../../components/Stepper';
-import EnterGigDetails from '../../../components/EnterGigDetails';
+import FormGigDetails from '../../../components/FormGigDetails';
+import FormClientInfo from '../../../components/FormClientInfo';
+import FormPreviewGig from '../../../components/FormPreviewGig';
+import FormPurchase from '../../../components/FormPurchase';
 import media from '../../../utils/media';
 
 const Container = styled.div`
@@ -73,7 +76,7 @@ const Post = () => {
     if (activeIndex < steps.length - 1) {
       const { key } = steps[activeIndex + 1];
       const href = router.pathname.replace('[section]', key);
-      Router.push(href, href, { shallow: true });
+      router.push(href);
     }
   };
 
@@ -81,7 +84,7 @@ const Post = () => {
     if (activeIndex >= 1) {
       const { key } = steps[activeIndex - 1];
       const href = router.pathname.replace('[section]', key);
-      Router.push(href, href, { shallow: true });
+      router.push(href);
     }
   };
 
@@ -96,10 +99,10 @@ const Post = () => {
           <Stepper steps={steps} activeIndex={activeIndex} />
         </StepperContainer>
         <FormContainer>
-          {activeIndex === 0 && <EnterGigDetails back={back} next={next} />}
-          {activeIndex === 1 && <EnterGigDetails back={back} next={next} />}
-          {activeIndex === 2 && <EnterGigDetails back={back} next={next} />}
-          {activeIndex === 3 && <EnterGigDetails back={back} next={next} />}
+          {activeIndex === 0 && <FormGigDetails next={next} />}
+          {activeIndex === 1 && <FormClientInfo back={back} next={next} />}
+          {activeIndex === 2 && <FormPreviewGig back={back} next={next} />}
+          {activeIndex === 3 && <FormPurchase back={back} next={next} />}
         </FormContainer>
       </Container>
     </div>

@@ -13,7 +13,7 @@ const Nav = () => {
             <NavLinks>
               <NavLink href="/freelancers">Freelancers</NavLink>
               <NavLink href="/gigs">Find Gigs</NavLink>
-              <NavLink href="/gig/software/create">
+              <NavLink href="/gig/tech/create">
                 <PostGigButton>Post A Gig</PostGigButton>
               </NavLink>
             </NavLinks>

@@ -2,21 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
 import { Input, FieldError, FieldHelp } from '../../primitives';
 import CustomField from '../CustomField';
 import { Price, Next, RateContainer } from './style';
-
-const ArrowNext = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" fill="none">
-    <path
-      stroke="#000"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-      d="M1.512 8h11.232M7.128 1l5.616 7-5.616 7"
-    />
-  </svg>
-);
+import Spinner from '../../primitives/Spinner';
 
 const FieldInputComponent = ({
   field,
@@ -49,14 +40,14 @@ FieldInputComponent.propTypes = {
   }).isRequired,
 };
 
-const GigDetailsSchema = Yup.object().shape({
+export const GigDetailsSchema = Yup.object().shape({
   title: Yup.string()
     .min(2, 'Minimum of two characters')
-    .max(25, 'Maximum limit for title')
+    .max(200, 'Maximum limit for title')
     .required('Title is required'),
   description: Yup.string()
     .min(2, 'Minimum of two characters')
-    .max(200, 'Maximum limit for description')
+    .max(2000, 'Maximum limit for description')
     .required('Description is required'),
   projectType: Yup.string().required('Project Type is required'),
   technologies: Yup.array()
@@ -73,22 +64,34 @@ const GigDetailsSchema = Yup.object().shape({
   locationAndTimezone: Yup.string(),
 });
 
-const EnterGigDetails = ({ next }) => {
-  return (
+export const GET_GIG_DETAILS = gql`
+  {
+    gigDetails @client {
+      title
+      description
+      projectType
+      technologies
+      paymentType
+      minRate
+      maxRate
+      jobType
+      locationAndTimezone
+    }
+  }
+`;
+
+const FormContainer = ({ initialValues, loading, onSubmit }) => (
+  <>
+    {loading && (
+      <div style={{ marginBottom: '1.5rem' }}>
+        Loading cache... <Spinner />
+      </div>
+    )}
     <Formik
-      initialValues={{
-        title: '',
-        description: '',
-        projectType: '',
-        technologies: [],
-        paymentType: '',
-        minRate: '',
-        maxRate: '',
-        jobType: '',
-        locationAndTimezone: '',
-      }}
+      enableReinitialize
+      initialValues={initialValues}
       validationSchema={GigDetailsSchema}
-      onSubmit={next}
+      onSubmit={onSubmit}
       render={() => (
         <Form>
           <Field
@@ -130,6 +133,22 @@ const EnterGigDetails = ({ next }) => {
           <Field
             label="Technologies"
             name="technologies"
+            type="select"
+            multiple
+            options={[
+              {
+                title: 'ReactJS',
+                value: 'reactjs',
+              },
+              {
+                title: 'NodeJS',
+                value: 'nodejs',
+              },
+              {
+                title: 'Ruby On Rails',
+                value: 'ruby-on-rails',
+              },
+            ]}
             component={CustomField}
           />
           <Field
@@ -214,17 +233,68 @@ const EnterGigDetails = ({ next }) => {
             </span>
             <Next type="submit">
               <span style={{ marginRight: '5px' }}>Enter your info </span>
-              <ArrowNext />
+              <img
+                src="/static/arrow-right.svg"
+                alt="arrow-right-icon"
+                style={{ width: '1rem' }}
+              />
             </Next>
           </div>
         </Form>
       )}
     />
+  </>
+);
+
+FormContainer.propTypes = {
+  initialValues: PropTypes.shape({}),
+  loading: PropTypes.bool,
+  onSubmit: PropTypes.func,
+};
+
+FormContainer.defaultProps = {
+  initialValues: {},
+  loading: false,
+  onSubmit: () => {},
+};
+
+const FormGigDetails = ({ next }) => {
+  const { data, loading, client } = useQuery(GET_GIG_DETAILS);
+  if (loading) return <FormContainer loading={loading} />;
+  return (
+    <FormContainer
+      initialValues={
+        data && data.gigDetails
+          ? data.gigDetails
+          : {
+              title: '',
+              description: '',
+              projectType: '',
+              technologies: [],
+              paymentType: '',
+              minRate: '',
+              maxRate: '',
+              jobType: '',
+              locationAndTimezone: '',
+            }
+      }
+      onSubmit={values => {
+        client.writeData({
+          data: {
+            gigDetails: { ...values, __typename: 'gigDetails' },
+          },
+        });
+        /* A little bit weird, but without setTimeout writing to cache doesn't get continued */
+        setTimeout(() => {
+          next();
+        }, 1000);
+      }}
+    />
   );
 };
 
-EnterGigDetails.propTypes = {
+FormGigDetails.propTypes = {
   next: PropTypes.func.isRequired,
 };
 
-export default EnterGigDetails;
+export default FormGigDetails;
