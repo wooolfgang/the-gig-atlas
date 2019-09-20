@@ -31,16 +31,7 @@ export default class MyDocument extends Document {
   render() {
     return (
       <html lang="en">
-        <Head>
-          {this.props.styleTags}
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta
-            name="description"
-            content="The Gig Atlas - Empowering freelancers"
-          />
-          <link rel="icon" href="/static/favicon.ico" />
-          <title>The Gig Atlas</title>
-        </Head>
+        <Head>{this.props.styleTags}</Head>
         <body>
           <Main />
           <NextScript />

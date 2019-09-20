@@ -30,8 +30,8 @@ function create(initialState, { getToken }) {
     ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
     link: new CreateUploadLink({
       uri: process.env.NODE_ENV === 'development' ? endpoint : endpoint, // Server URL (must be absolute)
-      // credentials: 'include',
-      // headers: { authorization: `Bearer ${token}` },
+      credentials: 'include',
+      headers: { authorization: `Bearer ${token}` },
     }),
     cache,
   });
