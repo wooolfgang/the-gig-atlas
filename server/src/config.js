@@ -1,5 +1,7 @@
 /**
  * guide source: https://codingsans.com/blog/node-config-best-practices
+ * /
+ * IMPORTANT: import config before prisma in order to load variables
  */
 
 import dotenv from 'dotenv';
@@ -7,12 +9,22 @@ import dotenv from 'dotenv';
 // loads secret .env variables
 dotenv.config();
 
-const { NODE_ENV, ADMIN_SECRET, EMPLOYER_SECRET } = process.env;
+const {
+  NODE_ENV,
+  SECRET_PRISMA,
+  SECRET_USER,
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
+} = process.env;
 
 const fromEnv = {
   env: NODE_ENV,
-  adminSecret: ADMIN_SECRET,
-  employerSecret: EMPLOYER_SECRET,
+  secretPrisma: SECRET_PRISMA,
+  secretUser: SECRET_USER,
+  admin: {
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASSWORD,
+  },
 };
 
 const dev = {
@@ -63,7 +75,7 @@ const config = {
 
 if (!config[NODE_ENV]) {
   // eslint-disable-next-line prettier/prettier
-  throw new Error(`Config Error, NODE_ENV="${NODE_ENV}", [dev|staging|production|test]`);
+  throw new Error(`Config Error, NODE_ENV="${NODE_ENV}", dev|staging|production|test`);
   // eslint-disable-next-line no-unreachable
   process.exit(1);
 }

@@ -8,10 +8,9 @@ type Mutation {
   deleteEmployer(id: ID): Boolean!
 }
 
-type Employer implements User {
+type Employer {
   id: ID
-  name: String!
-  email: String!
+  asUser: User
   createdAt: Date
  
   employerType: EmployerType!
@@ -24,8 +23,6 @@ enum EmployerType {
 }
 
 input EmployerInput {
-  name: String!
-  email: String!
   employerType: EmployerType!
   gig: GigInput
 }
