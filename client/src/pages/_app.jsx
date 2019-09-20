@@ -2,6 +2,7 @@ import React from 'react';
 import App from 'next/app';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { ThemeProvider } from 'styled-components';
+import MobileDetect from 'mobile-detect';
 import withApollo from '../components/withApollo';
 import theme from '../utils/theme';
 import GlobalStyle from '../utils/globalStyle';
@@ -15,11 +16,17 @@ export default withApollo(
         pageProps = await Component.getInitialProps(ctx);
       }
 
-      return { pageProps };
+      let isMobile;
+      if (ctx && ctx.req) {
+        const md = new MobileDetect(ctx.req.headers['user-agent']);
+        isMobile = !!md.mobile();
+      }
+
+      return { pageProps, isMobile };
     }
 
     render() {
-      const { Component, pageProps, apolloClient } = this.props;
+      const { Component, pageProps, apolloClient, isMobile } = this.props;
       return (
         <ApolloProvider client={apolloClient}>
           <style jsx global>
@@ -41,7 +48,7 @@ export default withApollo(
           </style>
           <GlobalStyle />
           <ThemeProvider theme={theme}>
-            <MediaProvider>
+            <MediaProvider value={isMobile && { isMobile }}>
               <Component {...pageProps} />
             </MediaProvider>
           </ThemeProvider>
