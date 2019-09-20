@@ -16,8 +16,12 @@ export default withApollo(
         pageProps = await Component.getInitialProps(ctx);
       }
 
-      const md = new MobileDetect(ctx.req.headers['user-agent']);
-      const isMobile = !!md.mobile();
+      let isMobile;
+      if (ctx && ctx.req) {
+        const md = new MobileDetect(ctx.req.headers['user-agent']);
+        isMobile = !!md.mobile();
+      }
+
       return { pageProps, isMobile };
     }
 
@@ -44,7 +48,7 @@ export default withApollo(
           </style>
           <GlobalStyle />
           <ThemeProvider theme={theme}>
-            <MediaProvider value={{ isMobile }}>
+            <MediaProvider value={isMobile && { isMobile }}>
               <Component {...pageProps} />
             </MediaProvider>
           </ThemeProvider>
