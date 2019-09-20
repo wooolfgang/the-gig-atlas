@@ -7,6 +7,7 @@ services:
       - '4466:4466'
     environment:
       PRISMA_CONFIG: |
+        managementApiSecret: 2$D%7&^l;x.#{/@!
         port: 4466
         databases:
           default:
@@ -25,3 +26,12 @@ services:
       - postgres:/var/lib/postgresql/data
 volumes:
   postgres: ~
+
+# start prisma & db docker
+# $ sytemctl start docker
+# $ sudo docker-compose -f prisma/docker-compose.yml up -d
+# initial configure prisma
+# $ prisma init prisma --endpoint http://localhost:4466
+# $ export PRISMA_MANAGEMENT_API_SECRET="2$D%7&^l;x.#{/@!"
+# $ prisma deploy
+# $ prisma generate

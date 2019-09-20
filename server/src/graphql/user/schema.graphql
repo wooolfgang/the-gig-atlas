@@ -1,0 +1,20 @@
+# type Query {
+#   User(id: ID!): User
+#   users: [User]!
+# }
+
+# type Mutation {
+#  updateUser(id: ID, name: String): User
+# }
+
+interface User {
+  id: ID
+  name: String!
+  email: String!
+  createdAt: Date
+}
+
+type AuthPayload {
+  token: String!
+  id: ID!
+}
