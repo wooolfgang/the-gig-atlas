@@ -1,9 +1,9 @@
 import React from 'react';
-import Header from '../components/Header';
+import Nav from '../components/Nav';
 
 const About = () => (
   <div>
-    <Header />
+    <Nav />
     <p>This is the about page</p>
   </div>
 );

@@ -15,6 +15,7 @@ const {
   SECRET_USER,
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
+  CLIENT_URL,
 } = process.env;
 
 const fromEnv = {
@@ -25,12 +26,17 @@ const fromEnv = {
     email: ADMIN_EMAIL,
     password: ADMIN_PASSWORD,
   },
+  clientUrl: CLIENT_URL,
 };
 
 const dev = {
   app: {
     port: 8080,
     morgan: 'dev',
+  },
+  cors: {
+    origin: ['http://localhost:3000'],
+    credentials: true,
   },
   hasGraphiQl: true,
   hasDebug: true,
@@ -64,6 +70,10 @@ const staging = {
 
 const production = {
   // to be filled
+  cors: {
+    origin: [CLIENT_URL],
+    credentials: true,
+  },
 };
 
 const config = {
