@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Nav from '../components/Nav';
 import { MediaConsumer } from '../components/MediaProvider';
 import GigsList from '../components/GigsList';
+import HTMLHead from '../components/HTMLHead';
 import useInterval from '../utils/useInterval';
 import media from '../utils/media';
 
@@ -143,33 +144,30 @@ const TransitionTexts = ({ size }) => {
   });
 };
 
-const Header = () => {
-  return (
-    <MediaConsumer>
-      {({ size }) => (
-        <HeaderContainer>
-          <H1>Find gigs that let’s you move forward.</H1>
-          <TransitionTexts size={size} />
-        </HeaderContainer>
-      )}
-    </MediaConsumer>
-  );
-};
+const Header = () => (
+  <MediaConsumer>
+    {({ size }) => (
+      <HeaderContainer>
+        <H1>Find gigs that let’s you move forward.</H1>
+        <TransitionTexts size={size} />
+      </HeaderContainer>
+    )}
+  </MediaConsumer>
+);
 
-const Index = () => {
-  return (
-    <>
-      <Nav />
-      <Header />
-      <GigsContainer>
-        <GigsGrid>
-          <Search type="search" placeholder="Search for design, dev gigs" />
-          <h2>Our Latest Gigs</h2>
-          <GigsList gigs={[{}, {}, {}, {}, {}, {}]} />
-        </GigsGrid>
-      </GigsContainer>
-    </>
-  );
-};
+const Index = () => (
+  <>
+    <HTMLHead />
+    <Nav />
+    <Header />
+    <GigsContainer>
+      <GigsGrid>
+        <Search type="search" placeholder="Search for design, dev gigs" />
+        <h2>Our Latest Gigs</h2>
+        <GigsList gigs={[{}, {}, {}, {}, {}, {}]} />
+      </GigsGrid>
+    </GigsContainer>
+  </>
+);
 
 export default Index;
