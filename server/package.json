@@ -34,6 +34,7 @@
     "argon2": "^0.24.1",
     "assign-deep": "^1.0.1",
     "axios": "^0.19.0",
+    "cors": "^2.8.5",
     "data-loader": "^2.1.12",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
