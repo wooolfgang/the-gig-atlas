@@ -8,6 +8,7 @@ import FormClientInfo from '../../../components/FormClientInfo';
 import FormPreviewGig from '../../../components/FormPreviewGig';
 import FormPurchase from '../../../components/FormPurchase';
 import media from '../../../utils/media';
+import HTMLHead from '../../../components/HTMLHead';
 
 const Container = styled.div`
   background: ${props => props.theme.color.d5};
@@ -90,6 +91,7 @@ const Post = () => {
 
   return (
     <div>
+      <HTMLHead title={`The Gig Atlas - ${steps[activeIndex].title}`} />
       <Nav />
       <div style={{ padding: '0 8.3%' }}>
         <h1>Create a software gig</h1>
