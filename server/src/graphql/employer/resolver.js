@@ -1,4 +1,4 @@
-import { transformGigInput } from '../../gig/resolver';
+import { transformGigInput } from '../gig/resolver';
 
 export default {
   Query: {

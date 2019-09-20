@@ -4,4 +4,4 @@ generate:
   - generator: javascript-client
     output: ../src/generated/prisma-client/
 
-secret: ${env:ADMIN_SECRET}
+secret: ${env:SECRET_PRISMA}

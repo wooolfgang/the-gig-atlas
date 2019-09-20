@@ -8,7 +8,7 @@ import assign from 'assign-deep';
 import config from '../config';
 import { prisma } from '../generated/prisma-client';
 
-const typeDefs = importSchema(`${__dirname}/schema.graphql`);
+const typeDefs = importSchema(`${__dirname}/main.graphql`);
 const resolvers = fileLoader(`${__dirname}/**/resolver.js`, {
   recursive: true,
 });
