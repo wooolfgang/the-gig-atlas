@@ -22,7 +22,7 @@ module.exports = {
     "prettier/prettier": [
       "error",
       {
-        trailingComma: "es5",
+        trailingComma: "all",
         singleQuote: true,
         printWidth: 80
       }
@@ -36,6 +36,8 @@ module.exports = {
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",
     "jest/prefer-to-have-length": "warn",
-    "jest/valid-expect": "error"
+    "jest/valid-expect": "error",
+    // customs
+    "no-confusing-arrow": "off"
   },
 };
