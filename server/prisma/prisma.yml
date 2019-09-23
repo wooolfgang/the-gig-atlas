@@ -3,5 +3,10 @@ datamodel: datamodel.prisma
 generate:
   - generator: javascript-client
     output: ../src/generated/prisma-client/
-
+  - generator: graphql-schema
+    output: ../src/generated/prisma-client/datamodel.graphql
+hooks:
+  post-deploy:
+    - prisma generate
+# can sometimes cause AUTHORIZATION bug 
 secret: ${env:SECRET_PRISMA}

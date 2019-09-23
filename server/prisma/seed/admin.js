@@ -1,21 +1,23 @@
 import argon2 from 'argon2';
-import config from '../../src/config';
+import cfg from '../../src/config';
 import { prisma } from '../../src/generated/prisma-client';
+
+const { admin } = cfg;
 
 export default async () => {
   try {
-    await prisma.deleteUser({ email: config.admin.email });
+    await prisma.deleteUser({ email: admin.email });
 
-    const hash = await argon2.hash(config.admin.password);
+    const hash = await argon2.hash(admin.password);
 
-    const admin = {
+    const newAdmin = {
       name: 'admin',
-      email: config.admin.email,
+      email: admin.email,
       password: hash,
       role: 'ADMIN',
     };
 
-    await prisma.createUser(admin);
+    await prisma.createUser(newAdmin);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
