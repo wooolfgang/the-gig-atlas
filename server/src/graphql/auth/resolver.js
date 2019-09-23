@@ -20,7 +20,9 @@ const signup = async (_, { input }, { prisma }) => {
 };
 
 const login = async (_, { email, password }, { prisma }) => {
-  const user = await prisma.user({ email });
+  const user = await prisma
+    .user({ email })
+    .$fragment('fragment Login on User { id role password }');
 
   try {
     if (!user || !argon2.verify(user.password, password)) {

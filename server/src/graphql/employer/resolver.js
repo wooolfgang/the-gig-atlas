@@ -7,24 +7,24 @@ export default {
       ctx.prisma.employers({ where: { name_contains: name } }),
   },
   Mutation: {
-    newEmployer: async (_, { info }, { prisma }, gqlinfo) => {
-      let create = info;
+    setEmployer: async (_, { input }, { prisma, user }) => {
+      // check if user is already an emplyer
+      const exist = await prisma.user({ id: user.id }).asEmployer();
+      if (exist) {
+        throw new Error('Aldready an Employer');
+      }
 
-      if (info.gig) {
-        const { gig, ...employer } = info;
-
+      let create = input;
+      if (input.gig) {
+        const { gig, ...employer } = input;
         create = {
+          asUser: { connect: { id: user.id } },
           gigs: { create: [transformGigInput(gig)] },
           ...employer,
         };
       }
 
-      return prisma.createEmployer(create, gqlinfo);
-    },
-    deleteEmployer: async (_, { id }, { prisma }) => {
-      const res = await prisma.deleteEmployer({ id });
-
-      return !!res;
+      return prisma.createEmployer(create);
     },
   },
   Employer: {

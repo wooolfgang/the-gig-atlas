@@ -5,9 +5,17 @@
  */
 
 import dotenv from 'dotenv';
-
-// loads secret .env variables
+// loads .env variables
 dotenv.config();
+
+/**
+ * @todo set prisma binding after lib error is fixed
+ */
+// const prisma = Prisma({
+//   typeDefs: `${__dirname}/graphql/main.graphql`,
+//   endpoint: 'http://localhost:4466',
+//   secret: SECRET_PRISMA,
+// });
 
 const {
   NODE_ENV,
@@ -34,6 +42,7 @@ const dev = {
     port: 8080,
     morgan: 'dev',
   },
+  testUrl: 'http://localhost:8080/gql',
   cors: {
     origin: ['http://localhost:3000'],
     credentials: true,
@@ -42,7 +51,9 @@ const dev = {
   hasDebug: true,
   gqlDebugger: error => {
     // eslint-disable-next-line no-console
+    console.log('\n----------------------------->')
     console.log(error);
+    console.log('------------------------------->')
 
     return {
       message: error.message,
@@ -59,8 +70,7 @@ const test = {
     port: 7070,
     morgan: 'dev',
   },
-  testUrl: 'http://localhost:8080/gql',
-  isConnectionJump: true,
+  testUrl: 'http://localhost:7070/gql',
   hasDebug: true,
 };
 
@@ -69,7 +79,6 @@ const staging = {
 };
 
 const production = {
-  // to be filled
   cors: {
     origin: [CLIENT_URL],
     credentials: true,

@@ -27,7 +27,7 @@ const schema = applyMiddleware(
 
 const middleware = graphHttp(req => ({
   schema,
-  context: { prisma, req },
+  context: { req, config, prisma },
   graphiql: !!config.hasGraphiQl,
   customFormatErrorFn: config.gqlDebugger,
 }));
