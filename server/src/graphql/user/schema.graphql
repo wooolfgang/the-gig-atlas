@@ -1,9 +1,13 @@
+type Query {
+  user: User!
+}
+
 type Mutation {
   deleteUser(id: ID!): Boolean!
 }
 
-interface User {
-  id: ID!
+type User {
+  id: ID
   name: String
   email: String
   asEmployer: Employer

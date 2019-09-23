@@ -4,8 +4,10 @@ type Query {
 }
 
 type Mutation {
-  newEmployer(info: EmployerInput!): Employer
+  # newEmployer(info: EmployerInput!): Employer
   deleteEmployer(id: ID): Boolean!
+
+  setEmployer(input: EmployerInput!): Employer
 }
 
 type Employer {

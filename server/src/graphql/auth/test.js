@@ -97,7 +97,7 @@ describe('basic signup', () => {
           }
         `,
       },
-      { headers: { Authorization: adminToken } }
+      { headers: { Authorization: adminToken } },
     );
 
     expect(delRes.data.data.deleteUser).toBe(true);
