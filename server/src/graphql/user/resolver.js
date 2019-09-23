@@ -8,7 +8,8 @@ export default {
     },
   },
   Mutation: {
-    deleteUser: async (_, { id }, { prisma }) => {
+    deleteUser: async (_, { id }, { prisma, user }) => {
+      console.log('here on delete user: ', id, user);
       const res = await prisma.deleteUser({ id });
 
       return !!res;

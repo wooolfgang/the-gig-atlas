@@ -1,12 +1,12 @@
-import { and, allow } from 'graphql-shield';
+import { chain, allow } from 'graphql-shield';
 import { verifyUser, isAdmin, isAuthenticated } from '../auth/rules';
 
 export default {
   Query: {
-    user: and(verifyUser, isAuthenticated),
+    user: chain(verifyUser, isAuthenticated),
   },
   Mutation: {
-    deleteUser: and(verifyUser, isAdmin),
+    deleteUser: chain(verifyUser, isAdmin),
   },
   User: allow,
 };

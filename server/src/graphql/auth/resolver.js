@@ -2,6 +2,17 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import config from '../../config';
 
+const jwtSign = payload =>
+  new Promise((resolve, reject) => {
+    jwt.sign(payload, config.secretUser, (err, token) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(token);
+      }
+    });
+  });
+
 const signup = async (_, { input }, { prisma }) => {
   const hash = await argon2.hash(input.password);
 
@@ -11,11 +22,12 @@ const signup = async (_, { input }, { prisma }) => {
     role: 'MEMBER',
   };
 
-  const { id } = await prisma.createUser(create);
+  const { id, role } = await prisma.createUser(create);
+  const token = await jwtSign({ id, role });
 
   return {
     id,
-    token: jwt.sign({ id }, config.secretUser),
+    token,
   };
 };
 
@@ -24,12 +36,13 @@ const login = async (_, { email, password }, { prisma }) => {
     .user({ email })
     .$fragment('fragment Login on User { id role password }');
 
-  try {
-    if (!user || !argon2.verify(user.password, password)) {
-      throw new Error('Invalid credentials');
-    }
-  } catch (e) {
-    throw new Error('Internal Error');
+  if (!user) {
+    throw new Error('Invalid credentials');
+  }
+
+  const isVeryfied = await argon2.verify(user.password, password);
+  if (!isVeryfied) {
+    throw new Error('Invalid credentials');
   }
 
   return {
