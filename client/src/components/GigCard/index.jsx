@@ -24,59 +24,57 @@ const GigCard = ({
     location,
     jobType,
   },
-}) => {
-  return (
-    <Card style={{ margin }} tabIndex="0">
-      <Flex>
-        <FirstRow width={isMobile ? '20' : '12%'}>
-          <Avatar src={avatarSrc} />
-        </FirstRow>
-        <SecondRow width={isMobile ? '80%' : '60%'}>
-          <Title>{title}</Title>
-          <span>
-            {jobType} | {location}
-          </span>
-        </SecondRow>
-        {!isMobile && (
-          <ThirdRow width="28%">
-            <>
-              <small style={{ marginBottom: '4px' }}>
-                {new Date(postedAt)
-                  .toDateString()
-                  .split(' ')
-                  .slice(1)
-                  .join(' ')}
-              </small>
-              <span style={{ marginBottom: '8px' }}>{projectType}</span>
-              <div>
-                {technologies.map((t, i) => (
-                  <Tech key={i}>{t}</Tech>
-                ))}
-              </div>
-            </>
-          </ThirdRow>
-        )}
-      </Flex>
-      {isMobile && (
-        <Centered>
-          <small>
-            {new Date(postedAt)
-              .toDateString()
-              .split(' ')
-              .slice(1)
-              .join(' ')}
-          </small>
-          <span style={{ marginBottom: '4px' }}>{projectType}</span>
-          <div style={{ overflow: 'hidden' }}>
-            {technologies.map((t, i) => (
-              <Tech key={i}>{t}</Tech>
-            ))}
-          </div>
-        </Centered>
+}) => (
+  <Card style={{ margin }} tabIndex="0">
+    <Flex>
+      <FirstRow width={isMobile ? '20' : '12%'}>
+        <Avatar src={avatarSrc} />
+      </FirstRow>
+      <SecondRow width={isMobile ? '80%' : '60%'}>
+        <Title>{title}</Title>
+        <span>
+          {jobType} | {location}
+        </span>
+      </SecondRow>
+      {!isMobile && (
+        <ThirdRow width="28%">
+          <>
+            <small style={{ marginBottom: '4px' }}>
+              {new Date(postedAt)
+                .toDateString()
+                .split(' ')
+                .slice(1)
+                .join(' ')}
+            </small>
+            <span style={{ marginBottom: '8px' }}>{projectType}</span>
+            <div>
+              {technologies.map((t, i) => (
+                <Tech key={i}>{t}</Tech>
+              ))}
+            </div>
+          </>
+        </ThirdRow>
       )}
-    </Card>
-  );
-};
+    </Flex>
+    {isMobile && (
+      <Centered>
+        <small>
+          {new Date(postedAt)
+            .toDateString()
+            .split(' ')
+            .slice(1)
+            .join(' ')}
+        </small>
+        <span style={{ marginBottom: '4px' }}>{projectType}</span>
+        <div style={{ overflow: 'hidden' }}>
+          {technologies.map((t, i) => (
+            <Tech key={i}>{t}</Tech>
+          ))}
+        </div>
+      </Centered>
+    )}
+  </Card>
+);
 
 GigCard.propTypes = {
   margin: PropTypes.string,
@@ -89,12 +87,15 @@ GigCard.propTypes = {
     projectType: PropTypes.string.isRequired,
     jobType: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
 };
 
 GigCard.defaultProps = {
   margin: '0px',
   isMobile: false,
+  gig: {
+    technologies: [],
+  },
 };
 
 export default GigCard;
