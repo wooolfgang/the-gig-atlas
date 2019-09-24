@@ -7,6 +7,7 @@ export const color = {
 
   /* secondary colors */
   s1: '#183DBD',
+  s2: '#2684FF',
 
   /* dark colors from darkest to lightest */
   d1: '#000000',
@@ -37,13 +38,13 @@ export const InputStyles = css`
     props.selected &&
     `
     outline: 0;
-    border: 1px solid ${props.theme.color.s1};
+    border: 1px solid ${props.theme.color.s2};
   `}
 
   :hover,
   :focus {
     outline: 0;
-    border: 1px solid ${props => props.theme.color.s1};
+    border: 1px solid ${props => props.theme.color.s2};
   }
 `;
 
