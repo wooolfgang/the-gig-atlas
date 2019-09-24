@@ -47,7 +47,7 @@ export const GigDetailsSchema = Yup.object().shape({
     .required('Title is required'),
   description: Yup.string()
     .min(2, 'Minimum of two characters')
-    .max(2000, 'Maximum limit for description')
+    .max(20000, 'Maximum limit for description')
     .required('Description is required'),
   projectType: Yup.string().required('Project Type is required'),
   technologies: Yup.array()
@@ -133,22 +133,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
           <Field
             label="Technologies"
             name="technologies"
-            type="select"
-            multiple
-            options={[
-              {
-                title: 'ReactJS',
-                value: 'reactjs',
-              },
-              {
-                title: 'NodeJS',
-                value: 'nodejs',
-              },
-              {
-                title: 'Ruby On Rails',
-                value: 'ruby-on-rails',
-              },
-            ]}
+            type="asyncselect"
             component={CustomField}
           />
           <Field
@@ -281,7 +266,10 @@ const FormGigDetails = ({ next }) => {
       onSubmit={values => {
         client.writeData({
           data: {
-            gigDetails: { ...values, __typename: 'gigDetails' },
+            gigDetails: {
+              ...values,
+              __typename: 'gigDetails',
+            },
           },
         });
         /* A little bit weird, but without setTimeout writing to cache doesn't get continued */
