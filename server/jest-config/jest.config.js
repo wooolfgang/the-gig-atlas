@@ -132,9 +132,8 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: config.isConnectionJump
-    ? 'node'
-    : './jest-config/custom-envi-babel.js',
+  testEnvironment:
+    config.env === 'test' ? './jest-config/custom-envi-babel.js' : 'node',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

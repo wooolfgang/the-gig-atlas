@@ -12,7 +12,8 @@ class CustomEnvironment extends NodeEnvironment {
     const port = config.app.port;
     const app = await createApp();
     // eslint-disable-next-line prettier/prettier
-    this.server = app.listen(port, () => console.log(`Test App Live! http://localhost:${port}/`));
+    this.server = app.listen(port, () => console.log(`Server Open! http://localhost:${port}/`));
+    this.server.on('close', () => console.log('Server closed'));
   }
 
   async teardown() {
