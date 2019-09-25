@@ -1,28 +1,26 @@
-
-type Admin  {
+type User {
   id: ID! @id
-  email: String! @unique
   name: String!
+  email: String! @unique
   password: String!
+  role: UserRole!
   createdAt: DateTime! @createdAt
+  
+  asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE)
 }
 
-type Freelanceer {
-  id: ID! @id
-  name: String!
-  email: String! @unique
-  createdAt: DateTime! @createdAt
+enum UserRole {
+  ADMIN
+  MEMBER
 }
 
 type Employer {
   id: ID! @id
-  name: String!
-  email: String! @unique
-  createdAt: DateTime! @createdAt
-
+  asUser: User! @unique @relation(name: "AsEmployer")
   employerType: EmployerType!
   gigs: [Gig]! @relation(name: "GigsOfEmployer", onDelete: CASCADE)
 }
+
 
 enum EmployerType {
   PERSONAL
