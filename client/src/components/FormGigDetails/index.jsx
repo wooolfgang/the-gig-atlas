@@ -244,7 +244,9 @@ FormContainer.defaultProps = {
 };
 
 const FormGigDetails = ({ next }) => {
-  const { data, loading, client } = useQuery(GET_GIG_DETAILS);
+  const { data, loading, client } = useQuery(GET_GIG_DETAILS, {
+    fetchPolicy: 'cache-first',
+  });
   if (loading) return <FormContainer loading={loading} />;
   return (
     <FormContainer

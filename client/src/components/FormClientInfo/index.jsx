@@ -42,6 +42,7 @@ export const ClientInfoSchema = Yup.object().shape({
       .url('Please input proper website url')
       .required('Website url is required'),
   }),
+  avatarId: Yup.string().required('Avatar is required'),
 });
 
 export const GET_CLIENT_INFO = gql`
@@ -56,6 +57,7 @@ export const GET_CLIENT_INFO = gql`
       communicationType
       communicationEmail
       communicationWebsite
+      avatarId
     }
   }
 `;
@@ -94,6 +96,13 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
             type="text"
             label="Email"
             help="Your email will be used to login your personal account, and will not be shown in our listings"
+            component={CustomField}
+          />
+          <Field
+            name="avatarId"
+            label="Company/Personal Avatar"
+            help="Your avatar will be shown in your gig posting"
+            type="avatarupload"
             component={CustomField}
           />
           <Field
@@ -209,7 +218,9 @@ FormContainer.defaultProps = {
 };
 
 const FormClientInfo = ({ back, next }) => {
-  const { data, loading, client } = useQuery(GET_CLIENT_INFO);
+  const { data, loading, client } = useQuery(GET_CLIENT_INFO, {
+    fetchPolicy: 'cache-first',
+  });
   if (loading) return <FormContainer loading />;
   return (
     <FormContainer
@@ -226,6 +237,7 @@ const FormClientInfo = ({ back, next }) => {
               communicationType: '',
               communicationEmail: '',
               communicationWebsite: '',
+              avatarId: null,
             }
       }
       back={back}

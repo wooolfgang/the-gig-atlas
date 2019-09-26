@@ -7,6 +7,7 @@ import CustomField from '../CustomField';
 import { Price, Next, Back } from '../FormGigDetails/style';
 import { GET_GIG_DETAILS, GigDetailsSchema } from '../FormGigDetails';
 import { GET_CLIENT_INFO, ClientInfoSchema } from '../FormClientInfo';
+import { GET_IMAGE } from '../AvatarUpload';
 import Spinner from '../../primitives/Spinner';
 import GigCard from '../GigCard';
 
@@ -28,8 +29,16 @@ const CreditCardSchema = Yup.object().shape({
 
 const FormPurchase = ({ back, next }) => {
   const [isSubmitting, setSubmitting] = useState(false);
-  const { data: gigData, loading } = useQuery(GET_GIG_DETAILS);
-  const { data: clientData } = useQuery(GET_CLIENT_INFO);
+  const { data: gigData, loading } = useQuery(GET_GIG_DETAILS, {
+    fetchPolicy: 'cache-first',
+  });
+  const { data: clientData } = useQuery(GET_CLIENT_INFO, {
+    fetchPolicy: 'cache-first',
+  });
+  const { data: image, loading: loading3 } = useQuery(GET_IMAGE, {
+    variables: { id: clientData && clientData.clientInfo.avatarId },
+    fetchPolicy: 'cache-first',
+  });
   return (
     <Formik
       enableReinitialize
@@ -102,7 +111,14 @@ const FormPurchase = ({ back, next }) => {
             {loading ? (
               <Spinner />
             ) : (
-              <GigCard gig={gigData && gigData.gigDetails} />
+              <GigCard
+                gig={
+                  gigData && {
+                    ...gigData.gigDetails,
+                    avatarSrc: image && image.file.url,
+                  }
+                }
+              />
             )}
           </div>
           <p>
@@ -132,7 +148,7 @@ const FormPurchase = ({ back, next }) => {
                 />
               </Back>
               <Next type="submit">
-                <span style={{ marginRight: '5px' }}>Preview your post </span>
+                <span style={{ marginRight: '5px' }}>Publish </span>
                 {isSubmitting ? (
                   <Spinner />
                 ) : (
