@@ -1,4 +1,6 @@
 scalar Date
+scalar Upload
+scalar DateTime
 
 # import Queries.*, Mutations.*, * from './user/schema.graphql'
 # import Queries.*, Mutations.*, * from './user/admin/schema.graphql'
@@ -6,3 +8,4 @@ scalar Date
 # import Queries.*, Mutations.*, * from './user/employer/schema.graphql'
 # import Queries.*, Mutations.*, * from './user/freelancer/schema.graphql'
 # import Queries.*, Mutations.*, * from './gig/schema.graphql'
+# import Queries.*, Mutations.*, * from './file/schema.graphql'
