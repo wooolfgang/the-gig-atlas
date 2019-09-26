@@ -61,3 +61,12 @@ enum ProjectType {
   CONSULTING
   TESTING
 }
+
+type File {
+  id: ID! @id
+  createdAt: DateTime! @createdAt 
+  updatedAt: DateTime! @updatedAt
+  name: String
+  contentType: String
+  url: String
+}

@@ -7,14 +7,26 @@ import dotenv from 'dotenv';
 // loads secret .env variables
 dotenv.config();
 
-// eslint-disable-next-line object-curly-newline
-const { NODE_ENV, ADMIN_SECRET, EMPLOYER_SECRET, CLIENT_URL } = process.env;
+const {
+  NODE_ENV,
+  ADMIN_SECRET,
+  EMPLOYER_SECRET,
+  CLIENT_URL,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+} = process.env;
 
 const fromEnv = {
   env: NODE_ENV,
   adminSecret: ADMIN_SECRET,
   employerSecret: EMPLOYER_SECRET,
   clientUrl: CLIENT_URL,
+  cloudinary: {
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
+  },
 };
 
 const dev = {
@@ -23,7 +35,7 @@ const dev = {
     morgan: 'dev',
   },
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: 'http://localhost:3000',
     credentials: true,
   },
   hasGraphiQl: true,
@@ -59,7 +71,7 @@ const staging = {
 const production = {
   // to be filled
   cors: {
-    origin: [CLIENT_URL],
+    origin: CLIENT_URL,
     credentials: true,
   },
 };
@@ -72,8 +84,10 @@ const config = {
 };
 
 if (!config[NODE_ENV]) {
-  // eslint-disable-next-line prettier/prettier
-  throw new Error(`Config Error, NODE_ENV="${NODE_ENV}", [dev|staging|production|test]`);
+  throw new Error(
+    // eslint-disable-next-line prettier/prettier
+    `Config Error, NODE_ENV="${NODE_ENV}", [dev|staging|production|test]`,
+  );
   // eslint-disable-next-line no-unreachable
   process.exit(1);
 }
