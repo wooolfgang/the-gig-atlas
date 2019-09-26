@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { GET_CLIENT_INFO } from '../FormClientInfo';
 import { GET_GIG_DETAILS } from '../FormGigDetails';
+import { GET_IMAGE } from '../AvatarUpload';
 import Spinner from '../../primitives/Spinner';
 import { Back, Next, Price } from '../FormGigDetails/style';
 import Gig from '../Gig';
@@ -15,8 +16,16 @@ const GigContainer = styled.div`
 `;
 
 const FormPreviewGig = ({ back, next }) => {
-  const { data: client, loading: loading1 } = useQuery(GET_CLIENT_INFO);
-  const { data: gig, loading: loading2 } = useQuery(GET_GIG_DETAILS);
+  const { data: client, loading: loading1 } = useQuery(GET_CLIENT_INFO, {
+    fetchPolicy: 'cache-first',
+  });
+  const { data: gig, loading: loading2 } = useQuery(GET_GIG_DETAILS, {
+    fetchPolicy: 'cache-first',
+  });
+  const { data: image, loading: loading3 } = useQuery(GET_IMAGE, {
+    variables: { id: client && client.clientInfo.avatarId },
+    fetchPolicy: 'cache-first',
+  });
   if (loading1 || loading2) {
     return (
       <>
@@ -29,11 +38,20 @@ const FormPreviewGig = ({ back, next }) => {
     <div>
       <h2> See how people will see your post</h2>
       <GigContainer>
-        <Gig
-          client={client && client.clientInfo}
-          gig={gig && gig.gigDetails}
-          preview
-        />
+        {loading3 ? (
+          <Spinner />
+        ) : (
+          <Gig
+            client={
+              client && {
+                ...client.clientInfo,
+                avatarSrc: image && image.file.url,
+              }
+            }
+            gig={gig && gig.gigDetails}
+            preview
+          />
+        )}
       </GigContainer>
       <div
         style={{

@@ -75,7 +75,7 @@ MediaProvider.propTypes = {
 };
 
 MediaProvider.defaultProps = {
-  value: false,
+  value: null,
 };
 
 const MediaConsumer = MediaContext.Consumer;

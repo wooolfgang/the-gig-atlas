@@ -4,6 +4,7 @@ import RadioCards from '../RadioCards';
 import RadioGroups from '../RadioButtons';
 import Select from '../Select';
 import AsyncCreatableSelect from '../AsyncCreatableSelect';
+import AvatarUpload from '../AvatarUpload';
 import {
   Textarea,
   Input,
@@ -33,6 +34,8 @@ const CustomField = ({
     InputComponent = Select;
   } else if (type === 'asyncselect') {
     InputComponent = AsyncCreatableSelect;
+  } else if (type === 'avatarupload') {
+    InputComponent = AvatarUpload;
   } else {
     InputComponent = Input;
   }
