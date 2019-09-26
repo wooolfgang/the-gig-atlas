@@ -7,16 +7,17 @@
   "license": "MIT",
   "scripts": {
     "build": "babel --root-mode upward src --out-dir lib",
-    "dev": "NODE_ENV=dev nodemon --exec node babel-register.js",
+    "dev": "set NODE_ENV=dev nodemon --exec node babel-register.js",
     "lint": "eslint -c .eslintrc ./",
-    "test": "NODE_ENV=test jest",
-    "test:watch": "NODE_ENV=dev jest --watch",
-    "seed:admin": "NODE_ENV=dev node ./prisma/seed/index.js admin",
+    "test": "set NODE_ENV=test&&yarn jest",
+    "test:watch": "set NODE_ENV=dev jest --watch",
+    "seed:admin": "sest NODE_ENV=dev node ./prisma/seed/index.js admin",
     "seed": "yarn run seed:admin"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
+    "@babel/register": "^7.6.2",
     "@types/argon2": "^0.15.0",
     "@types/axios": "^0.14.0",
     "@types/express": "^4.17.1",

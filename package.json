@@ -17,6 +17,7 @@
     "@babel/register": "^7.6.0",
     "@types/jest": "^24.0.18",
     "babel-jest": "^24.9.0",
+    "commitizen": "^4.0.3",
     "cz-conventional-changelog": "3.0.2",
     "eslint": "6.1.0",
     "eslint-config-airbnb": "18.0.1",
@@ -37,5 +38,10 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "workspaces": [
+    "common",
+    "server",
+    "client"
+  ]
 }
