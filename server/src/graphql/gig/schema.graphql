@@ -18,7 +18,7 @@ type Gig {
   minFee: Float!
   maxFee: Float!
   jobType: JobType!
-  locatioRestriction: String
+  locationRestriction: String
   employer: Employer!
 }
 
@@ -49,6 +49,6 @@ input GigInput {
   minFee: Float!
   maxFee: Float!
   jobType: JobType!
-  locatioRestriction: String
+  locationRestriction: String
 }
 

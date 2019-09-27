@@ -5,6 +5,6 @@ module.exports = {
     devtools: true,
   },
   server: {
-    command: 'NODE_ENV=test node babel-register.js',
+    command: 'node babel-register.js',
   },
 };

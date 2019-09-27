@@ -11,7 +11,7 @@ export default {
       // check if user is already an emplyer
       const exist = await prisma.user({ id: user.id }).asEmployer();
       if (exist) {
-        throw new Error('Aldready an Employer');
+        throw new Error('Already an Employer');
       }
 
       let create = input;
