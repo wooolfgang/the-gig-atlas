@@ -12,4 +12,9 @@ lib/
 generated/
 privates/
 src/generated/
+<<<<<<< HEAD
 .vscode
+=======
+# all files/dirs with prefix _
+_**
+>>>>>>> 6ed35fbbd0ccd98d2b052347762aef51f77f2325

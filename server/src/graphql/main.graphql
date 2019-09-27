@@ -1,0 +1,6 @@
+scalar Date
+
+# import Queries.*, Mutations.*, * from './user/schema.graphql'
+# import Queries.*, Mutations.*, * from './auth/schema.graphql'
+# import Queries.*, Mutations.*, * from './employer/schema.graphql'
+# import Queries.*, Mutations.*, * from './gig/schema.graphql'

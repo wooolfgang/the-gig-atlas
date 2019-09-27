@@ -1,20 +1,21 @@
-# type Query {
-#   User(id: ID!): User
-#   users: [User]!
-# }
+type Query {
+  user: User!
+}
 
-# type Mutation {
-#  updateUser(id: ID, name: String): User
-# }
+type Mutation {
+  deleteUser(id: ID!): Boolean!
+}
 
-interface User {
+type User {
   id: ID
-  name: String!
-  email: String!
+  name: String
+  email: String
+  asEmployer: Employer
+  role: UserRole
   createdAt: Date
 }
 
-type AuthPayload {
-  token: String!
-  id: ID!
+enum UserRole {
+  ADMIN
+  MEMBER
 }
