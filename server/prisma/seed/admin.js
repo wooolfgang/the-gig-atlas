@@ -17,7 +17,8 @@ export default async () => {
     const hash = await argon2.hash(admin.password);
 
     const newAdmin = {
-      name: 'admin',
+      firstName: 'Mr.',
+      lastName: 'Admin',
       email: admin.email,
       password: hash,
       role: 'ADMIN',

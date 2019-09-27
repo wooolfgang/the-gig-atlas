@@ -29,7 +29,7 @@ const middleware = graphHttp(req => ({
   schema,
   context: { req, config, prisma },
   graphiql: !!config.hasGraphiQl,
-  // customFormatErrorFn: config.gqlDebugger,
+  customFormatErrorFn: config.gqlDebugger,
 }));
 
 export default middleware;
