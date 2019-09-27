@@ -24,6 +24,9 @@ const {
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
   CLIENT_URL,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
 } = process.env;
 
 const fromEnv = {
@@ -35,6 +38,11 @@ const fromEnv = {
     password: ADMIN_PASSWORD,
   },
   clientUrl: CLIENT_URL,
+  cloudinary: {
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
+  },
 };
 
 const dev = {
@@ -44,16 +52,16 @@ const dev = {
   },
   testUrl: 'http://localhost:8080/gql',
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: 'http://localhost:3000',
     credentials: true,
   },
   hasGraphiQl: true,
   hasDebug: true,
   gqlDebugger: error => {
     // eslint-disable-next-line no-console
-    console.log('\n----------------------------->')
+    console.log('\n----------------------------->');
     console.log(error);
-    console.log('------------------------------->')
+    console.log('------------------------------->');
 
     return {
       message: error.message,
@@ -80,7 +88,7 @@ const staging = {
 
 const production = {
   cors: {
-    origin: [CLIENT_URL],
+    origin: CLIENT_URL,
     credentials: true,
   },
 };
