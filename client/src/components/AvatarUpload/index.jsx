@@ -1,29 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { gql } from 'apollo-boost';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import Spinner from '../../primitives/Spinner';
 import { Avatar, UploadImage } from './style';
-
-export const GET_IMAGE = gql`
-  query GET_IMAGE($id: ID!) {
-    file(id: $id) {
-      id
-      name
-      url
-    }
-  }
-`;
-
-const IMAGE_UPLOAD = gql`
-  mutation IMAGE_UPLOAD($file: Upload!) {
-    uploadImage(file: $file) {
-      id
-      name
-      url
-    }
-  }
-`;
+import { GET_IMAGE, IMAGE_UPLOAD } from '../../graphql/file';
 
 const AvatarUpload = ({ onChange, name, value }) => {
   const { loading: loading1, data: getImageData } = useQuery(GET_IMAGE, {
