@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // eslint-disable-next-line import/no-extraneous-dependencies
 require('@babel/register')({
   // extends: './.babelrc',
@@ -12,6 +13,7 @@ const seeds = {
 
 process.argv.forEach((arg, i) => {
   if (i > 1) {
+    console.log('Seed on: ', arg);
     seeds[arg]();
   }
 });
