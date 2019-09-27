@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import { Input, FieldError, FieldHelp } from '../../primitives';
 import CustomField from '../CustomField';
 import { Price, Next, RateContainer } from './style';
 import Spinner from '../../primitives/Spinner';
+import { GET_GIG_DETAILS } from '../../graphql/gigForm';
 
 const FieldInputComponent = ({
   field,
@@ -63,23 +63,6 @@ export const GigDetailsSchema = Yup.object().shape({
     .required('Minimum rate is required'),
   locationAndTimezone: Yup.string(),
 });
-
-export const GET_GIG_DETAILS = gql`
-  {
-    gigDetails @client {
-      title
-      description
-      projectType
-      technologies
-      paymentType
-      minRate
-      maxRate
-      jobType
-      locationAndTimezone
-    }
-  }
-`;
-
 const FormContainer = ({ initialValues, loading, onSubmit }) => (
   <>
     {loading && (

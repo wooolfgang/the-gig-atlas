@@ -5,11 +5,12 @@ import { useQuery } from '@apollo/react-hooks';
 import * as Yup from 'yup';
 import CustomField from '../CustomField';
 import { Price, Next, Back } from '../FormGigDetails/style';
-import { GET_GIG_DETAILS, GigDetailsSchema } from '../FormGigDetails';
-import { GET_CLIENT_INFO, ClientInfoSchema } from '../FormClientInfo';
-import { GET_IMAGE } from '../AvatarUpload';
+import { GigDetailsSchema } from '../FormGigDetails';
+import { ClientInfoSchema } from '../FormClientInfo';
+import { GET_IMAGE } from '../../graphql/file';
 import Spinner from '../../primitives/Spinner';
 import GigCard from '../GigCard';
+import { GET_GIG_DETAILS, GET_CLIENT_INFO } from '../../graphql/gigForm';
 
 const CreditCardSchema = Yup.object().shape({
   fullName: Yup.string('Full name must be a string').required(

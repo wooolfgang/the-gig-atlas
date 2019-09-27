@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Form, Field } from 'formik';
-import { gql } from 'apollo-boost';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/react-hooks';
 import CustomField from '../CustomField';
 import { Back, Next, Price } from '../FormGigDetails/style';
 import Spinner from '../../primitives/Spinner';
+import { GET_CLIENT_INFO } from '../../graphql/gigForm';
 
 export const ClientInfoSchema = Yup.object().shape({
   firstName: Yup.string('First Name must be a string').required(
@@ -44,23 +44,6 @@ export const ClientInfoSchema = Yup.object().shape({
   }),
   avatarId: Yup.string().required('Avatar is required'),
 });
-
-export const GET_CLIENT_INFO = gql`
-  {
-    clientInfo @client {
-      firstName
-      lastName
-      email
-      companyName
-      companyDescription
-      website
-      communicationType
-      communicationEmail
-      communicationWebsite
-      avatarId
-    }
-  }
-`;
 
 const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
   <>

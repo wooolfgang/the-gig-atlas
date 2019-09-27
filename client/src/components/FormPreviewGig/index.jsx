@@ -2,12 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import { GET_CLIENT_INFO } from '../FormClientInfo';
-import { GET_GIG_DETAILS } from '../FormGigDetails';
-import { GET_IMAGE } from '../AvatarUpload';
+import { GET_IMAGE } from '../../graphql/file';
 import Spinner from '../../primitives/Spinner';
 import { Back, Next, Price } from '../FormGigDetails/style';
 import Gig from '../Gig';
+import { GET_CLIENT_INFO, GET_GIG_DETAILS } from '../../graphql/gigForm';
 
 const GigContainer = styled.div`
   background: ${props => props.theme.color.d6};
