@@ -4,12 +4,12 @@ export default {
   Query: {
     user: (_, _args, { prisma, user: { id } }, info) => {
       const fragment = createFragment(info, 'ToUser', 'User');
+
       return prisma.user({ id }).$fragment(fragment);
     },
   },
   Mutation: {
-    deleteUser: async (_, { id }, { prisma, user }) => {
-      console.log('here on delete user: ', id, user);
+    deleteUser: async (_, { id }, { prisma }) => {
       const res = await prisma.deleteUser({ id });
 
       return !!res;

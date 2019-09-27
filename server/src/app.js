@@ -15,7 +15,7 @@ async function createApp() {
     .use(
       '/gql',
       graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
-      gqlMiddleware
+      gqlMiddleware,
     );
 
   return app;
