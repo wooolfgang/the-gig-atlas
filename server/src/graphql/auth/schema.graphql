@@ -5,8 +5,9 @@ type Mutation {
 
 input SignupInput {
   email: String!
-  name: String!
-  password: String!
+  firstName: String!
+  lastName: String!
+  password: String
 }
 
 type AuthPayload {

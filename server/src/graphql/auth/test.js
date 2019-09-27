@@ -5,7 +5,8 @@ import { prisma } from '../../generated/prisma-client';
 const { testUrl, admin } = config;
 const input = {
   email: 'john@gmail.com',
-  name: 'John Doe',
+  firstName: 'John',
+  lastName: 'Doe',
   password: 'mamam0',
 };
 
