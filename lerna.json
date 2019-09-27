@@ -1,14 +1,16 @@
 {
   "packages": [
     "server",
-    "client"
+    "client",
+    "common"
   ],
+  "npmClient": "yarn",
   "version": "0.0.0",
   "command": {
     "bootstrap": {
-      "npmClient": "yarn",
-      "npmClientArgs": []
+      "npmClientArgs": [],
+      "useWorkspaces": true
     }
   },
-  "useWorkspaced": true
+  "useWorkspaces": true
 }

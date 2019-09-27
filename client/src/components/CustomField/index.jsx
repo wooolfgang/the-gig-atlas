@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import RadioCards from '../RadioCards';
 import RadioGroups from '../RadioButtons';
 import Select from '../Select';
+import AsyncCreatableSelect from '../AsyncCreatableSelect';
+import AvatarUpload from '../AvatarUpload';
 import {
   Textarea,
   Input,
@@ -30,6 +32,10 @@ const CustomField = ({
     InputComponent = RadioGroups;
   } else if (type === 'select') {
     InputComponent = Select;
+  } else if (type === 'asyncselect') {
+    InputComponent = AsyncCreatableSelect;
+  } else if (type === 'avatarupload') {
+    InputComponent = AvatarUpload;
   } else {
     InputComponent = Input;
   }
