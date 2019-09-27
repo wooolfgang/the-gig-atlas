@@ -1,7 +1,7 @@
 import { allow } from 'graphql-shield';
 import common from '@shared/common';
 // import * as yup from 'yup';
-import { validate } from './rules';
+import { validate } from '../utils/rules';
 
 export default {
   Mutation: {
