@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * guide source: https://codingsans.com/blog/node-config-best-practices
  * /
@@ -57,7 +58,6 @@ const dev = {
   hasGraphiQl: true,
   hasDebug: true,
   gqlDebugger: error => {
-    // eslint-disable-next-line no-console
     console.log('\n----------------------------->');
     console.log(error);
     console.log('------------------------------->');
