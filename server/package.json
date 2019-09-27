@@ -7,11 +7,11 @@
   "license": "MIT",
   "scripts": {
     "build": "babel --root-mode upward src --out-dir lib",
-    "dev": "set NODE_ENV=dev nodemon --exec node babel-register.js",
+    "dev": "NODE_ENV=dev nodemon --exec node babel-register.js",
     "lint": "eslint -c .eslintrc ./",
-    "test": "set NODE_ENV=test&&yarn jest",
-    "test:watch": "set NODE_ENV=dev jest --watch",
-    "seed:admin": "sest NODE_ENV=dev node ./prisma/seed/index.js admin",
+    "test": "NODE_ENV=test yarn jest",
+    "test:watch": "NODE_ENV=dev jest --watch",
+    "seed:admin": "NODE_ENV=dev node ./prisma/seed/index.js admin",
     "seed": "yarn run seed:admin",
     "compose:dev": "sudo docker-compose --file prisma/docker-compose.yml up -d",
     "prisma:apply": "prisma deploy --force"
