@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
+import uuidv4 from 'uuid/v4';
 import config from '../../config';
 
 const jwtSign = payload =>
@@ -14,7 +15,9 @@ const jwtSign = payload =>
   });
 
 const signup = async (_, { input }, { prisma }) => {
-  const hash = await argon2.hash(input.password);
+  /* Create random generated password if password does not exist */
+  const password = input.password || uuidv4();
+  const hash = await argon2.hash(password);
 
   const create = {
     ...input,
