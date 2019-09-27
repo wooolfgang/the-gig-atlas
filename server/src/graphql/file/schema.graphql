@@ -1,0 +1,16 @@
+type Mutation {
+  uploadImage (file: Upload!): File!
+}
+
+type Query {
+  file (id: ID!): File!
+}
+
+type File {
+  id: ID!
+  name: String
+  contentType: String
+  url: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
