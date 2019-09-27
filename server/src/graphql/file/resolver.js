@@ -21,13 +21,13 @@ export default {
   Mutation: {
     uploadImage: async (root, args, { prisma }, info) => {
       const file = await args.file;
-      const { name, type } = file;
+      const { filename, type } = file;
       const res = await promisifiedCloudinaryUpload(file);
       const { url } = res;
       return prisma.createFile(
         {
           url,
-          name,
+          name: filename,
           type,
         },
         info

@@ -48,7 +48,7 @@ export default withApollo(
           </style>
           <GlobalStyle />
           <ThemeProvider theme={theme}>
-            <MediaProvider value={isMobile && { isMobile }}>
+            <MediaProvider value={{ isMobile }}>
               <Component {...pageProps} />
             </MediaProvider>
           </ThemeProvider>
