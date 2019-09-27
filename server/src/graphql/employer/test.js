@@ -5,7 +5,8 @@ import { prisma } from '../../generated/prisma-client';
 const { testUrl } = config;
 
 const userInput = {
-  name: 'nico',
+  firstName: 'nico',
+  lastName: 'ool',
   email: 'nico@gmail.com',
   password: 'asdfksdfjs;ldjfksadf',
 };
@@ -94,7 +95,8 @@ describe('Employer crud operation', () => {
         query: `
           query {
             user {
-              name
+              firstName
+              lastName
               email
               asEmployer {
                 id
@@ -137,6 +139,6 @@ describe('Employer crud operation', () => {
       },
       { headers: { Authorization: token } },
     );
-    expect(res.data.errors[0].message).toBe('Aldready an Employer');
+    expect(res.data.errors[0].message).toBe('Already an Employer');
   });
 });

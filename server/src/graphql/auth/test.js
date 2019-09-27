@@ -5,7 +5,8 @@ import { prisma } from '../../generated/prisma-client';
 const { testUrl, admin } = config;
 const input = {
   email: 'john@gmail.com',
-  name: 'John Doe',
+  firstName: 'John',
+  lastName: 'Doe',
   password: 'mamam0',
 };
 
@@ -101,5 +102,29 @@ describe('basic signup', () => {
     );
 
     expect(delRes.data.data.deleteUser).toBe(true);
+  });
+
+  it('generates random password if no password is inputted', async () => {
+    const res = await axios.post(testUrl, {
+      query: `
+        mutation Test($input: SignupInput!) {
+          signup(input: $input) {
+            id
+            token
+          }
+        }
+      `,
+      variables: {
+        email: '123@gmail.com',
+        firstName: 'One',
+        lastName: 'Two',
+      },
+    });
+
+    const signup = res.data.data.signup;
+
+    const user = await prisma.user({ id: signup.id });
+    expect(user.password).toBeTruthy();
+    expect(signup.token).toBeTruthy();
   });
 });
