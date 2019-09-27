@@ -34,6 +34,7 @@ function create(initialState, { getToken }) {
       headers: { authorization: `Bearer ${token}` },
     }),
     cache,
+    resolvers: {},
   });
 }
 

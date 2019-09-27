@@ -1,20 +1,48 @@
 /**
  * guide source: https://codingsans.com/blog/node-config-best-practices
+ * /
+ * IMPORTANT: import config before prisma in order to load variables
  */
 
 import dotenv from 'dotenv';
-
-// loads secret .env variables
+// loads .env variables
 dotenv.config();
 
-// eslint-disable-next-line object-curly-newline
-const { NODE_ENV, ADMIN_SECRET, EMPLOYER_SECRET, CLIENT_URL } = process.env;
+/**
+ * @todo set prisma binding after lib error is fixed
+ */
+// const prisma = Prisma({
+//   typeDefs: `${__dirname}/graphql/main.graphql`,
+//   endpoint: 'http://localhost:4466',
+//   secret: SECRET_PRISMA,
+// });
+
+const {
+  NODE_ENV,
+  SECRET_PRISMA,
+  SECRET_USER,
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
+  CLIENT_URL,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+} = process.env;
 
 const fromEnv = {
   env: NODE_ENV,
-  adminSecret: ADMIN_SECRET,
-  employerSecret: EMPLOYER_SECRET,
+  secretPrisma: SECRET_PRISMA,
+  secretUser: SECRET_USER,
+  admin: {
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASSWORD,
+  },
   clientUrl: CLIENT_URL,
+  cloudinary: {
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
+  },
 };
 
 const dev = {
@@ -22,15 +50,18 @@ const dev = {
     port: 8080,
     morgan: 'dev',
   },
+  testUrl: 'http://localhost:8080/gql',
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: 'http://localhost:3000',
     credentials: true,
   },
   hasGraphiQl: true,
   hasDebug: true,
   gqlDebugger: error => {
     // eslint-disable-next-line no-console
+    console.log('\n----------------------------->');
     console.log(error);
+    console.log('------------------------------->');
 
     return {
       message: error.message,
@@ -47,8 +78,7 @@ const test = {
     port: 7070,
     morgan: 'dev',
   },
-  testUrl: 'http://localhost:8080/gql',
-  isConnectionJump: true,
+  testUrl: 'http://localhost:7070/gql',
   hasDebug: true,
 };
 
@@ -57,9 +87,8 @@ const staging = {
 };
 
 const production = {
-  // to be filled
   cors: {
-    origin: [CLIENT_URL],
+    origin: CLIENT_URL,
     credentials: true,
   },
 };
@@ -73,7 +102,7 @@ const config = {
 
 if (!config[NODE_ENV]) {
   // eslint-disable-next-line prettier/prettier
-  throw new Error(`Config Error, NODE_ENV="${NODE_ENV}", [dev|staging|production|test]`);
+  throw new Error(`Config Error, NODE_ENV="${NODE_ENV}", dev|staging|production|test`);
   // eslint-disable-next-line no-unreachable
   process.exit(1);
 }

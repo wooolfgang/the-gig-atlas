@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import { Input, FieldError, FieldHelp } from '../../primitives';
 import CustomField from '../CustomField';
 import { Price, Next, RateContainer } from './style';
 import Spinner from '../../primitives/Spinner';
+import { GET_GIG_DETAILS } from '../../graphql/gigForm';
 
 const FieldInputComponent = ({
   field,
@@ -47,7 +47,7 @@ export const GigDetailsSchema = Yup.object().shape({
     .required('Title is required'),
   description: Yup.string()
     .min(2, 'Minimum of two characters')
-    .max(2000, 'Maximum limit for description')
+    .max(20000, 'Maximum limit for description')
     .required('Description is required'),
   projectType: Yup.string().required('Project Type is required'),
   technologies: Yup.array()
@@ -63,23 +63,6 @@ export const GigDetailsSchema = Yup.object().shape({
     .required('Minimum rate is required'),
   locationAndTimezone: Yup.string(),
 });
-
-export const GET_GIG_DETAILS = gql`
-  {
-    gigDetails @client {
-      title
-      description
-      projectType
-      technologies
-      paymentType
-      minRate
-      maxRate
-      jobType
-      locationAndTimezone
-    }
-  }
-`;
-
 const FormContainer = ({ initialValues, loading, onSubmit }) => (
   <>
     {loading && (
@@ -133,22 +116,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
           <Field
             label="Technologies"
             name="technologies"
-            type="select"
-            multiple
-            options={[
-              {
-                title: 'ReactJS',
-                value: 'reactjs',
-              },
-              {
-                title: 'NodeJS',
-                value: 'nodejs',
-              },
-              {
-                title: 'Ruby On Rails',
-                value: 'ruby-on-rails',
-              },
-            ]}
+            type="asyncselect"
             component={CustomField}
           />
           <Field
@@ -259,7 +227,9 @@ FormContainer.defaultProps = {
 };
 
 const FormGigDetails = ({ next }) => {
-  const { data, loading, client } = useQuery(GET_GIG_DETAILS);
+  const { data, loading, client } = useQuery(GET_GIG_DETAILS, {
+    fetchPolicy: 'cache-first',
+  });
   if (loading) return <FormContainer loading={loading} />;
   return (
     <FormContainer
@@ -281,7 +251,10 @@ const FormGigDetails = ({ next }) => {
       onSubmit={values => {
         client.writeData({
           data: {
-            gigDetails: { ...values, __typename: 'gigDetails' },
+            gigDetails: {
+              ...values,
+              __typename: 'gigDetails',
+            },
           },
         });
         /* A little bit weird, but without setTimeout writing to cache doesn't get continued */
