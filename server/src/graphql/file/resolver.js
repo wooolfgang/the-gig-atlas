@@ -12,7 +12,7 @@ const promisifiedCloudinaryUpload = file =>
           rej(err);
         }
         res(image);
-      }
+      },
     );
     createReadStream(filename).pipe(uploadStream);
   });
@@ -30,7 +30,7 @@ export default {
           name: filename,
           type,
         },
-        info
+        info,
       );
     },
   },
