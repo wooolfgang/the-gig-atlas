@@ -1,8 +1,0 @@
-# type Query {
-
-# }
-
-type Mutation {
-  adminSignup(input: AdminInput!): AuthPayload!
-  adminLogin(email: String!, password: String!): AuthPayload!
-}

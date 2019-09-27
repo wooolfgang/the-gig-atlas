@@ -11,6 +11,7 @@ const presets = [
       },
     },
   ],
+  '@babel/preset-typescript',
 ];
 
 const plugins = ['@babel/plugin-transform-modules-commonjs'];

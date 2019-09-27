@@ -12,4 +12,6 @@ lib/
 generated/
 privates/
 src/generated/
+# all files/dirs with prefix _
+_**
 .vscode
