@@ -58,9 +58,9 @@ const dev = {
   hasDebug: true,
   gqlDebugger: error => {
     // eslint-disable-next-line no-console
-    console.log('\n----------------------------->')
+    console.log('\n----------------------------->');
     console.log(error);
-    console.log('------------------------------->')
+    console.log('------------------------------->');
 
     return {
       message: error.message,

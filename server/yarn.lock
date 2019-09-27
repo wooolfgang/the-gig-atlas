@@ -4358,18 +4358,24 @@ object-keys@^1.0.11, object-keys@^1.0.12, object-keys@^1.1.1:
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 object-path@^0.11.4:
   version "0.11.4"
   resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.4.tgz#370ae752fbf37de3ea70a861c23bba8915691949"
   integrity sha1-NwrnUvvzfePqcKhhwju6iRVpGUk=
 =======
+=======
+>>>>>>> 8eac574194317ea0c12fc0de9351f164fdb0f2ba
 object-path-immutable@^3.0.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/object-path-immutable/-/object-path-immutable-3.1.1.tgz#93668def1fd70c82d8fc3aad5caf2d7dd55b97b5"
   integrity sha512-NZDdPo/DEufre4+CyYZ7j6YQnWvKWnnGS+VS7dVd9M6WNcvFfnR4mW1lmakg9eCABAeE+PZW3bN/ZUTL8063IQ==
   dependencies:
     is-plain-object "3.0.0"
+<<<<<<< HEAD
 >>>>>>> 6ed35fbbd0ccd98d2b052347762aef51f77f2325
+=======
+>>>>>>> 8eac574194317ea0c12fc0de9351f164fdb0f2ba
 
 object-visit@^1.0.0:
   version "1.0.1"
