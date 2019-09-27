@@ -10,11 +10,11 @@
     "dev": "NODE_ENV=dev nodemon --exec node babel-register.js",
     "lint": "eslint -c .eslintrc ./",
     "test": "NODE_ENV=test yarn jest",
+    "compose:dev": "sudo docker-compose --file prisma/docker-compose.yml up -d",
+    "prisma:apply": "prisma deploy --force",
     "test:watch": "NODE_ENV=dev jest --watch",
     "seed:admin": "NODE_ENV=dev node ./prisma/seed/index.js admin",
-    "seed": "yarn run seed:admin",
-    "compose:dev": "sudo docker-compose --file prisma/docker-compose.yml up -d",
-    "prisma:apply": "prisma deploy --force"
+    "seed": "yarn run seed:admin"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

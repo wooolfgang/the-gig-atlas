@@ -6,8 +6,20 @@ export const Container = styled.div`
   padding-bottom: 4rem;
 `;
 
-export const Avatar = styled.img`
-  width: 80px;
+export const Avatar = styled.div`
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  ${props =>
+    props.src &&
+    `
+      border: 1px solid ${props.theme.color.d3};
+      background: black url(${props.src}) center center no-repeat;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+    `}
 `;
 
 export const ClientContainer = styled.div`

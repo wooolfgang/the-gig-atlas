@@ -1,4 +1,5 @@
 scalar Date
+scalar Upload
 scalar DateTime
 
 # import Queries.*, Mutations.*, * from './user/schema.graphql'

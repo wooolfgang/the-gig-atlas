@@ -18,10 +18,20 @@ export const Flex = styled.div`
   display: flex;
 `;
 
-export const Avatar = styled.img`
+export const Avatar = styled.div`
   border-radius: 50%;
   width: 4em;
   height: 4em;
+  ${props =>
+    props.src &&
+    `
+      border: 1px solid ${props.theme.color.d3};
+      background: black url(${props.src}) center center no-repeat;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+    `}
 `;
 
 export const Title = styled.h4`
