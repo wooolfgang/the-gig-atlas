@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * guide source: https://codingsans.com/blog/node-config-best-practices
  * /
@@ -16,17 +17,16 @@ dotenv.config();
 //   endpoint: 'http://localhost:4466',
 //   secret: SECRET_PRISMA,
 // });
-
 const {
   NODE_ENV,
-  SECRET_PRISMA,
-  SECRET_USER,
-  ADMIN_EMAIL,
-  ADMIN_PASSWORD,
   CLIENT_URL,
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
+  SECRET_PRISMA,
+  SECRET_USER,
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
 } = process.env;
 
 const fromEnv = {
@@ -58,7 +58,6 @@ const dev = {
   hasGraphiQl: true,
   hasDebug: true,
   gqlDebugger: error => {
-    // eslint-disable-next-line no-console
     console.log('\n----------------------------->');
     console.log(error);
     console.log('------------------------------->');
@@ -66,7 +65,7 @@ const dev = {
     return {
       message: error.message,
       locations: error.locations,
-      stack: error.stack ? error.stack.split('\n') : [],
+      stack: '',
       path: error.path,
     };
   },
