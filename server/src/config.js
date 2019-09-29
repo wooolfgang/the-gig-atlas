@@ -1,8 +1,9 @@
+/* eslint-disable no-unreachable */
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-console */
 /**
- * guide source: https://codingsans.com/blog/node-config-best-practices
- * /
- * IMPORTANT: import config before prisma in order to load variables
+ * @IMPORTANT
+ *  import config before prisma in order to load variables
  */
 
 import dotenv from 'dotenv';
@@ -27,6 +28,9 @@ const {
   SECRET_USER,
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
+  ID_OAUTH_CLIENT,
+  SECRET_CLIENT_OAUTH,
+  REDIRECT_OAUTH_URI,
 } = process.env;
 
 const fromEnv = {
@@ -43,8 +47,16 @@ const fromEnv = {
     api_key: CLOUDINARY_API_KEY,
     api_secret: CLOUDINARY_API_SECRET,
   },
+  oauth: {
+    idClient: ID_OAUTH_CLIENT,
+    secretClient: SECRET_CLIENT_OAUTH,
+    redirectURI: REDIRECT_OAUTH_URI,
+  },
 };
 
+/**
+ * @DEVELOPMENT
+ */
 const dev = {
   app: {
     port: 8080,
@@ -58,9 +70,8 @@ const dev = {
   hasGraphiQl: true,
   hasDebug: true,
   gqlDebugger: error => {
-    console.log('\n----------------------------->');
+    console.log('\n');
     console.log(error);
-    console.log('------------------------------->');
 
     return {
       message: error.message,
@@ -71,9 +82,11 @@ const dev = {
   },
 };
 
+/**
+ * @TESTING
+ */
 const test = {
   app: {
-    // temporary not being used as it does not countain server debug
     port: 7070,
     morgan: 'dev',
   },
@@ -81,10 +94,16 @@ const test = {
   hasDebug: true,
 };
 
+/**
+ * @STAGING
+ */
 const staging = {
   // to be filled
 };
 
+/**
+ * @PRODUCTION
+ */
 const production = {
   cors: {
     origin: CLIENT_URL,
@@ -100,10 +119,13 @@ const config = {
 };
 
 if (!config[NODE_ENV]) {
-  // eslint-disable-next-line prettier/prettier
   throw new Error(`Config Error, NODE_ENV="${NODE_ENV}", dev|staging|production|test`);
-  // eslint-disable-next-line no-unreachable
   process.exit(1);
 }
 
 export default { ...config[NODE_ENV], ...fromEnv };
+
+/**
+ * @references
+ * guide source: https://codingsans.com/blog/node-config-best-practices
+ */
