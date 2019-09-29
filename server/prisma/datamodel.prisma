@@ -20,12 +20,24 @@ type Employer {
   asUser: User! @unique @relation(name: "AsEmployer")
   employerType: EmployerType!
   gigs: [Gig]! @relation(name: "GigsOfEmployer", onDelete: CASCADE)
+  displayName: String!
+  website: String!
+  introduction: String!
+  email: String!
+  avatar: File!
+  isCompany: Boolean @default(value: false)
+  isPrivate: Boolean @default(value: false)
 }
-
 
 enum EmployerType {
   PERSONAL
   COMPANY
+}
+
+enum GigCommunicationType {
+  EMAIL
+  WEBSITE
+  IN_APP
 }
 
 type Gig {
@@ -41,6 +53,7 @@ type Gig {
   locationRestriction: String
   employer: Employer! @relation(name: "GigsOfEmployer")
   createdAt: DateTime! @createdAt
+  communicationType: GigCommunicationType! @default(value: EMAIL)
 }
 
 enum JobType {
