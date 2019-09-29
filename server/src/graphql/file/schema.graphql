@@ -1,5 +1,6 @@
 type Mutation {
   uploadImage (file: Upload!): File!
+  createFile (file: FileInput!): File!
 }
 
 type Query {
@@ -13,4 +14,10 @@ type File {
   url: String
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+input FileInput {
+  name: String
+  contentType: String
+  url: String
 }
