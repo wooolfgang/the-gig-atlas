@@ -1,30 +1,50 @@
+/* eslint-disable import/prefer-default-export */
 import { google } from 'googleapis';
-import { oauth } from '../src/config';
+import config from '../src/config';
 
+const plus = google.plus('v1');
+const { oauth } = config;
+const oauth2Client = new google.auth.OAuth2(
+  oauth.idClient,
+  oauth.secretClient,
+  oauth.redirectURI,
+);
 const defaultScope = [
   'https://www.googleapis.com/auth/plus.me',
   'https://www.googleapis.com/auth/userinfo.email',
 ];
 
-function createConnection() {
-  return new google.auth.OAuth2(
-    oauth.idClient,
-    oauth.secretClient,
-    oauth.redirectUri,
-  );
-}
+google.options({ auth: oauth2Client });
 
 function getConnectionUrl() {
-  const auth = createConnection();
-
-  return auth.generateAuthUrl({
+  return oauth2Client.generateAuthUrl({
     access_type: 'offline',
-    prompt: 'consent',
-    scope: defaultScope,
+    scope: defaultScope.join(' '),
   });
 }
 
-export { getConnectionUrl };
+/**
+ * @param {String} code variable from after sucessful google auth redirect parameter
+ */
+async function getUserData(code) {
+  const { tokens } = await oauth2Client.getToken(code);
+  oauth2Client.credentials = tokens; // googles oop magic for maybe their statuful api
+  // connect to google plus - need this to get the user's email
+  const res = await plus.people.get({ userId: 'me' });
+  const {
+    data: { id, emails, name, image },
+  } = res;
+
+  return {
+    id,
+    name,
+    email: emails[0].value,
+    imageUrl: image.url,
+    token: tokens,
+  };
+}
+
+export { getConnectionUrl, getUserData };
 
 /**
  * @references

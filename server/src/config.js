@@ -28,7 +28,7 @@ const {
   SECRET_USER,
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
-  ID_OAUTH_CLIENT,
+  ID_CLIENT_OAUTH,
   SECRET_CLIENT_OAUTH,
   REDIRECT_OAUTH_URI,
 } = process.env;
@@ -48,9 +48,9 @@ const fromEnv = {
     api_secret: CLOUDINARY_API_SECRET,
   },
   oauth: {
-    idClient: ID_OAUTH_CLIENT,
+    idClient: ID_CLIENT_OAUTH,
     secretClient: SECRET_CLIENT_OAUTH,
-    redirectURI: REDIRECT_OAUTH_URI,
+    redirectURI: REDIRECT_OAUTH_URI || 'http://localhost:8080/api/googleauth',
   },
 };
 
@@ -123,7 +123,9 @@ if (!config[NODE_ENV]) {
   process.exit(1);
 }
 
-export default { ...config[NODE_ENV], ...fromEnv };
+const allconfig = { ...config[NODE_ENV], ...fromEnv };
+
+export default allconfig;
 
 /**
  * @references
