@@ -1,5 +1,5 @@
 import { chain, allow } from 'graphql-shield';
-import { verifyUser, isAdmin, isAuthenticated } from '../auth/rules';
+import { verifyUser, isAdmin, isAuthenticated } from '../utils/rules';
 
 export default {
   Query: {
