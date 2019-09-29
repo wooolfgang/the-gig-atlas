@@ -12,8 +12,12 @@ type Employer {
   id: ID
   asUser: User
   createdAt: Date
- 
-  employerType: EmployerType!
+  displayName: String
+  website: String
+  introduction: String
+  email: String
+  employerType: EmployerType
+  avatar: File!
   gigs: [Gig]!
 }
 

@@ -47,5 +47,7 @@ export default {
   },
   Employer: {
     gigs: ({ id }, _, { prisma }) => prisma.employer({ id }).gigs(),
+    avatar: ({ id }, _, { prisma }) => prisma.employer({ id }).avatar(),
+    asUser: ({ id }, _, { prisma }) => prisma.employer({ id }).asUser(),
   },
 };
