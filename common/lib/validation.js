@@ -24,6 +24,7 @@ export const signupInput = yup.object().shape({
   name,
   password,
 });
+
 // gig
 export const title = yup.string();
 export const description = yup.string();
@@ -43,7 +44,7 @@ export const gigInput = yup.object().shape({
   jobType,
   locationRestriction,
 });
-// employer
+
 export const employerType = yup.string().matches(employerTypeRegex);
 export const employerInput = yup.object().shape({
   displayName: yup.string(),
@@ -53,7 +54,14 @@ export const employerInput = yup.object().shape({
   employerType,
   avatarFileId: yup.string(),
 });
+
+// employer
 export const setEmployerInput = yup.object().shape({
   employer: employerInput,
   gig: gigInput,
+});
+
+export const createGigInput = yup.object().shape({
+  gig: gigInput,
+  employer: employerInput,
 });
