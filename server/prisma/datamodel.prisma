@@ -25,7 +25,6 @@ type Employer {
   introduction: String!
   email: String!
   avatar: File!
-  isCompany: Boolean @default(value: false)
   isPrivate: Boolean @default(value: false)
 }
 
