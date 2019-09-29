@@ -15,7 +15,8 @@
     "test:watch": "NODE_ENV=dev jest --watch",
     "seed:admin": "NODE_ENV=dev node ./prisma/seed/index.js admin",
     "seed": "yarn run seed:admin",
-    "seed:test": "NODE_ENV=test node ./prisma/seed/index.js admin"
+    "seed:test": "NODE_ENV=test node ./prisma/seed/index.js admin",
+    "nodemon:clear": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

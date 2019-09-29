@@ -26,7 +26,7 @@ export default async () => {
 
     await prisma.createUser(newAdmin);
 
-    console.log('Inserted Admin(s): ', newAdmin);
+    console.log('Inserted Admin(s): ', newAdmin, '\n');
   } catch (e) {
     console.error('error on inserting admin\n', e);
     process.exit(1);

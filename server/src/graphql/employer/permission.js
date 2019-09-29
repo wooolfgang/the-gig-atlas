@@ -1,9 +1,14 @@
 import { chain, allow } from 'graphql-shield';
-import { verifyUser, isAuthenticated } from '../auth/rules';
+import common from '@shared/common';
+import { validate, verifyUser, isAuthenticated } from '../utils/rules';
 
 export default {
   Mutation: {
-    setEmployer: chain(verifyUser, isAuthenticated),
+    setEmployer: chain(
+      validate(common.validation.employerInput),
+      verifyUser,
+      isAuthenticated,
+    ),
   },
   Employer: allow,
 };
