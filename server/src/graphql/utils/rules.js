@@ -1,5 +1,4 @@
 import { rule } from 'graphql-shield';
-import yup from 'yup';
 import jwt from 'jsonwebtoken';
 import config from '../../config';
 
