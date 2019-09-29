@@ -24,7 +24,7 @@ function getConnectionUrl() {
   });
 }
 
-export default { getConnectionUrl };
+export { getConnectionUrl };
 
 /**
  * @references
