@@ -15,6 +15,10 @@ const verifyToken = token =>
 
 export const verifyUser = rule()(async (_, _args, ctx) => {
   const token = ctx.req.get('Authorization');
+  if (!token) {
+    return true;
+  }
+
   try {
     const payload = await verifyToken(token);
 
