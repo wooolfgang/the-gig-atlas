@@ -46,6 +46,14 @@ export const gigInput = yup.object().shape({
 // employer
 export const employerType = yup.string().matches(employerTypeRegex);
 export const employerInput = yup.object().shape({
+  displayName: yup.string(),
+  website: yup.string().url(),
+  introduction: yup.string(),
+  email: yup.string().email(),
   employerType,
+  avatarFileId: yup.string(),
+});
+export const setEmployerInput = yup.object().shape({
+  employer: employerInput,
   gig: gigInput,
 });
