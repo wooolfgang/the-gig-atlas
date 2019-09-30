@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
-import * as Yup from 'yup';
 import { useQuery } from '@apollo/react-hooks';
+import common from '@shared/common';
 import { Input, FieldError, FieldHelp } from '../../primitives';
 import CustomField from '../CustomField';
 import { Price, Next, RateContainer } from './style';
 import Spinner from '../../primitives/Spinner';
-import { GET_GIG_DETAILS } from '../../graphql/gigForm';
+import { GET_GIG_DETAILS } from '../../graphql/gig';
 
 const FieldInputComponent = ({
   field,
@@ -40,29 +40,6 @@ FieldInputComponent.propTypes = {
   }).isRequired,
 };
 
-export const GigDetailsSchema = Yup.object().shape({
-  title: Yup.string()
-    .min(2, 'Minimum of two characters')
-    .max(200, 'Maximum limit for title')
-    .required('Title is required'),
-  description: Yup.string()
-    .min(2, 'Minimum of two characters')
-    .max(20000, 'Maximum limit for description')
-    .required('Description is required'),
-  projectType: Yup.string().required('Project Type is required'),
-  technologies: Yup.array()
-    .min(1, 'Add at least one technology')
-    .required('Technologies is required'),
-  paymentType: Yup.string().required('Payment Type is required'),
-  jobType: Yup.string().required('Job Type is required'),
-  maxRate: Yup.number('maxRate must be a number')
-    .positive('Rate should be greater than zero')
-    .required('Maximum rate is required'),
-  minRate: Yup.number('minRate must be a number')
-    .positive('Rate should be greater than zero')
-    .required('Minimum rate is required'),
-  locationAndTimezone: Yup.string(),
-});
 const FormContainer = ({ initialValues, loading, onSubmit }) => (
   <>
     {loading && (
@@ -73,9 +50,9 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={GigDetailsSchema}
+      validationSchema={common.validation.gigInput}
       onSubmit={onSubmit}
-      render={() => (
+      render={({ values }) => (
         <Form>
           <Field
             name="title"
@@ -97,19 +74,25 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
             label="Project Type"
             options={[
               {
-                value: 'greenfield',
+                value: 'GREENFIELD',
                 title: 'Greenfield',
                 description: 'A project that starts from scratch',
               },
               {
-                value: 'maintenance/features',
+                value: 'MAINTENANCE',
                 title: 'Maintenance/Features',
                 description: 'A project that starts from scratch',
               },
               {
-                value: 'consulting',
+                value: 'CONSULTING',
                 title: 'Consulting',
                 description: 'A project that starts from scratch',
+              },
+              {
+                value: 'TESTING',
+                title: 'Testing',
+                description:
+                  'Testing product features, automated testing, etc.',
               },
             ]}
           />
@@ -128,12 +111,12 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
               {
                 id: 'radio1',
                 label: 'Fixed',
-                value: 'fixed',
+                value: 'FIXED',
               },
               {
                 id: 'radio2',
                 label: 'Hourly',
-                value: 'hourly',
+                value: 'HOURLY',
               },
             ]}
           />
@@ -141,7 +124,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
             <RateContainer>
               <Field
                 placeholder="$45/hr"
-                name="minRate"
+                name="minFee"
                 type="number"
                 component={FieldInputComponent}
               />{' '}
@@ -150,7 +133,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
               </span>
               <Field
                 placeholder="$95/hr"
-                name="maxRate"
+                name="maxFee"
                 type="number"
                 component={FieldInputComponent}
               />
@@ -169,26 +152,68 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
               {
                 id: 'radio4',
                 label: 'Contract',
-                value: 'contract',
+                value: 'CONTRACT',
               },
               {
                 id: 'radio5',
                 label: 'Full-Time',
-                value: 'full-time',
+                value: 'FULL_TIME',
               },
               {
                 id: 'radio6',
                 label: 'Part-Time',
-                value: 'part-time',
+                value: 'PART_TIME',
               },
             ]}
           />
           <Field
-            name="locationAndTimezone"
+            name="locationRestriction"
             required={false}
             label="Location and Timezone resrictions"
             component={CustomField}
           />
+          <Field
+            name="communicationType"
+            type="radiocards"
+            label="How would you like to communicate with freelancers?"
+            component={CustomField}
+            options={[
+              {
+                value: 'EMAIL',
+                title: 'Email',
+                description: 'Direct freelancers to communicate via your email',
+              },
+              {
+                value: 'WEBSITE',
+                title: 'Website Link',
+                description: 'Direct freelancers to a website of your choice',
+              },
+              {
+                value: 'IN_APP',
+                title: 'In App Chat',
+                description:
+                  'Use our own chat service to communicate with clients',
+              },
+            ]}
+          />
+          {values.communicationType === 'EMAIL' && (
+            <Field
+              name="communicationEmail"
+              type="text"
+              label="Email"
+              help="The email for freelancers to contact you with"
+              component={CustomField}
+            />
+          )}
+          {values.communicationType === 'WEBSITE' && (
+            <Field
+              name="communicationWebsite"
+              type="text"
+              label="Website Link"
+              help="The website link that you can direct applying freelancers"
+              component={CustomField}
+            />
+          )}
           <div
             style={{
               display: 'flex',
@@ -234,26 +259,29 @@ const FormGigDetails = ({ next }) => {
   return (
     <FormContainer
       initialValues={
-        data && data.gigDetails
-          ? data.gigDetails
+        data && data.gigData
+          ? data.gigData
           : {
               title: '',
               description: '',
               projectType: '',
               technologies: [],
               paymentType: '',
-              minRate: '',
-              maxRate: '',
+              minFee: '',
+              maxFee: '',
               jobType: '',
-              locationAndTimezone: '',
+              locationRestriction: '',
+              communicationType: '',
+              communicationEmail: '',
+              communicationWebsite: '',
             }
       }
       onSubmit={values => {
         client.writeData({
           data: {
-            gigDetails: {
+            gigData: {
               ...values,
-              __typename: 'gigDetails',
+              __typename: 'gigData',
             },
           },
         });
