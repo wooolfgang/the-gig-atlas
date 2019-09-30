@@ -4,18 +4,20 @@ type Query {
 }
 
 type Mutation {
-  # newEmployer(info: EmployerInput!): Employer
   deleteEmployer(id: ID): Boolean!
-
-  setEmployer(input: EmployerInput!): Employer
+  setEmployer(employer: EmployerInput!, gig: GigInput!): Employer
 }
 
 type Employer {
   id: ID
   asUser: User
   createdAt: Date
- 
-  employerType: EmployerType!
+  displayName: String
+  website: String
+  introduction: String
+  email: String
+  employerType: EmployerType
+  avatar: File!
   gigs: [Gig]!
 }
 
@@ -25,6 +27,10 @@ enum EmployerType {
 }
 
 input EmployerInput {
+  displayName: String!
+  website: String!
+  introduction: String!
+  email: String!
   employerType: EmployerType!
-  gig: GigInput
+  avatarFileId: ID!
 }

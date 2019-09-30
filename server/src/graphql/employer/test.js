@@ -19,9 +19,17 @@ const inputGig = {
   minFee: 100.0,
   maxFee: 200.0,
   jobType: 'CONTRACT',
+  communicationType: 'EMAIL',
 };
 const input = {
-  employerType: 'PERSONAL',
+  employer: {
+    displayName: 'Awesome Employer',
+    website: 'https://awesome.com',
+    introduction: 'Hi I am an awesome employer',
+    email: 'awesome@gmail.com',
+    employerType: 'PERSONAL',
+    avatarFileId: null,
+  },
   gig: inputGig,
 };
 let token;
@@ -38,7 +46,21 @@ beforeAll(async () => {
     `,
     variables: { input: userInput },
   });
-
+  const file = await axios.post(testUrl, {
+    query: `
+      mutation ($file: FileInput!) {
+        createFile(file: $file) {
+          id
+        }
+      }
+    `,
+    variables: {
+      file: {
+        name: 'this is a file',
+      },
+    },
+  });
+  input.employer.avatarFileId = file.data.data.createFile.id;
   token = res.data.data.signup.token;
 });
 
@@ -57,13 +79,14 @@ describe('Employer crud operation', () => {
       testUrl,
       {
         query: `
-          mutation Test($input: EmployerInput!) {
-            setEmployer(input: $input) {
+          mutation Test($employer: EmployerInput!, $gig: GigInput!) {
+            setEmployer(employer: $employer, gig: $gig) {
               id
               employerType
               gigs {
                 id
                 title
+                communicationType
                 description
                 technologies
                 projectType
@@ -75,7 +98,7 @@ describe('Employer crud operation', () => {
             }
           }
         `,
-        variables: { input },
+        variables: { ...input },
       },
       { headers: { Authorization: token } },
     );
@@ -119,7 +142,7 @@ describe('Employer crud operation', () => {
     const gig = employer.gigs[0];
 
     expect(user.email).toBe(userInput.email);
-    expect(employer.employerType).toBe(input.employerType);
+    expect(employer.employerType).toBe(input.employer.employerType);
     expect(gig.title).toBe(inputGig.title);
   });
 
@@ -128,14 +151,26 @@ describe('Employer crud operation', () => {
       testUrl,
       {
         query: `
-          mutation Test($input: EmployerInput!) {
-            setEmployer(input: $input) {
+          mutation Test($employer: EmployerInput!, $gig: GigInput!) {
+            setEmployer(employer: $employer, gig: $gig) {
               id
               employerType
+              gigs {
+                id
+                title
+                communicationType
+                description
+                technologies
+                projectType
+                paymentType
+                minFee
+                maxFee
+                jobType
+              }
             }
           }
         `,
-        variables: { input },
+        variables: { ...input },
       },
       { headers: { Authorization: token } },
     );

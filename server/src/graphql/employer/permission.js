@@ -5,7 +5,7 @@ import { validate, verifyUser, isAuthenticated } from '../utils/rules';
 export default {
   Mutation: {
     setEmployer: chain(
-      validate(common.validation.employerInput),
+      validate(common.validation.setEmployerInput),
       verifyUser,
       isAuthenticated,
     ),
