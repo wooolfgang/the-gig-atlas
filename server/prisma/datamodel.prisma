@@ -1,10 +1,10 @@
 type User {
   id: ID! @id
-  firstName: String!
-  lastName: String!
+  firstName: String
+  lastName: String
   email: String! @unique
   password: String!
-  role: UserRole!
+  role: UserRole! @default(value: MEMBER)
   createdAt: DateTime! @createdAt
   
   asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE)

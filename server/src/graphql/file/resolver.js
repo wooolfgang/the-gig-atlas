@@ -33,6 +33,8 @@ export default {
         info,
       );
     },
+    createFile: async (root, { file }, { prisma }, info) =>
+      prisma.createFile(file, info),
   },
 
   Query: {

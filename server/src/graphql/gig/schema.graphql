@@ -4,7 +4,7 @@ type Query {
 }
 
 type Mutation {
-  newGig(employerId: ID!, info: GigInput!): Gig
+  createGig(gig: GigInput!, employer: EmployerInput!): Gig
   deleteGig(id: ID): Gig
 }
 
@@ -12,7 +12,7 @@ type Gig {
   id: ID
   title: String!
   description: String!
-  technologies: [String]! # temporary as array of string
+  technologies: [String]!
   projectType: ProjectType!
   paymentType: PaymentType!
   minFee: Float!
@@ -20,6 +20,7 @@ type Gig {
   jobType: JobType!
   locationRestriction: String
   employer: Employer!
+  communicationType: GigCommunicationType!
 }
 
 enum JobType {
@@ -40,15 +41,21 @@ enum ProjectType {
   TESTING
 }
 
+enum GigCommunicationType {
+  EMAIL
+  WEBSITE
+  IN_APP
+}
+
 input GigInput {
   title: String!
   description: String!
-  technologies: [String]! # temporary as array of string
+  technologies: [String]! 
   projectType: ProjectType!
   paymentType: PaymentType!
   minFee: Float!
   maxFee: Float!
   jobType: JobType!
   locationRestriction: String
+  communicationType: GigCommunicationType!
 }
-
