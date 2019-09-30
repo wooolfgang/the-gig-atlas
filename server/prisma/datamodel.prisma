@@ -53,6 +53,8 @@ type Gig {
   employer: Employer! @relation(name: "GigsOfEmployer")
   createdAt: DateTime! @createdAt
   communicationType: GigCommunicationType! @default(value: EMAIL)
+  communicationEmail: String
+  communicationWebsite: String
 }
 
 enum JobType {

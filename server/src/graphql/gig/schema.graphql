@@ -21,6 +21,8 @@ type Gig {
   locationRestriction: String
   employer: Employer!
   communicationType: GigCommunicationType!
+  communicationEmail: String
+  communicationWebsite: String
 }
 
 enum JobType {
@@ -58,4 +60,6 @@ input GigInput {
   jobType: JobType!
   locationRestriction: String
   communicationType: GigCommunicationType!
+  communicationEmail: String
+  communicationWebsite: String
 }
