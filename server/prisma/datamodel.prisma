@@ -8,6 +8,7 @@ type User {
   createdAt: DateTime! @createdAt
   
   asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE)
+  isPrivate: Boolean @default(value: false)
 }
 
 enum UserRole {
@@ -17,7 +18,7 @@ enum UserRole {
 
 type Employer {
   id: ID! @id
-  asUser: User! @unique @relation(name: "AsEmployer")
+  asUser: User @unique @relation(name: "AsEmployer")
   employerType: EmployerType!
   gigs: [Gig]! @relation(name: "GigsOfEmployer", onDelete: CASCADE)
   displayName: String!
@@ -25,7 +26,6 @@ type Employer {
   introduction: String!
   email: String!
   avatar: File!
-  isPrivate: Boolean @default(value: false)
 }
 
 enum EmployerType {
