@@ -19,7 +19,7 @@ const inputGig = {
   minFee: 100.0,
   maxFee: 200.0,
   jobType: 'CONTRACT',
-  communicationType: 'EMAIL',
+  communicationType: 'IN_APP',
 };
 const input = {
   employer: {

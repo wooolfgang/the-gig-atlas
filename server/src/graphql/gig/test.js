@@ -14,6 +14,7 @@ const gig = {
   maxFee: 200.0,
   jobType: 'CONTRACT',
   communicationType: 'EMAIL',
+  communicationEmail: 'casd@gmail.com',
 };
 
 const employer = {
@@ -23,6 +24,12 @@ const employer = {
   email: 'some@gmail.com',
   employerType: 'PERSONAL',
   avatarFileId: null,
+};
+
+const existingUser = {
+  email: 'existing@gmail.com',
+  password: 'asdsadsadas',
+  role: 'MEMBER',
 };
 
 let testFile2;
@@ -58,10 +65,13 @@ beforeAll(async () => {
   });
   employer.avatarFileId = file.data.data.createFile.id;
   testFile2 = file2.data.data.createFile.id;
+
+  await prisma.createUser(existingUser);
 });
 
 afterAll(async () => {
   await prisma.deleteUser({ email: employer.email });
+  await prisma.deleteUser({ email: existingUser.email });
 });
 
 describe('Testing gig resolvers', () => {
@@ -72,6 +82,7 @@ describe('Testing gig resolvers', () => {
           createGig(gig: $gig, employer: $employer) {
             title
             communicationType
+            communicationEmail
             description
             technologies
             projectType
@@ -96,7 +107,7 @@ describe('Testing gig resolvers', () => {
     });
 
     const { employer: employerResult, ...gigResult } = res.data.data.createGig;
-    expect(gigResult).toEqual(gig);
+    expect(gigResult).toMatchObject(gig);
     expect(employerResult.email).toEqual(employer.email);
     expect(employerResult.avatar.id).toEqual(employer.avatarFileId);
     expect(employerResult.asUser.email).toEqual(employer.email);
@@ -107,7 +118,8 @@ describe('Testing gig resolvers', () => {
       displayName: 'ASdkaldajsdkljskl',
       website: 'https://gweeasdsad.com',
       introduction: 'This is new',
-      email: 'some@gmail.com',
+      // same email as previously created gig from test
+      email: employer.email,
       employerType: 'COMPANY',
       avatarFileId: testFile2,
     };
@@ -117,6 +129,55 @@ describe('Testing gig resolvers', () => {
           createGig(gig: $gig, employer: $employer) {
             title
             communicationType
+            communicationEmail
+            description
+            technologies
+            projectType
+            paymentType
+            minFee
+            maxFee
+            jobType
+            employer {
+              id
+              email
+              displayName
+              avatar {
+                id
+              }
+              asUser {
+                email
+              }
+            }
+          }
+        }
+      `,
+      variables: { employer: newEmployerData, gig },
+    });
+
+    const { employer: employerResult, ...gigResult } = res.data.data.createGig;
+    expect(gigResult).toMatchObject(gig);
+    expect(employerResult.email).toEqual(newEmployerData.email);
+    expect(employerResult.avatar.id).toEqual(newEmployerData.avatarFileId);
+    expect(employerResult.displayName).toEqual(newEmployerData.displayName);
+    expect(employerResult.asUser.email).toEqual(employer.email);
+  });
+
+  it('Should allow existing users to create a gig', async () => {
+    const newEmployerData = {
+      displayName: 'ASdkaldajsdkljskl',
+      website: 'https://gweeasdsad.com',
+      introduction: 'This is new',
+      email: existingUser.email,
+      employerType: 'COMPANY',
+      avatarFileId: testFile2,
+    };
+    const res = await axios.post(testUrl, {
+      query: `
+        mutation($gig: GigInput!, $employer: EmployerInput!) {
+          createGig(gig: $gig, employer: $employer) {
+            title
+            communicationType
+            communicationEmail
             description
             technologies
             projectType
@@ -141,10 +202,10 @@ describe('Testing gig resolvers', () => {
       variables: { employer: newEmployerData, gig },
     });
     const { employer: employerResult, ...gigResult } = res.data.data.createGig;
-    expect(gigResult).toEqual(gig);
+    expect(gigResult).toMatchObject(gig);
     expect(employerResult.email).toEqual(newEmployerData.email);
     expect(employerResult.avatar.id).toEqual(newEmployerData.avatarFileId);
     expect(employerResult.displayName).toEqual(newEmployerData.displayName);
-    expect(employerResult.asUser.email).toEqual(employer.email);
+    expect(employerResult.asUser.email).toEqual(existingUser.email);
   });
 });
