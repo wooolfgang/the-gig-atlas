@@ -14,6 +14,7 @@ const gig = {
   maxFee: 200.0,
   jobType: 'CONTRACT',
   communicationType: 'EMAIL',
+  communicationEmail: 'casd@gmail.com',
 };
 
 const employer = {
@@ -72,6 +73,7 @@ describe('Testing gig resolvers', () => {
           createGig(gig: $gig, employer: $employer) {
             title
             communicationType
+            communicationEmail
             description
             technologies
             projectType
@@ -96,7 +98,7 @@ describe('Testing gig resolvers', () => {
     });
 
     const { employer: employerResult, ...gigResult } = res.data.data.createGig;
-    expect(gigResult).toEqual(gig);
+    expect(gigResult).toMatchObject(gig);
     expect(employerResult.email).toEqual(employer.email);
     expect(employerResult.avatar.id).toEqual(employer.avatarFileId);
     expect(employerResult.asUser.email).toEqual(employer.email);
@@ -117,6 +119,7 @@ describe('Testing gig resolvers', () => {
           createGig(gig: $gig, employer: $employer) {
             title
             communicationType
+            communicationEmail
             description
             technologies
             projectType
@@ -141,7 +144,7 @@ describe('Testing gig resolvers', () => {
       variables: { employer: newEmployerData, gig },
     });
     const { employer: employerResult, ...gigResult } = res.data.data.createGig;
-    expect(gigResult).toEqual(gig);
+    expect(gigResult).toMatchObject(gig);
     expect(employerResult.email).toEqual(newEmployerData.email);
     expect(employerResult.avatar.id).toEqual(newEmployerData.avatarFileId);
     expect(employerResult.displayName).toEqual(newEmployerData.displayName);
