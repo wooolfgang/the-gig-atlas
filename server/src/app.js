@@ -18,11 +18,11 @@ async function createApp() {
       '/gql',
       graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
       gqlMiddleware,
-    ).use((err, req, res, next) => {
-      console.log("error >>>>>>");
-      console.log(err);
-      next(err);
-    });
+    );
+
+  if (config.errLogger) {
+    app.use(config.errLogger);
+  }
 
   return app;
 }

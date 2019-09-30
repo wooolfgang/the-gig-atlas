@@ -80,6 +80,11 @@ const dev = {
       path: error.path,
     };
   },
+  errLogger: (err, req, res, next) => {
+    console.log('error >>>>>>');
+    console.log(err);
+    next(err);
+  }
 };
 
 /**

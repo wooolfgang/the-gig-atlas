@@ -4,8 +4,8 @@ import uuidv4 from 'uuid/v4';
 import config from '../../config';
 import { getConnectionUrl } from '../../../serverless/google';
 
-const jwtSign = payload =>
-  new Promise((resolve, reject) => {
+function jwtSign(payload) {
+  return new Promise((resolve, reject) => {
     jwt.sign(payload, config.secretUser, (err, token) => {
       if (err) {
         reject(err);
@@ -14,9 +14,18 @@ const jwtSign = payload =>
       }
     });
   });
+}
 
-const signup = async (_, { input }, { prisma }) => {
-  /* Create random generated password if password does not exist */
+export async function createAuth(id, role) {
+  const token = await jwtSign({ id, role });
+
+  return {
+    id,
+    token,
+  };
+}
+
+export async function createUser(input, prisma) {
   const password = input.password || uuidv4();
   const hash = await argon2.hash(password);
 
@@ -26,19 +35,21 @@ const signup = async (_, { input }, { prisma }) => {
     role: 'MEMBER',
   };
 
-  const { id, role } = await prisma.createUser(create);
-  const token = await jwtSign({ id, role });
+  const { id, role } = await prisma
+    .createUser(create)
+    .$fragment('fragment Payload on User { id role password }');
 
-  return {
-    id,
-    token,
-  };
-};
+  return createAuth(id, role);
+}
+
+function signup(_, { input }, { prisma }) {
+  return createUser(input, prisma);
+}
 
 const login = async (_, { email, password }, { prisma }) => {
   const user = await prisma
     .user({ email })
-    .$fragment('fragment Login on User { id role password }');
+    .$fragment('fragment Payload on User { id role password }');
 
   if (!user) {
     throw new Error('Invalid credentials');
@@ -49,10 +60,7 @@ const login = async (_, { email, password }, { prisma }) => {
     throw new Error('Invalid credentials');
   }
 
-  return {
-    id: user.id,
-    token: jwt.sign({ id: user.id, role: user.role }, config.secretUser),
-  };
+  return createAuth(user.id, user.role);
 };
 
 export default {

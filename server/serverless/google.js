@@ -37,8 +37,9 @@ async function getUserData(code) {
 
   return {
     id,
-    name,
     email: emails[0].value,
+    firstName: name.givenName,
+    lastName: name.familyName,
     imageUrl: image.url,
     token: tokens,
   };
