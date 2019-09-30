@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import uuidv4 from 'uuid/v4';
 import config from '../../config';
+import { getConnectionUrl } from '../../../serverless/google';
 
 const jwtSign = payload =>
   new Promise((resolve, reject) => {
@@ -56,7 +57,7 @@ const login = async (_, { email, password }, { prisma }) => {
 
 export default {
   Query: {
-    //
+    googleAuth: () => getConnectionUrl(),
   },
   Mutation: {
     signup,
