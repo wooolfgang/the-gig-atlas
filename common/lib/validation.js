@@ -113,12 +113,16 @@ export const employerInput = yup.object().shape({
     .required('Employer type is required')
     .matches(employerTypeRegex),
   avatarFileId: yup.string('Avatar is required').required('Avatar is required'),
-});
 
 // employer
 export const setEmployerInput = yup.object().shape({
   employer: employerInput,
   gig: gigInput,
+});
+
+export const createGigInput = yup.object().shape({
+  gig: gigInput,
+  employer: employerInput,
 });
 
 export const createGigInput = yup.object().shape({
