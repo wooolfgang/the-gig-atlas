@@ -7,18 +7,19 @@ import { persistCache } from 'apollo-cache-persist';
 const { publicRuntimeConfig } = getConfig();
 
 let apolloClient = null;
+const isServer = typeof window === 'undefined';
 
 const endpoint = publicRuntimeConfig.serverUri;
 // Polyfill fetch() on the server (used by apollo-client)
-if (!process.browser) {
+if (isServer) {
   global.fetch = fetch;
 }
 
 function create(initialState, { getToken }) {
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   const token = getToken();
-  const cache = new InMemoryCache();
-  if (process.browser) {
+  const cache = new InMemoryCache().restore(initialState);
+  if (!isServer) {
     persistCache({
       cache,
       storage: window && window.localStorage,
@@ -27,11 +28,11 @@ function create(initialState, { getToken }) {
 
   return new ApolloClient({
     connectToDevTools: process.browser,
-    ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
+    ssrMode: isServer, // Disables forceFetch on the server (so queries are only run once)
     link: new CreateUploadLink({
       uri: process.env.NODE_ENV === 'development' ? endpoint : endpoint, // Server URL (must be absolute)
       credentials: 'include',
-      headers: { authorization: `Bearer ${token}` },
+      headers: { authorization: token },
     }),
     cache,
     resolvers: {},
@@ -42,7 +43,7 @@ export default function initApollo(initialState, options) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
 
-  if (!process.browser) {
+  if (isServer) {
     return create(initialState, options);
   }
 
