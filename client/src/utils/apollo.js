@@ -8,7 +8,7 @@ const { publicRuntimeConfig } = getConfig();
 
 let apolloClient = null;
 
-const endpoint = publicRuntimeConfig.serverUri;
+const endpoint = publicRuntimeConfig.uriServerGql;
 // Polyfill fetch() on the server (used by apollo-client)
 if (!process.browser) {
   global.fetch = fetch;

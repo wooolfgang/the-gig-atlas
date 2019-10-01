@@ -1,6 +1,5 @@
 const withImages = require('next-images');
-
-require('dotenv').config();
+const globalConfig = require('./config');
 
 module.exports = withImages({
   webpack(config) {
@@ -14,6 +13,6 @@ module.exports = withImages({
   serverRuntimeConfig: {},
   publicRuntimeConfig: {
     staticFolder: '/static',
-    serverUri: process.env.SERVER_URI,
+    ...globalConfig.public,
   },
 });
