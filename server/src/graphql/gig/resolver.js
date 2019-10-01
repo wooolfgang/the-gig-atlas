@@ -12,9 +12,11 @@ export function transformGigInput(gigInput) {
 }
 export default {
   Query: {
-    gigs: (_, args, { prisma }) => prisma.gigs(),
+    gigs: (_, args, { prisma }) => prisma.gigs(args),
     searchGigs: (_, { search }, { prisma }) =>
       prisma.gigs({ where: { title_contains: search } }),
+    gigsListLanding: (_, args, { prisma }) =>
+      prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
   },
   Mutation: {
     createGig: async (_, { gig, employer }, { prisma }) => {

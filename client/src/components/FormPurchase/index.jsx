@@ -143,9 +143,13 @@ const FormPurchase = ({ back }) => {
                 gig={
                   gigData && {
                     ...gigData.gigData,
+                    employer: {
+                      avatar: {
+                        url: image && image.file.url,
+                      },
+                    },
                   }
                 }
-                avatarSrc={image && image.file.url}
               />
             )}
           </div>
