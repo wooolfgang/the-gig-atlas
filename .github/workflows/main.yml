@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -8,16 +8,17 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        node_version: [10, 12]
+        node_version: [12]
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
-        with:
-          version: ${{ matrix.node_version }}
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        version: ${{ matrix.node_version }}
 
-      - name: Test if working
-        run: |
-          npm run bootstrap
-          npm run common:build
+    - name: Test if working
+      run: |
+        npm run install
+        npm run bootstrap
+        npm run common:build
