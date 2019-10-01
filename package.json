@@ -11,6 +11,7 @@
     "server:install": "cd server && npm install",
     "client:dev": "cd client && npm run dev --scripts-prepend-node-path",
     "server:dev": "cd server && npm run dev --scripts-prepend-node-path",
+    "server:prisma": "cd server && npm run prisma:apply",
     "server:test": "cd server && npm run test",
     "common:build": "cd common && npm run build"
   },
