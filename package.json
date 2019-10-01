@@ -7,6 +7,8 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "client:install": "cd client && npm install",
+    "server:install": "cd server && npm install",
     "client:dev": "cd client && npm run dev --scripts-prepend-node-path",
     "server:dev": "cd server && npm run dev --scripts-prepend-node-path",
     "server:test": "cd server && npm run test",
