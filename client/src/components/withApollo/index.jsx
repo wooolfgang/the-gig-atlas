@@ -4,9 +4,29 @@ import { getDataFromTree } from '@apollo/react-ssr';
 import nookies from 'nookies';
 import initApollo from '../../utils/apollo';
 
-export default App =>
-  class Apollo extends React.Component {
-    static async getInitialProps(ctx) {
+export default (App, { ssr = true } = {}) => {
+  const WithApollo = ({ apolloClient, apolloState, ...props }) => {
+    const client =
+      apolloClient ||
+      initApollo(apolloState, {
+        getToken: () => props.token,
+      });
+    return <App {...props} apolloClient={client} />;
+  };
+
+  // Set the correct displayName in development
+  if (process.env.NODE_ENV !== 'production') {
+    const displayName = App.displayName || App.name || 'Component';
+
+    if (displayName === 'App') {
+      console.warn('This withApollo HOC only works with PageComponents.');
+    }
+
+    WithApollo.displayName = `withApollo(${displayName})`;
+  }
+
+  if (ssr || App.getInitialProps) {
+    WithApollo.getInitialProps = async ctx => {
       const {
         Component,
         router,
@@ -21,7 +41,7 @@ export default App =>
         {},
         {
           getToken: () => token,
-        }
+        },
       );
 
       ctx.ctx.apolloClient = apollo;
@@ -48,7 +68,7 @@ export default App =>
               Component={Component}
               router={router}
               apolloClient={apollo}
-            />
+            />,
           );
         } catch (error) {
           // Prevent Apollo Client GraphQL errors from crashing SSR.
@@ -70,18 +90,8 @@ export default App =>
         apolloState,
         token,
       };
-    }
+    };
+  }
 
-    constructor(props) {
-      super(props);
-      // `getDataFromTree` renders the component first, the client is passed off as a property.
-      // After that rendering is done using Next's normal rendering pipeline
-      this.apolloClient = initApollo(props.apolloState, {
-        getToken: () => props.token,
-      });
-    }
-
-    render() {
-      return <App {...this.props} apolloClient={this.apolloClient} />;
-    }
-  };
+  return WithApollo;
+};
