@@ -7,5 +7,8 @@ export default {
     createGig: validate(common.validation.createGigInput),
     deleteGig: allow,
   },
+  Query: {
+    gigsListLanding: allow,
+  },
   Gig: allow,
 };

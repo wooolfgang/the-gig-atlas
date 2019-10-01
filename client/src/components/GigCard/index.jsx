@@ -15,7 +15,6 @@ import {
 const GigCard = ({
   margin,
   isMobile,
-  avatarSrc,
   gig: {
     title,
     technologies,
@@ -25,12 +24,15 @@ const GigCard = ({
     jobType,
     minFee,
     maxFee,
+    employer: {
+      avatar: { url },
+    },
   },
 }) => (
   <Card style={{ margin }} tabIndex="0">
     <Flex>
       <FirstRow width={isMobile ? '20' : '12%'}>
-        <Avatar src={avatarSrc} />
+        <Avatar src={url} />
       </FirstRow>
       <SecondRow width={isMobile ? '80%' : '60%'}>
         <Title>{title}</Title>
@@ -60,7 +62,7 @@ const GigCard = ({
     {isMobile && (
       <Centered>
         <small>
-          {new Date(postedAt)
+          {new Date(createdAt)
             .toDateString()
             .split(' ')
             .slice(1)
@@ -80,16 +82,21 @@ const GigCard = ({
 GigCard.propTypes = {
   margin: PropTypes.string,
   isMobile: PropTypes.bool,
-  avatarSrc: PropTypes.string.isRequired,
   gig: PropTypes.shape({
     title: PropTypes.string.isRequired,
     technologies: PropTypes.array.isRequired,
     createdAt: PropTypes.string.isRequired,
     projectType: PropTypes.string.isRequired,
     jobType: PropTypes.string.isRequired,
-    locationRestriction: PropTypes.string.isRequired,
+    locationRestriction: PropTypes.string,
     minFee: PropTypes.number.isRequired,
     maxFee: PropTypes.number.isRequired,
+    employer: PropTypes.shape({
+      avatar: PropTypes.shape({
+        id: PropTypes.string,
+        url: PropTypes.string,
+      }),
+    }),
   }),
 };
 
