@@ -2,6 +2,8 @@ scalar Date
 scalar Upload
 scalar DateTime
 
+# import * from '../generated/prisma-client/datamodel.graphql'
+
 # import Queries.*, Mutations.*, * from './user/schema.graphql'
 # import Queries.*, Mutations.*, * from './auth/schema.graphql'
 # import Queries.*, Mutations.*, * from './employer/schema.graphql'
