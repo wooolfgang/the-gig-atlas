@@ -12,53 +12,36 @@ export function transformGigInput(gigInput) {
 }
 export default {
   Query: {
-    gigs: (_, args, { prisma }) => prisma.gigs(),
+    gigs: (_, args, { prisma }) => prisma.gigs(args),
     searchGigs: (_, { search }, { prisma }) =>
       prisma.gigs({ where: { title_contains: search } }),
+    gigsListLanding: (_, args, { prisma }) =>
+      prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
   },
   Mutation: {
     createGig: async (_, { gig, employer }, { prisma }) => {
+      const existingUser = await prisma.$exists.user({ email: employer.email });
       const createGigInput = {
         ...transformGigInput(gig),
         employer: {
           create: {
             ...transformEmployerInput(employer),
-            asUser: {
-              create: {
-                email: employer.email,
-                role: 'MEMBER',
-                password: uuidv4(),
-              },
-            },
+            asUser: existingUser
+              ? {
+                  connect: {
+                    email: employer.email,
+                  },
+                }
+              : {
+                  create: {
+                    email: employer.email,
+                    role: 'MEMBER',
+                    password: uuidv4(),
+                  },
+                },
           },
         },
       };
-
-      const [existingEmployer] = await prisma.employers({
-        where: {
-          AND: {
-            email: employer.email,
-            asUser: {
-              email: employer.email,
-            },
-          },
-        },
-      });
-
-      if (existingEmployer) {
-        await prisma.updateEmployer({
-          data: transformEmployerInput(employer),
-          where: {
-            id: existingEmployer.id,
-          },
-        });
-        createGigInput.employer = {
-          connect: {
-            id: existingEmployer.id,
-          },
-        };
-      }
-
       return prisma.createGig(createGigInput);
     },
     deleteGig: async (_, args, { prisma }) => {

@@ -6,7 +6,7 @@ import { GET_IMAGE } from '../../graphql/file';
 import Spinner from '../../primitives/Spinner';
 import { Back, Next, Price } from '../FormGigDetails/style';
 import Gig from '../Gig';
-import { GET_CLIENT_INFO, GET_GIG_DETAILS } from '../../graphql/gigForm';
+import { GET_CLIENT_INFO, GET_GIG_DETAILS } from '../../graphql/gig';
 
 const GigContainer = styled.div`
   background: ${props => props.theme.color.d6};
@@ -22,7 +22,9 @@ const FormPreviewGig = ({ back, next }) => {
     fetchPolicy: 'cache-first',
   });
   const { data: image, loading: loading3 } = useQuery(GET_IMAGE, {
-    variables: { id: client && client.clientInfo.avatarId },
+    variables: {
+      id: client && client.employerData && client.employerData.avatarFileId,
+    },
     fetchPolicy: 'cache-first',
   });
   if (loading1 || loading2) {
@@ -41,13 +43,14 @@ const FormPreviewGig = ({ back, next }) => {
           <Spinner />
         ) : (
           <Gig
-            client={
-              client && {
-                ...client.clientInfo,
+            employer={
+              client &&
+              client.employerData && {
+                ...client.employerData,
                 avatarSrc: image && image.file.url,
               }
             }
-            gig={gig && gig.gigDetails}
+            gig={gig && gig.gigData}
             preview
           />
         )}

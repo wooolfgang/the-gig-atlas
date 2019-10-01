@@ -7,6 +7,7 @@
     "arrow-parens": "off",
     "implicit-arrow-linebreak": "off",
     "prefer-destructuring": "off",
-    "comma-dangle": "off"
+    "comma-dangle": "off",
+    "indent": "off"
   }
 }

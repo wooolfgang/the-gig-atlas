@@ -1,6 +1,15 @@
 type Query {
-  gigs: [Gig]!
+  gigs(
+    where: GigWhereInput
+    orderBy: GigOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Gig]!
   searchGigs(search: String!): [Gig]!
+  gigsListLanding: [Gig]!
 }
 
 type Mutation {
@@ -10,6 +19,7 @@ type Mutation {
 
 type Gig {
   id: ID
+  createdAt: DateTime
   title: String!
   description: String!
   technologies: [String]!
@@ -21,6 +31,8 @@ type Gig {
   locationRestriction: String
   employer: Employer!
   communicationType: GigCommunicationType!
+  communicationEmail: String
+  communicationWebsite: String
 }
 
 enum JobType {
@@ -32,7 +44,7 @@ enum JobType {
 enum PaymentType {
   HOURLY
   FIXED
-} 
+}
 
 enum ProjectType {
   GREENFIELD
@@ -50,7 +62,7 @@ enum GigCommunicationType {
 input GigInput {
   title: String!
   description: String!
-  technologies: [String]! 
+  technologies: [String]!
   projectType: ProjectType!
   paymentType: PaymentType!
   minFee: Float!
@@ -58,4 +70,6 @@ input GigInput {
   jobType: JobType!
   locationRestriction: String
   communicationType: GigCommunicationType!
+  communicationEmail: String
+  communicationWebsite: String
 }

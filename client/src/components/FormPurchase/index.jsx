@@ -1,34 +1,38 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import { Formik, Field, Form } from 'formik';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import * as Yup from 'yup';
+import common from '@shared/common';
 import CustomField from '../CustomField';
 import { Price, Next, Back } from '../FormGigDetails/style';
-import { GigDetailsSchema } from '../FormGigDetails';
-import { ClientInfoSchema } from '../FormClientInfo';
 import { GET_IMAGE } from '../../graphql/file';
 import Spinner from '../../primitives/Spinner';
 import GigCard from '../GigCard';
-import { GET_GIG_DETAILS, GET_CLIENT_INFO } from '../../graphql/gigForm';
+import {
+  GET_GIG_DETAILS,
+  GET_CLIENT_INFO,
+  CREATE_GIG,
+} from '../../graphql/gig';
 
 const CreditCardSchema = Yup.object().shape({
   fullName: Yup.string('Full name must be a string').required(
-    'Full Name is required'
+    'Full Name is required',
   ),
   cardNumber: Yup.number('Card number must be a number').required(
-    'Card number is required'
+    'Card number is required',
   ),
   expiryDate: Yup.string('Expiry date must be a string').required(
-    'Expiry date is required'
+    'Expiry date is required',
   ),
   ccv: Yup.string('CCV must be a string').required('CCV is required'),
   zipOrPostal: Yup.string('Zip or postal be a string').required(
-    'Zip or postal is required'
+    'Zip or postal is required',
   ),
 });
 
-const FormPurchase = ({ back, next }) => {
+const FormPurchase = ({ back }) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const { data: gigData, loading } = useQuery(GET_GIG_DETAILS, {
     fetchPolicy: 'cache-first',
@@ -37,21 +41,44 @@ const FormPurchase = ({ back, next }) => {
     fetchPolicy: 'cache-first',
   });
   const { data: image, loading: loading3 } = useQuery(GET_IMAGE, {
-    variables: { id: clientData && clientData.clientInfo.avatarId },
+    variables: {
+      id:
+        clientData &&
+        clientData.employerData &&
+        clientData.employerData.avatarFileId,
+    },
     fetchPolicy: 'cache-first',
   });
+  const [createGig, { client }] = useMutation(CREATE_GIG);
   return (
     <Formik
       enableReinitialize
       onSubmit={async () => {
         setSubmitting(true);
-        const isValidGig = await GigDetailsSchema.isValid(gigData.gigDetails);
-        const isValidClient = await ClientInfoSchema.isValid(
-          clientData.clientInfo
-        );
-
-        if (isValidGig && isValidClient) {
-          alert('Posted!');
+        /* eslint-disable no-unused-vars */
+        const { __typename: noUseVar1, ...gig } = gigData.gigData;
+        const { __typename: noUseVar2, ...employer } = clientData.employerData;
+        const input = {
+          gig,
+          employer,
+        };
+        const isValid = await common.validation.createGigInput.isValid(input);
+        if (isValid) {
+          await createGig({
+            variables: input,
+          });
+          client.writeData({
+            data: {
+              employerData: null,
+              gigData: null,
+            },
+          });
+          setTimeout(() => {
+            Router.push('/congrats!');
+          }, 1000);
+          alert('Created new gig!');
+        } else {
+          alert('Incomplete data!');
         }
 
         setSubmitting(false);
@@ -109,14 +136,18 @@ const FormPurchase = ({ back, next }) => {
           </div>
           <div style={{ width: '75%', margin: 'auto', padding: '1.5rem 0' }}>
             <p>Preview your ad one last time</p>
-            {loading ? (
+            {loading || loading3 ? (
               <Spinner />
             ) : (
               <GigCard
                 gig={
                   gigData && {
-                    ...gigData.gigDetails,
-                    avatarSrc: image && image.file.url,
+                    ...gigData.gigData,
+                    employer: {
+                      avatar: {
+                        url: image && image.file.url,
+                      },
+                    },
                   }
                 }
               />
@@ -170,7 +201,6 @@ const FormPurchase = ({ back, next }) => {
 
 FormPurchase.propTypes = {
   back: PropTypes.func.isRequired,
-  next: PropTypes.func.isRequired,
 };
 
 export default FormPurchase;

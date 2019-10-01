@@ -1,49 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import common from '@shared/common';
 import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
 import { useQuery } from '@apollo/react-hooks';
 import CustomField from '../CustomField';
 import { Back, Next, Price } from '../FormGigDetails/style';
 import Spinner from '../../primitives/Spinner';
-import { GET_CLIENT_INFO } from '../../graphql/gigForm';
-
-export const ClientInfoSchema = Yup.object().shape({
-  firstName: Yup.string('First Name must be a string').required(
-    'First Name is required'
-  ),
-  lastName: Yup.string('Last Name must be a string').required(
-    'Last Name is required'
-  ),
-  email: Yup.string('Email must be a string')
-    .email('Please input correct email format ')
-    .required('Email is required'),
-  companyName: Yup.string('Company Name must be a string').required(
-    'Company Name is required'
-  ),
-  companyDescription: Yup.string('Company Name must be a string').required(
-    'Company Name is required'
-  ),
-  website: Yup.string('Website must be a string')
-    .url('Please input proper website url')
-    .required('Website url is required'),
-  communicationType: Yup.string('Communication type must be a string').required(
-    'Communication type is required'
-  ),
-  communicationEmail: Yup.string().when('communicationType', {
-    is: val => val === 'email',
-    then: Yup.string('Email must be a string')
-      .email('Please input correct email format ')
-      .required('Email is required'),
-  }),
-  communicationWebsite: Yup.string().when('communicationType', {
-    is: val => val === 'website-link',
-    then: Yup.string('Website must be a string')
-      .url('Please input proper website url')
-      .required('Website url is required'),
-  }),
-  avatarId: Yup.string().required('Avatar is required'),
-});
+import { GET_CLIENT_INFO } from '../../graphql/gig';
 
 const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
   <>
@@ -56,24 +19,10 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
       enableReinitialize
       initialValues={initialValues}
       onSubmit={onSubmit}
-      validationSchema={ClientInfoSchema}
-      render={({ values }) => (
+      validationSchema={common.validation.employerInput}
+      render={() => (
         <Form>
           <h2> Tell us about yourself</h2>
-          <Field
-            name="firstName"
-            type="text"
-            label="First Name"
-            help="Your surname"
-            component={CustomField}
-          />
-          <Field
-            name="lastName"
-            type="text"
-            label="Last Name"
-            help="Your given name"
-            component={CustomField}
-          />
           <Field
             name="email"
             type="text"
@@ -82,75 +31,52 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
             component={CustomField}
           />
           <Field
-            name="avatarId"
-            label="Company/Personal Avatar"
+            name="employerType"
+            type="radiocards"
+            label="You can post as an individual or a company"
+            component={CustomField}
+            options={[
+              {
+                value: 'PERSONAL',
+                title: 'Personal',
+                description: "You're hiring directly for yourself",
+              },
+              {
+                value: 'COMPANY',
+                title: 'Company',
+                description: "You're hiring for your company",
+              },
+            ]}
+          />
+          <Field
+            name="displayName"
+            type="text"
+            label="Display Name"
+            help="This can be your company or personal name"
+            component={CustomField}
+          />
+
+          <Field
+            name="introduction"
+            type="textarea"
+            label="Introduction"
+            help="What does you company do, your visions, etc."
+            component={CustomField}
+          />
+          <Field
+            name="avatarFileId"
+            label="Avatar"
             help="Your avatar will be shown in your gig posting"
             type="avatarupload"
-            component={CustomField}
-          />
-          <Field
-            name="companyName"
-            type="text"
-            label="Company Name"
-            help="If you are an individual, you can enter your personal brand name"
-            component={CustomField}
-          />
-          <Field
-            name="companyDescription"
-            type="textarea"
-            label="Company Description"
-            help="What does you company do, your goals, etc."
             component={CustomField}
           />
           <Field
             name="website"
             type="text"
             label="Website"
-            help="If a company website is not available, you can enter your personal website"
+            help="Enter your company or personal website"
             component={CustomField}
           />
-          <Field
-            name="communicationType"
-            type="radiocards"
-            label="How would you like to communicate with freelancers?"
-            component={CustomField}
-            options={[
-              {
-                value: 'email',
-                title: 'Email',
-                description: 'Direct freelancers to communicate via your email',
-              },
-              {
-                value: 'website-link',
-                title: 'Website Link',
-                description: 'Direct freelancers to a website of your choice',
-              },
-              {
-                value: 'in-app-chat',
-                title: 'In App Chat',
-                description:
-                  'Use our own chat service to communicate with clients',
-              },
-            ]}
-          />
-          {values.communicationType === 'email' && (
-            <Field
-              name="communicationEmail"
-              type="text"
-              label="Email"
-              help="The email for freelancers to contact you with"
-              component={CustomField}
-            />
-          )}
-          {values.communicationType === 'website-link' && (
-            <Field
-              name="communicationWebsite"
-              type="text"
-              label="Website Link"
-              help="The website link that you can direct applying freelancers"
-              component={CustomField}
-            />
-          )}
           <div
             style={{
               display: 'flex',
@@ -205,31 +131,28 @@ const FormClientInfo = ({ back, next }) => {
     fetchPolicy: 'cache-first',
   });
   if (loading) return <FormContainer loading />;
+
   return (
     <FormContainer
       initialValues={
-        data
-          ? data.clientInfo
+        data && data.employerData
+          ? data.employerData
           : {
-              firstName: '',
-              lastName: '',
-              email: '',
-              companyName: '',
-              companyDescription: '',
+              displayName: '',
               website: '',
-              communicationType: '',
-              communicationEmail: '',
-              communicationWebsite: '',
-              avatarId: null,
+              introduction: '',
+              email: '',
+              employerType: '',
+              avatarFileId: '',
             }
       }
       back={back}
       onSubmit={values => {
         client.writeData({
           data: {
-            clientInfo: {
+            employerData: {
               ...values,
-              __typename: 'clientInfo',
+              __typename: 'employerData',
             },
           },
         });

@@ -2,12 +2,15 @@ import React from 'react';
 import { useTransition, animated } from 'react-spring';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useQuery } from '@apollo/react-hooks';
 import Nav from '../components/Nav';
 import { MediaConsumer } from '../components/MediaProvider';
 import GigsList from '../components/GigsList';
 import HTMLHead from '../components/HTMLHead';
 import useInterval from '../utils/useInterval';
 import media from '../utils/media';
+import { GET_GIGS_LIST_FOR_LANDING } from '../graphql/gig';
+import Spinner from '../primitives/Spinner';
 
 const HeaderContainer = styled.header`
   width: 675px;
@@ -155,19 +158,28 @@ const Header = () => (
   </MediaConsumer>
 );
 
-const Index = () => (
-  <>
-    <HTMLHead />
-    <Nav />
-    <Header />
-    <GigsContainer>
-      <GigsGrid>
-        <Search type="search" placeholder="Search for design, dev gigs" />
-        <h2>Our Latest Gigs</h2>
-        <GigsList gigs={[{}, {}, {}, {}, {}, {}]} />
-      </GigsGrid>
-    </GigsContainer>
-  </>
-);
+const Index = () => {
+  const { data, loading } = useQuery(GET_GIGS_LIST_FOR_LANDING);
+  return (
+    <>
+      <HTMLHead />
+      <Nav />
+      <Header />
+      <GigsContainer>
+        <GigsGrid>
+          <Search type="search" placeholder="Search for design, dev gigs" />
+          <h2>Our Latest Gigs</h2>
+          {loading ? (
+            <span>
+              Loading... <Spinner />{' '}
+            </span>
+          ) : (
+            <GigsList gigs={data ? data.gigsListLanding : []} />
+          )}
+        </GigsGrid>
+      </GigsContainer>
+    </>
+  );
+};
 
 export default Index;
