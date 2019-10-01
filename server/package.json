@@ -11,6 +11,7 @@
     "lint": "eslint -c .eslintrc ./",
     "compose:dev": "sudo docker-compose --file prisma/docker-compose.yml up -d",
     "prisma:apply": "prisma deploy --force",
+    "prisma:login": "prisma login --key $(grep PRISMA_LOGIN_CLI_SECRET .env | cut -d '=' -f2)",
     "test": "NODE_ENV=test yarn run seed:test && yarn jest",
     "test:watch": "NODE_ENV=dev jest --watch",
     "seed:admin": "NODE_ENV=dev node ./prisma/seed/index.js admin",
