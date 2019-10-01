@@ -12,7 +12,7 @@ jobs:
           node-version: 12
       - run: npm install
       - run: npm run bootstrap
-      - run: cd common && npm run build
+      - run: npm run common:build
 
   test:
     needs: install-and-build
