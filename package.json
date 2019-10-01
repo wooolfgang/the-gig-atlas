@@ -8,7 +8,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "client:dev": "cd client && npm run dev --scripts-prepend-node-path",
-    "server:dev": "cd server && npm run dev --scripts-prepend-node-path"
+    "server:dev": "cd server && npm run dev --scripts-prepend-node-path",
+    "server:test": "cd server && npm run test"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",
