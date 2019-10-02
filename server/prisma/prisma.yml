@@ -1,4 +1,4 @@
-endpoint: http://localhost:4466
+endpoint: ${env:URI_PRISMA}
 datamodel: datamodel.prisma
 generate:
   - generator: javascript-client

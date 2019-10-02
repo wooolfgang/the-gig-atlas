@@ -1,19 +1,15 @@
-import { allow, chain, not } from 'graphql-shield';
+import { allow, chain } from 'graphql-shield';
 import common from '@shared/common';
 // import * as yup from 'yup';
-import { validate, verifyUser, isAuthenticated } from '../utils/rules';
+import { validate, hasNoAuth } from '../utils/rules';
 
 export default {
   Query: {
-    googleAuth: chain(verifyUser, not(isAuthenticated)),
+    googleAuth: hasNoAuth,
   },
   Mutation: {
-    signup: chain(
-      verifyUser,
-      not(isAuthenticated),
-      validate(common.validation.signupInput),
-    ),
-    login: chain(verifyUser, not(isAuthenticated)),
+    signup: chain(hasNoAuth, validate(common.validation.signupInput)),
+    login: hasNoAuth,
   },
   AuthPayload: allow,
 };
