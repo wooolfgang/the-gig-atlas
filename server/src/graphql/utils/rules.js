@@ -13,25 +13,40 @@ const verifyToken = token =>
     });
   });
 
-export const verifyUser = rule()(async (_, _args, ctx) => {
+const loadAuthPayload = async ctx => {
   const token = ctx.req.get('Authorization');
   if (!token) {
-    return true;
+    return new Error('No token specified');
   }
 
-  try {
-    const payload = await verifyToken(token);
+  const payload = await verifyToken(token);
+  ctx.user = payload;
 
-    ctx.user = payload;
-  } catch (e) {
-    return e;
-  }
+  return payload;
+};
+
+export const isMemberOnly = rule()(async (_, _1, ctx) => {
+  const payload = await loadAuthPayload(ctx);
+  ctx.isAuthenticated = true;
+
+  return payload.role === 'MEMBER';
+});
+
+export const isAdminOnly = rule()(async (_, _1, ctx) => {
+  const payload = await loadAuthPayload(ctx);
+  ctx.isAuthenticated = true;
+
+  return payload.role === 'ADMIN';
+});
+
+export const isAuthenticated = rule()(async (_, _1, ctx) => {
+  await loadAuthPayload(ctx);
 
   return true;
 });
 
-export const isAdmin = rule()(
-  (_, _args, { user }) => user && user.role === 'ADMIN',
+export const hasNoAuth = rule()(
+  (_, _args, { req }) => !req.get('Authorization'),
 );
 
 export const validate = schema =>
@@ -44,5 +59,3 @@ export const validate = schema =>
       return e;
     }
   });
-
-export const isAuthenticated = rule()((_, _args, { user }) => !!user);

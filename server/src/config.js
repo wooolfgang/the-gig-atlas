@@ -6,6 +6,7 @@
  *  import config before prisma in order to load variables
  */
 
+import { formatError } from 'graphql';
 import dotenv from 'dotenv';
 // loads .env variables
 dotenv.config();
@@ -70,18 +71,16 @@ const dev = {
   hasGraphiQl: true,
   hasDebug: true,
   gqlDebugger: error => {
-    console.log('\n');
-    console.log(error);
+    console.error('\nGQL ERROR DEBUGGER: => => =>');
+    console.log('Message: ', error.message);
+    console.log('positions: ', error.positions);
+    console.log('path: ', error.path);
+    console.log(error.stack);
 
-    return {
-      message: error.message,
-      locations: error.locations,
-      stack: '',
-      path: error.path,
-    };
+    return formatError(error);
   },
   errLogger: (err, req, res, next) => {
-    console.log('error >>>>>>');
+    console.log('express error >>>>>>');
     console.log(err);
     next(err);
   }
