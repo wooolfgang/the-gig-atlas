@@ -5,6 +5,7 @@ import { validate, hasNoAuth } from '../utils/rules';
 
 export default {
   Query: {
+    checkValidToken: allow,
     googleAuth: hasNoAuth,
   },
   Mutation: {

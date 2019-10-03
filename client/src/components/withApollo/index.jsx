@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Head from 'next/head';
 import { getDataFromTree } from '@apollo/react-ssr';
@@ -11,6 +12,7 @@ export default (App, { ssr = true } = {}) => {
       initApollo(apolloState, {
         getToken: () => props.token,
       });
+
     return <App {...props} apolloClient={client} />;
   };
 
@@ -36,6 +38,8 @@ export default (App, { ssr = true } = {}) => {
       const token = req
         ? nookies.get(ctx.ctx).token
         : document.cookie.split('=')[1];
+
+      ctx.ctx.token = token;
 
       const apollo = initApollo(
         {},

@@ -3,6 +3,7 @@ import argon2 from 'argon2';
 import uuidv4 from 'uuid/v4';
 import config from '../../config';
 import { getConnectionUrl } from '../../../serverless/google';
+import { verifyToken } from '../utils/rules';
 
 function jwtSign(payload) {
   return new Promise((resolve, reject) => {
@@ -63,8 +64,24 @@ const login = async (_, { email, password }, { prisma }) => {
   return createAuth(user.id, user.role);
 };
 
+const checkValidToken = async (_, _1, { req }) => {
+  const token = req.get('Authorization');
+  if (!token) {
+    return false;
+  }
+
+  try {
+    await verifyToken(token);
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 export default {
   Query: {
+    checkValidToken,
     googleAuth: () => getConnectionUrl(),
   },
   Mutation: {
