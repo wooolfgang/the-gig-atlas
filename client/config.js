@@ -7,7 +7,7 @@ const fromEnv = {
   env: NODE_ENV,
 };
 
-const dev = {
+const development = {
   public: {
     uriServer: SERVER_URI,
     uriServerGql: `${SERVER_URI}/gql`,
@@ -27,7 +27,7 @@ const production = {
 };
 
 const config = {
-  dev,
+  development,
   staging,
   production,
   test,
@@ -35,11 +35,11 @@ const config = {
 
 if (!config[NODE_ENV]) {
   throw new Error(
-    `Config Error, NODE_ENV="${NODE_ENV}", dev|staging|production|test`,
+    `Config Error, NODE_ENV="${NODE_ENV}", development|staging|production|test`,
   );
   process.exit(1);
 }
 
 const allconfig = { ...config[NODE_ENV], ...fromEnv };
 
-export default allconfig;
+module.exports = allconfig;

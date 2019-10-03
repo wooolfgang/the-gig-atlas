@@ -1,8 +1,8 @@
 import React from 'react';
-import { useMutation } from '@apollo/react-hooks';
+// import { useMutation } from '@apollo/react-hooks';
 import FormSignin from '../../components/FormSignin';
 
-const Signin = ({}) => (
+const Signin = () => (
   <>
     <FormSignin />
   </>
