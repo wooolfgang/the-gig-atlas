@@ -12,9 +12,10 @@ const SigninLocal = () => {
       /**
        * @todo: set as secure
        */
+      console.log('=> from signin form');
       console.log('the data: ', data);
       auth.setTokenCookie(data.login.token);
-      console.log(document.cookie);
+      console.log('current cookie', document.cookie);
       router.toProfile();
     },
     onError: err => {

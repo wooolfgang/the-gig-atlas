@@ -1,17 +1,13 @@
+/* eslint-disable import/no-named-as-default-member */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Head from 'next/head';
 import { getDataFromTree } from '@apollo/react-ssr';
-import nookies from 'nookies';
 import initApollo from '../../utils/apollo';
 
 export default (App, { ssr = true } = {}) => {
   const WithApollo = ({ apolloClient, apolloState, ...props }) => {
-    const client =
-      apolloClient ||
-      initApollo(apolloState, {
-        getToken: () => props.token,
-      });
+    const client = apolloClient || initApollo(apolloState);
 
     return <App {...props} apolloClient={client} />;
   };
@@ -32,21 +28,13 @@ export default (App, { ssr = true } = {}) => {
       const {
         Component,
         router,
-        ctx: { req, res },
+        ctx: { res },
       } = ctx;
 
-      const token = req
-        ? nookies.get(ctx.ctx).token
-        : document.cookie.split('=')[1];
+      // const token = auth.getToken(ctx.ctx);
+      // ctx.ctx.token = token;
 
-      ctx.ctx.token = token;
-
-      const apollo = initApollo(
-        {},
-        {
-          getToken: () => token,
-        },
-      );
+      const apollo = initApollo({}, ctx.ctx);
 
       ctx.ctx.apolloClient = apollo;
 
@@ -92,7 +80,6 @@ export default (App, { ssr = true } = {}) => {
       return {
         ...appProps,
         apolloState,
-        token,
       };
     };
   }

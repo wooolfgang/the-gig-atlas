@@ -66,6 +66,7 @@ const login = async (_, { email, password }, { prisma }) => {
 
 const checkValidToken = async (_, _1, { req }) => {
   const token = req.get('Authorization');
+  console.log('check valid token: ', token);
   if (!token) {
     return false;
   }
