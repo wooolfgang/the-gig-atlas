@@ -3,24 +3,16 @@ import router from '../../utils/router';
 import { CHECK_VALID_TOKEN } from '../../graphql/auth';
 
 const withAuthSync = WrappedComponent => {
-  /**
-   * Authentication Page wrapper
-   * @param {Object} props
-   * @param {Object} props.client
-   */
   const Wrapper = props => {
     const syncLogout = event => {
       if (event.key === 'logout') {
-        console.log('logged out from storage!');
         router.toSignin();
       }
     };
-
     useEffect(() => {
+      // => set log effects
       window.addEventListener('storage', syncLogout);
-      console.log('used effect synch logout');
       return () => {
-        console.log('used effect sync logout 2');
         window.removeEventListener('storage', syncLogout);
         window.localStorage.removeItem('logout');
       };
@@ -30,18 +22,24 @@ const withAuthSync = WrappedComponent => {
   };
 
   Wrapper.getInitialProps = async ctx => {
-    console.log('EXECUTED HERE in...');
-    /**
-     * Authenticate Component with valid token
-     */
-    const { token, apolloClient, req } = ctx;
+    // => Authenticates Component with valid token
+
+    const { token, apolloClient } = ctx;
+
+    if (!token) {
+      router.toSignin(ctx);
+
+      return {};
+    }
+
     const res = await apolloClient.query({
       query: CHECK_VALID_TOKEN,
     });
 
-    if (req && !res.data.checkValidToken) {
-      ctx.res.writeHead(302, { Location: '/auth/signin' });
-      ctx.res.end();
+    if (!res.data.checkValidToken) {
+      router.toSignin(ctx);
+
+      return {};
     }
 
     let componentProps = {};
