@@ -1,5 +1,5 @@
 /* eslint-disable import/no-named-as-default-member */
-import { ApolloClient, InMemoryCache } from 'apollo-boost';
+import { ApolloClient, InMemoryCache, ApolloLink, concat } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
 import { createUploadLink as CreateUploadLink } from 'apollo-upload-client';
 import getConfig from 'next/config';
@@ -8,8 +8,8 @@ import auth from './auth';
 
 const { publicRuntimeConfig } = getConfig();
 
-const apolloClient = null;
 const isServer = typeof window === 'undefined';
+let apolloClient = null;
 
 const endpoint = publicRuntimeConfig.uriServerGql;
 // Polyfill fetch() on the server (used by apollo-client)
@@ -28,26 +28,28 @@ function create(initialState, ctx) {
     });
   }
 
-  console.log('=> apollo client create: ');
-  const token = auth.getToken(ctx);
-  console.log('apollo token: ', token);
+  const middleware = new ApolloLink((operation, next) => {
+    // => handles post process authentication before every server request
+    const token = auth.getToken(ctx);
+    operation.setContext({
+      headers: {
+        authorization: token,
+      },
+    });
 
-  const request = operation => {
-    console.log('from client fetch', operation);
-  };
+    return next(operation);
+  });
+  const uploadLink = new CreateUploadLink({
+    uri: endpoint, // Server URL (must be absolute)
+    credentials: 'include',
+  });
 
   return new ApolloClient({
     connectToDevTools: process.browser,
+    link: concat(middleware, uploadLink),
     ssrMode: isServer, // Disables forceFetch on the server (so queries are only run once)
-    link: new CreateUploadLink({
-      uri: endpoint, // Server URL (must be absolute)
-      credentials: 'include',
-      headers: { authorization: token }, // remove temporarily
-      request,
-    }),
     cache,
     resolvers: {},
-    request,
   });
 }
 
@@ -60,13 +62,9 @@ export default function initApollo(initialState, ctx = {}) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
 
-  // if (isServer) {
-  //   return create(initialState, ctx);
-  // }
+  if (!apolloClient) {
+    apolloClient = create(initialState, ctx);
+  }
 
-  // if (!apolloClient) {
-  //   apolloClient = create(initialState, ctx);
-  // }
-  return create(initialState, ctx);
-  // return apolloClient;
+  return apolloClient;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import WithAuthSync from '../components/WithAuthSync';
+import WithAuthSync from '../components/withAuthSync';
 
 const Profile = () => (
   <div>

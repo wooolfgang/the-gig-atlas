@@ -22,7 +22,6 @@ export default (App, { ssr = true } = {}) => {
 
     WithApollo.displayName = `withApollo(${displayName})`;
   }
-
   if (ssr || App.getInitialProps) {
     WithApollo.getInitialProps = async ctx => {
       const {
