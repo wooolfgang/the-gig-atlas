@@ -52,7 +52,7 @@ const dev = {
   },
   testUrl: 'http://localhost:8080/gql',
   cors: {
-    origin: 'http://localhost:3000',
+    origin: CLIENT_URL,
     credentials: true,
   },
   hasGraphiQl: true,
