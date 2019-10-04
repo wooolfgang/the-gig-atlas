@@ -9,13 +9,7 @@ import auth from '../../utils/auth';
 const SigninLocal = () => {
   const [login] = useMutation(LOGIN_LOCAL, {
     onCompleted: data => {
-      /**
-       * @todo: set as secure
-       */
-      console.log('=> from signin form');
-      console.log('the data: ', data);
       auth.setTokenCookie(data.login.token);
-      console.log('current cookie', document.cookie);
       router.toProfile();
     },
     onError: err => {
@@ -27,7 +21,6 @@ const SigninLocal = () => {
     <>
       <Formik
         onSubmit={async (values, actions) => {
-          console.log('values: ', values);
           await login({ variables: values });
           actions.setSubmitting(false);
         }}

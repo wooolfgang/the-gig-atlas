@@ -3,6 +3,10 @@ import router from '../../utils/router';
 import { CHECK_VALID_TOKEN } from '../../graphql/auth';
 import auth from '../../utils/auth';
 
+/**
+ * Wrapped component that must not be rendered from authenticated user
+ * @param {React.Component} WrappedComponent React component to be wrapped
+ */
 const withNoAuthSync = WrappedComponent => {
   const Wrapper = props => <WrappedComponent {...props} />;
 
@@ -10,8 +14,6 @@ const withNoAuthSync = WrappedComponent => {
     // => Checks Token validity
     const { apolloClient } = ctx;
     const token = auth.getToken(ctx);
-    console.log('from WithNoAuthSync ');
-    console.log('token: ', token);
 
     if (token) {
       // => disallow user with valid token
@@ -19,9 +21,8 @@ const withNoAuthSync = WrappedComponent => {
         query: CHECK_VALID_TOKEN,
       });
 
-      console.log('result token: ', res);
-
       if (res.data.checkValidToken === true) {
+        // => redirect to profile if user is authenticated
         router.toProfile(ctx);
 
         return {};
