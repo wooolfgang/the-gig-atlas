@@ -22,7 +22,7 @@ const withAuthSync = WrappedComponent => {
   };
 
   Wrapper.getInitialProps = async ctx => {
-    // => Authenticates Component with valid token
+    // => Authenticates User Component with valid token
 
     const { token, apolloClient } = ctx;
 
