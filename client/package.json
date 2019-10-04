@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "next ./src",
-    "build": "next build",
-    "start": "next start"
+    "build": "next build ./src",
+    "start": "next start ./src"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.0",
