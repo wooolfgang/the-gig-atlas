@@ -1,12 +1,14 @@
+/* eslint-disable import/no-named-as-default-member */
 import { ApolloClient, InMemoryCache } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
 import { createUploadLink as CreateUploadLink } from 'apollo-upload-client';
 import getConfig from 'next/config';
 import { persistCache } from 'apollo-cache-persist';
+import auth from './auth';
 
 const { publicRuntimeConfig } = getConfig();
 
-let apolloClient = null;
+const apolloClient = null;
 const isServer = typeof window === 'undefined';
 
 const endpoint = publicRuntimeConfig.uriServerGql;
@@ -15,9 +17,9 @@ if (isServer) {
   global.fetch = fetch;
 }
 
-function create(initialState, { getToken }) {
+function create(initialState, ctx) {
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
-  const token = getToken();
+  // const token = getToken();
   const cache = new InMemoryCache().restore(initialState);
   if (!isServer) {
     persistCache({
@@ -26,31 +28,45 @@ function create(initialState, { getToken }) {
     });
   }
 
+  console.log('=> apollo client create: ');
+  const token = auth.getToken(ctx);
+  console.log('apollo token: ', token);
+
+  const request = operation => {
+    console.log('from client fetch', operation);
+  };
+
   return new ApolloClient({
     connectToDevTools: process.browser,
     ssrMode: isServer, // Disables forceFetch on the server (so queries are only run once)
     link: new CreateUploadLink({
-      uri: process.env.NODE_ENV === 'development' ? endpoint : endpoint, // Server URL (must be absolute)
+      uri: endpoint, // Server URL (must be absolute)
       credentials: 'include',
-      headers: { authorization: token },
+      headers: { authorization: token }, // remove temporarily
+      request,
     }),
     cache,
     resolvers: {},
+    request,
   });
 }
 
-export default function initApollo(initialState, options) {
+/**
+ * Create or retrieve apollo client
+ * @param {Object} initialState
+ * @param {Object} ctx
+ */
+export default function initApollo(initialState, ctx = {}) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
 
-  if (isServer) {
-    return create(initialState, options);
-  }
+  // if (isServer) {
+  //   return create(initialState, ctx);
+  // }
 
-  // Reuse client on the client-side
-  if (!apolloClient) {
-    apolloClient = create(initialState, options);
-  }
-
-  return apolloClient;
+  // if (!apolloClient) {
+  //   apolloClient = create(initialState, ctx);
+  // }
+  return create(initialState, ctx);
+  // return apolloClient;
 }
