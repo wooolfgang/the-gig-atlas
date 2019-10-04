@@ -1,6 +1,7 @@
 import React from 'react';
 // import { useMutation } from '@apollo/react-hooks';
 import FormSignin from '../../components/FormSignin';
+import withNoAuth from '../../components/WithNoAuthSync';
 
 const Signin = () => (
   <>
@@ -8,4 +9,4 @@ const Signin = () => (
   </>
 );
 
-export default Signin;
+export default withNoAuth(Signin);

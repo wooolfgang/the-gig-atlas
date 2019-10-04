@@ -1,34 +1,25 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import router from '../../utils/router';
 import { CHECK_VALID_TOKEN } from '../../graphql/auth';
 
 const withNoAuthSync = WrappedComponent => {
-  /**
-   * Authentication Page wrapper
-   * @param {Object} props
-   * @param {Object} props.client
-   */
-  const Wrapper = props => {
-
-    return <WrappedComponent {...props} />;
-  };
+  const Wrapper = props => <WrappedComponent {...props} />;
 
   Wrapper.getInitialProps = async ctx => {
-    /**
-     * Authenticate Component with valid token
-     */
-    const { token, apolloClient, req } = ctx;
-    const res = await apolloClient.query({
-      query: CHECK_VALID_TOKEN,
-    });
+    // => Checks Token validity
+    const { token, apolloClient } = ctx;
 
-    if (req && !res.data.checkValidToken) {
-      // server check
-      ctx.res.writeHead(302, { Location: '/auth/signin' });
-      ctx.res.end();
-    } else if (!res.data.checkValidToken) {
-      // browser check
-      router.toSignin();
+    if (token) {
+      // => disallow user with valid token
+      const res = await apolloClient.query({
+        query: CHECK_VALID_TOKEN,
+      });
+
+      if (res.data.checkValidToken === true) {
+        router.toProfile(ctx);
+
+        return {};
+      }
     }
 
     let componentProps = {};
