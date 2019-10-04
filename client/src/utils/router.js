@@ -1,7 +1,16 @@
 import Router from 'next/router';
 
-const toSignin = () => {
-  Router.push('/auth/signin');
+/**
+ * Redirect to signin page
+ * @param {Object} ctx provide ctx object to determine either Server or browser
+ */
+const toSignin = ctx => {
+  if (ctx && ctx.res) {
+    ctx.res.writeHead(302, { Location: '/auth/signin' });
+    ctx.res.end();
+  } else {
+    Router.push('/auth/signin');
+  }
 };
 
 const toSignup = () => {
