@@ -16,4 +16,4 @@ jobs:
         with:
           node-version: 12
       - run: sudo apt-get install sshpass
-      - run: ./deploy.sh
+      - run: ./deploy-staging.sh
