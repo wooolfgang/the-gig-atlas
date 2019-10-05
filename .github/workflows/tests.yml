@@ -13,7 +13,7 @@ jobs:
       - run: npm install
       - run: npm run bootstrap
       - run: npm run common:build
-      - run: cp server/.env.staging server/.env
+      - run: cp server/.env.testing server/.env
       - run: npm run server:prisma
       - run: npm run server:test
   
