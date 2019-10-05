@@ -65,7 +65,11 @@ const dev = {
   },
   testUrl: 'http://localhost:8080/gql',
   cors: {
-    origin: 'http://localhost:3000',
+    origin: [
+      CLIENT_URL,
+      'http://staging.thegigatlas.com',
+      'https://staging.thegigatlas.com',
+    ],
     credentials: true,
   },
   hasGraphiQl: true,

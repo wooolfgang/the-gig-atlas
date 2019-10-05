@@ -1,6 +1,6 @@
 import React from 'react';
 import FormSignup from '../../components/FormSignup';
-import withNoAuth from '../../components/WithNoAuthSync';
+import withNoAuth from '../../components/withNoAuthSync';
 
 const Signup = () => (
   <>
