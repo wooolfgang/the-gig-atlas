@@ -1,0 +1,19 @@
+name: Run Tests
+
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run bootstrap
+      - run: npm run common:build
+      - run: cp server/.env.testing server/.env
+      - run: npm run server:prisma
+      - run: npm run server:test
+  

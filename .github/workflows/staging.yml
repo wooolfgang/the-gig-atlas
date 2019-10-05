@@ -1,0 +1,22 @@
+name: Deploy Staging
+
+on:
+  pull_request:
+    branches:
+      - develop
+  push: 
+    branches: 
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env: 
+      SSH_PASS: ${{ secrets.SSH_PASS }}
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: sudo apt-get install sshpass
+      - run: ./deploy-staging.sh

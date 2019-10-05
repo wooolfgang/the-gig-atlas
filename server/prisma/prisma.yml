@@ -1,4 +1,5 @@
-endpoint: ${env:URI_PRISMA}
+endpoint: ${env:PRISMA_ENDPOINT}
+
 datamodel: datamodel.prisma
 generate:
   - generator: javascript-client
