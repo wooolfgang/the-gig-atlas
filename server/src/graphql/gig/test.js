@@ -70,8 +70,14 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await prisma.deleteUser({ email: employer.email });
-  await prisma.deleteUser({ email: existingUser.email });
+  try {
+    await Promise.all([
+      prisma.deleteUser({ email: employer.email }),
+      prisma.deleteUser({ email: existingUser.email }),
+    ]);
+  } catch (e) {
+    // fail gracefully
+  }
 });
 
 describe('Testing gig resolvers', () => {
