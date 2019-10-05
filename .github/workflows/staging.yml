@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: apt-get install sshpass
+      - run: sudo apt-get install sshpass
       - run: sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no dev@167.179.102.140
       - run: cd the-gig-atlas && git pull origin develop
       - run: npm run bootstrap && npm run common:build
