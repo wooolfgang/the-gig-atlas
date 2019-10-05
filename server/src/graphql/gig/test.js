@@ -76,7 +76,7 @@ afterAll(async () => {
       prisma.deleteUser({ email: existingUser.email }),
     ]);
   } catch (e) {
-    console.error(e);
+    // fail gracefully
   }
 });
 
