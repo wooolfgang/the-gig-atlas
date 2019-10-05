@@ -1,9 +1,9 @@
-name: Node.js Package
+name: Run Tests
 
 on: [pull_request]
 
 jobs:
-  test-and-deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -16,3 +16,4 @@ jobs:
       - run: cp server/.env.staging server/.env
       - run: npm run server:prisma
       - run: npm run server:test
+  
