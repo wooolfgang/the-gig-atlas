@@ -26,7 +26,14 @@ const SignupLocal = () => {
     <>
       <Formik
         onSubmit={async (values, actions) => {
-          await signup({ variables: { input: values } });
+          try {
+            await signup({ variables: { input: values } });
+          } catch (e) {
+            /**
+             * @todo: handle error
+             */
+            console.error(e);
+          }
           actions.setSubmitting(false);
         }}
         render={({ isSubmitting }) => (
