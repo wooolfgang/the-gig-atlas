@@ -65,8 +65,8 @@ const login = async (_, { email, password }, { prisma }) => {
     throw new Error('Invalid credentials');
   }
 
-  const isVeryfied = await argon2.verify(user.password, password);
-  if (!isVeryfied) {
+  const isVerified = await argon2.verify(user.password, password);
+  if (!isVerified) {
     throw new Error('Invalid credentials');
   }
 
