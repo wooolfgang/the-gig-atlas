@@ -4,23 +4,40 @@
 1. Docker Setup
     - install docker & docker-compose
     - open docker service
-    - run docker-compose
+    - initialize prisma docker image
       ```bash
-        $ docker-compose -f prisma/docker-compose.yml up -d
+        $ yarn run compose:dev
       ```
 2. Prisma Setup
-    - run prisma_apply.sh file
+    - deploy prisma
       ```bash
-        $ ./prisma_apply.sh
+        $ yarn run prisma:apply
       ```
 3. Setup your .env file
     - refer to .env.keys as reference
 
-3. Install argon2 auth dependencies
+4. Install argon2 auth dependencies
     - https://www.npmjs.com/package/argon2#before-installing
+
+5. Running Development
+   - watch
+    ```bash
+        $ yarn run dev
+    ```
+
+6. Running Test
+    - watch
+    ```bash
+        $ yarn run dev
+        $ yarn run test:watch
+    ```
+    - one time
+    - ```bash
+        $ yarn run test
+    ```
 
 
 ### Other Description
   - thenode.pem file - key to hosting os
-  - config.js files contains and manages constants and configuration values allthoughout the entire app
+  - config.js files contains and manages constants and configuration values all throughout the entire app
   - prefix underscore for unused variables (e.g: var _foo = 'f')
