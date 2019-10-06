@@ -18,6 +18,10 @@ async function createApp() {
       gqlMiddleware,
     );
 
+  if (config.errLogger) {
+    app.use(config.errLogger);
+  }
+
   return app;
 }
 
