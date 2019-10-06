@@ -1,11 +1,12 @@
 type Query {
   checkValidToken: Boolean!
-  googleAuth: String!
+  googleOAuthURL: String!
 }
 
 type Mutation {
   signup(input: SignupInput!): AuthPayload
   login(email: String!, password: String!): AuthPayload
+  oauth(input: OAuthInput!): OAuthResult
 }
 
 input SignupInput {
@@ -18,4 +19,19 @@ input SignupInput {
 type AuthPayload {
   token: String
   id: ID
+}
+
+input OAuthInput {
+  code: String
+}
+
+enum LogType {
+  LOGIN
+  SIGNUP
+}
+
+type OAuthResult {
+  id: ID
+  token: String
+  logType: LogType
 }

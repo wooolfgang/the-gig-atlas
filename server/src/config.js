@@ -51,7 +51,7 @@ const fromEnv = {
   oauth: {
     idClient: ID_CLIENT_OAUTH,
     secretClient: SECRET_CLIENT_OAUTH,
-    redirectURI: REDIRECT_OAUTH_URI || 'http://localhost:8080/api/googleauth',
+    redirectURI: REDIRECT_OAUTH_URI || 'http://localhost:3000/auth/oauth',
   },
 };
 
