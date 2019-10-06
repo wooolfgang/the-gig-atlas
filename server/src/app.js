@@ -5,7 +5,6 @@ import { graphqlUploadExpress } from 'graphql-upload';
 
 import gqlMiddleware from './graphql/middleware';
 import config from './config';
-import { auth } from './routes';
 
 async function createApp() {
   const app = express()
@@ -13,7 +12,6 @@ async function createApp() {
     .use(morgan(config.morgan))
     .use(express.json({ limit: '10mb', extended: true }))
     .use(express.urlencoded({ limit: '10mb', extended: true }))
-    .use('/api', auth)
     .use(
       '/gql',
       graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),

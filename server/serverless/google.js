@@ -46,6 +46,7 @@ async function getUserData(code) {
 }
 
 export { getConnectionUrl, getUserData };
+export default { getConnectionUrl, getUserData };
 
 /**
  * @references

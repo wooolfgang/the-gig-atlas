@@ -2,6 +2,9 @@ import { rule } from 'graphql-shield';
 import jwt from 'jsonwebtoken';
 import config from '../../config';
 
+export const ADMIN = 'ADMIN';
+export const MEMBER = 'MEMBER';
+
 /**
  * Resolves on valid token
  * @param {String} jwt token from Authorization headers
@@ -19,7 +22,7 @@ export const verifyToken = token =>
 
 /**
  * Loads payload to ctx.user after sucessful jwt verification
- * @param {ResolverContext} ctx
+ * @param {ResolverContext} ctx graphql resolver's context
  */
 const loadAuthPayload = async ctx => {
   const token = ctx.req.get('Authorization');
@@ -40,7 +43,7 @@ const loadAuthPayload = async ctx => {
 export const isMemberOnly = rule()(async (_, _1, ctx) => {
   const payload = await loadAuthPayload(ctx);
 
-  return payload.role === 'MEMBER';
+  return payload.role === MEMBER;
 });
 
 /**
@@ -49,7 +52,7 @@ export const isMemberOnly = rule()(async (_, _1, ctx) => {
 export const isAdminOnly = rule()(async (_, _1, ctx) => {
   const payload = await loadAuthPayload(ctx);
 
-  return payload.role === 'ADMIN';
+  return payload.role === MEMBER;
 });
 
 /**
@@ -70,7 +73,6 @@ export const hasNoAuth = rule()(async (_, _args, { req }) => {
     return true;
   }
 
-  let isAuthenticated;
   try {
     await verifyToken(token);
 
@@ -93,8 +95,8 @@ const isEitherAuth = (...roles) =>
     return roles.some(role => role === payload.role);
   });
 
-isEitherAuth.ADMIN = 'ADMIN';
-isEitherAuth.MEMBER = 'MEMBER';
+isEitherAuth.ADMIN = ADMIN;
+isEitherAuth.MEMBER = MEMBER;
 
 export { isEitherAuth };
 
