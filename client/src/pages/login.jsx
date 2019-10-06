@@ -14,7 +14,7 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
-const Background = styled.div`
+const Body = styled.div`
   background: ${props => props.theme.color.d5};
   width: 100vw;
   margin-top: -6.25rem;
@@ -47,7 +47,7 @@ const Login = () => (
     <IllustrationContainer>
       <LoginIllustrationAnimated width={150} height={150} />
     </IllustrationContainer>
-    <Background>
+    <Body>
       <h1 style={{ margin: '1.875rem 0 0px 0' }}> Login to The Gig Atlas</h1>
       <p>
         Interact with an awesome
@@ -101,7 +101,7 @@ const Login = () => (
           )}
         />
       </Card>
-    </Background>
+    </Body>
   </Container>
 );
 

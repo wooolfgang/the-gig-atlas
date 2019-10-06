@@ -21,9 +21,9 @@ export const password = yup
   .min(6, 'Password must be at least 6 characters');
 export const userRole = yup.string().matches(userRoleRegex);
 export const signupInput = yup.object().shape({
-  email,
+  email: email.required('Email is required'),
   name,
-  password,
+  password: password.required('Password is required'),
 });
 export const signinInput = yup.object().shape({
   email: email.required('Email is required'),
