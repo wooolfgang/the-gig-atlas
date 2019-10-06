@@ -7,6 +7,7 @@ export const StyledNav = styled.nav`
   align-items: center;
   height: 85px;
   box-sizing: border-box;
+  background: white;
 
   a {
     color: ${props => props.theme.color.d1};
@@ -14,7 +15,11 @@ export const StyledNav = styled.nav`
   }
 `;
 
-export const NavLinks = styled.div``;
+export const NavLinks = styled.div`
+  a {
+    margin: 17.5px;
+  }
+`;
 
 export const PostGigButton = styled.button`
   background: none;
