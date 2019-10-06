@@ -8,6 +8,12 @@ export const CHECK_VALID_TOKEN = gql`
   }
 `;
 
+export const GOOGLE_URL = gql`
+  query {
+    googleOAuthURL
+  }
+`;
+
 // MUTATIONS
 export const SIGNUP_LOCAL = gql`
   mutation SIGNUP_LOCAL($input: SignupInput!) {
@@ -23,6 +29,16 @@ export const LOGIN_LOCAL = gql`
     login(email: $email, password: $password) {
       id
       token
+    }
+  }
+`;
+
+export const OAUTH = gql`
+  mutation OAUTH($input: OAuthInput!) {
+    oauth(input: $input) {
+      id
+      token
+      logType
     }
   }
 `;
