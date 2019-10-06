@@ -52,7 +52,7 @@ export const isMemberOnly = rule()(async (_, _1, ctx) => {
 export const isAdminOnly = rule()(async (_, _1, ctx) => {
   const payload = await loadAuthPayload(ctx);
 
-  return payload.role === MEMBER;
+  return payload.role === ADMIN;
 });
 
 /**
