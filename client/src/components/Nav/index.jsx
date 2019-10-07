@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyledNav, NavLinks, PostGigButton } from './style';
 import { MediaConsumer } from '../MediaProvider';
-import NavLink from '../NavLink';
+import NavLink from '../../primitives/NavLink';
 
 const Nav = () => (
   <MediaConsumer>
@@ -16,7 +16,7 @@ const Nav = () => (
             <NavLink style={{ marginRight: '20px' }} href="/gigs">
               Gigs
             </NavLink>
-            <NavLink style={{ marginRight: '20px' }} href="/login">
+            <NavLink style={{ marginRight: '20px' }} href="/auth/signin">
               Login
             </NavLink>
             <NavLink href="/gig/tech/create">

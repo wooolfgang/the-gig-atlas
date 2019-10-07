@@ -15,11 +15,7 @@ export const StyledNav = styled.nav`
   }
 `;
 
-export const NavLinks = styled.div`
-  a {
-    margin: 17.5px;
-  }
-`;
+export const NavLinks = styled.div``;
 
 export const PostGigButton = styled.button`
   background: none;
