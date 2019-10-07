@@ -40,21 +40,15 @@ OAuth.getInitialProps = async ctx => {
   }
 
   try {
-    let res;
-    if (provider === 'google') {
-      const oauthInput = {
-        code,
-      };
+    const oauthInput = {
+      code,
+      provider,
+    };
 
-      res = await apolloClient.mutate({
-        mutation: OAUTH,
-        variables: { input: oauthInput },
-      });
-    } else if (provider === 'github') {
-      // [reference]=> https://auth0.com/docs/connections/social/github
-    } else {
-      // => handle invalid provider
-    }
+    const res = await apolloClient.mutate({
+      mutation: OAUTH,
+      variables: { input: oauthInput },
+    });
 
     const {
       data: { oauth },

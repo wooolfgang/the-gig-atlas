@@ -6,7 +6,7 @@ import { validate, hasNoAuth } from '../utils/rules';
 export default {
   Query: {
     checkValidToken: allow,
-    googleOAuthURL: hasNoAuth,
+    oauthURL: hasNoAuth,
   },
   Mutation: {
     signup: chain(hasNoAuth, validate(common.validation.signupInput)),
@@ -15,4 +15,5 @@ export default {
   },
   AuthPayload: allow,
   OAuthResult: allow,
+  OAuthURL: allow,
 };

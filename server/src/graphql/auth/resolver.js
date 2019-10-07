@@ -3,6 +3,7 @@ import argon2 from 'argon2';
 import uuidv4 from 'uuid/v4';
 import config from '../../config';
 import google from '../../../serverless/google';
+import github from '../../../serverless/github';
 import { verifyToken } from '../utils/rules';
 
 /**
@@ -92,8 +93,18 @@ const checkValidToken = async (_, _1, { req }) => {
  * Resolver for handling providers OAuth
  */
 const oauth = async (_, { input }, { prisma }) => {
-  const { code } = input;
-  const { email, firstName, lastName } = await google.getUserData(code);
+  const { code, provider } = input;
+  let data;
+
+  if (provider === 'google') {
+    data = await google.getUserData(code);
+  } else if (provider === 'github') {
+    data = await github.getUserData(code);
+  } else {
+    throw new Error('No provider');
+  }
+
+  const { email, firstName, lastName } = data;
   const user = await prisma // => check user if already a member or not
     .user({ email })
     .$fragment('fragment Login on User { id role password }');
@@ -119,10 +130,15 @@ const oauth = async (_, { input }, { prisma }) => {
   return { logType, ...authPayload };
 };
 
+const oauthURL = () => ({
+  google: google.getConnectionUrl(),
+  github: github.getConnectionURL(),
+});
+
 export default {
   Query: {
     checkValidToken,
-    googleOAuthURL: () => google.getConnectionUrl(),
+    oauthURL,
   },
   Mutation: {
     signup,
