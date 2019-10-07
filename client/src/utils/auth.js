@@ -25,13 +25,13 @@ const getToken = ctx =>
  * @param {Object} ctx to determine server or browser
  */
 const logout = (ctx = undefined) => {
-  destroyCookie(ctx, TOKEN_KEY);
+  destroyCookie(ctx, TOKEN_KEY, { path: '/' });
   window.localStorage.setItem('logout', Date.now());
 };
 
 /**
  * Generate 40 random character for Oauth2 state param
- * @param {Object} ctx ctx object to determine server/browser (browser mostly) 
+ * @param {Object} ctx ctx object to determine server/browser (browser mostly)
  */
 const generateRandomState = ctx => {
   const { crypto } = ctx && ctx.req ? global : window;
@@ -60,12 +60,12 @@ const setOauthState = (url, ctx) => {
   // [ref]=> https://auth0.com/docs/protocols/oauth2/oauth-state
 };
 
-const removeStateCookie = ctx => {
-  destroyCookie(ctx, OAUTH_STATE_KEY);
-};
-
 const getState = ctx =>
   parseCookies(ctx && ctx.req ? ctx : undefined)[OAUTH_STATE_KEY];
+
+const removeStateCookie = (ctx = undefined) => {
+  destroyCookie(ctx, OAUTH_STATE_KEY, { path: '/' });
+};
 
 export default {
   setTokenCookie,
