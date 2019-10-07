@@ -8,9 +8,12 @@ export const CHECK_VALID_TOKEN = gql`
   }
 `;
 
-export const GOOGLE_URL = gql`
+export const OAUTH_URL = gql`
   query {
-    googleOAuthURL
+    oauthURL {
+      google
+      github
+    }
   }
 `;
 

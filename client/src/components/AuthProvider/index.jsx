@@ -3,6 +3,12 @@ import React, { useState } from 'react';
 import auth from '../../utils/auth';
 import router from '../../utils/router';
 
+/**
+ * Creates and open a new window popup for handling OAuth from providers
+ * @param {String} url provider oauth url
+ * @param {String} name window name
+ * @param {Function} handler handles popup window event
+ */
 const openPopup = (url, name, handler) => {
   const width = 600;
   const height = 600;
@@ -25,45 +31,69 @@ const openPopup = (url, name, handler) => {
 /**
  *  Holds Providers authentication
  * @param {Object} props
- * @param {String} props.googleURL google OAuthURL redirection
+ * @param {Object} props.oauthURL object contains providers URL
+ * @param {String} props.oauthURL.google google oauth URL
+ * @param {String} props.oauthURL.github github oauth URL
+ *
  */
-const AuthProvider = ({ googleURL }) => {
-  let msgHandler;
-
+const AuthProvider = ({ oauthURL }) => {
   const [isSigning, setSigning] = useState(false);
-  const startAuth = (url, name) => e => {
-    if (!isSigning) {
-      msgHandler = event => {
-        // => set msg from popup window to handle
-        if (!event.data || event.data.type !== 'oauth') {
-          return;
-        }
+  let checkWindowClose;
 
-        setSigning(false);
-        window.removeEventListener('message', msgHandler);
-
-        const { oauth, errors } = event.data;
-        if (oauth) {
-          auth.setTokenCookie(oauth.token);
-          router.toProfile();
-        } else {
-          console.log('received errors: ', errors);
-        }
-      };
-
-      e.preventDefault();
-      openPopup(url, name, msgHandler);
-      setSigning(true);
+  const oauthRsultHandler = event => {
+    // => set msg from popup window to handle
+    if (!event.data || event.data.type !== 'oauth') {
+      return;
     }
+
+    // => cleanup
+    setSigning(false);
+    auth.removeStateCookie();
+    window.removeEventListener('message', oauthRsultHandler);
+    clearInterval(checkWindowClose);
+
+    // => Handle result from authentication
+    const { oauth, errors } = event.data;
+    if (oauth) {
+      auth.setTokenCookie(oauth.token);
+      router.toProfile();
+    } else {
+      /**
+       * @TODO handle error received upon failed authnetication
+       */
+      console.log('received errors: ', errors);
+    }
+  };
+
+  const startAuth = (url, name) => e => {
+    e.preventDefault();
+
+    const stateURl = auth.setOauthState(url);
+    const popup = openPopup(stateURl, name, oauthRsultHandler);
+    checkWindowClose = setInterval(() => {
+      // => check window close state every 1/2 seconds for cleanup
+      if (!popup || popup.closed || popup.closed === undefined) {
+        clearInterval(checkWindowClose);
+        setSigning(false);
+      }
+    }, 500);
+
+    setSigning(true);
   };
 
   return (
     <div>
       <button
-        onClick={startAuth(googleURL, 'Google OAuth')}
+        onClick={startAuth(oauthURL.google, 'Google OAuth')}
         disabled={isSigning}
       >
         Google
+      </button>
+      <button
+        onClick={startAuth(oauthURL.github, 'Github OAuth')}
+        disabled={isSigning}
+      >
+        Github
       </button>
     </div>
   );

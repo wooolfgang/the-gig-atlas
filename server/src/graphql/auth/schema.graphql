@@ -1,6 +1,6 @@
 type Query {
   checkValidToken: Boolean!
-  googleOAuthURL: String!
+  oauthURL: OAuthURL!
 }
 
 type Mutation {
@@ -22,7 +22,8 @@ type AuthPayload {
 }
 
 input OAuthInput {
-  code: String
+  code: String!
+  provider: String!
 }
 
 enum LogType {
@@ -34,4 +35,9 @@ type OAuthResult {
   id: ID
   token: String
   logType: LogType
+}
+
+type OAuthURL {
+  google: String
+  github: String
 }

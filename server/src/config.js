@@ -29,9 +29,10 @@ const {
   SECRET_USER,
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
-  ID_CLIENT_OAUTH,
-  SECRET_CLIENT_OAUTH,
-  REDIRECT_OAUTH_URI,
+  ID_GOOGLE_OAUTH,
+  SECRET_GOOGLE_OAUTH,
+  ID_GITHUB_OAUTH,
+  SECRET_GITHUB_OAUTH,
 } = process.env;
 
 const fromEnv = {
@@ -48,10 +49,15 @@ const fromEnv = {
     api_key: CLOUDINARY_API_KEY,
     api_secret: CLOUDINARY_API_SECRET,
   },
-  oauth: {
-    idClient: ID_CLIENT_OAUTH,
-    secretClient: SECRET_CLIENT_OAUTH,
-    redirectURI: REDIRECT_OAUTH_URI || 'http://localhost:3000/auth/oauth',
+  googleOauth: {
+    id: ID_GOOGLE_OAUTH,
+    secret: SECRET_GOOGLE_OAUTH,
+    redirectURI: 'http://localhost:3000/auth/google',
+  },
+  githubOauth: {
+    id: ID_GITHUB_OAUTH,
+    secret: SECRET_GITHUB_OAUTH,
+    redirectURI: 'http://localhost:3000/auth/github',
   },
 };
 
