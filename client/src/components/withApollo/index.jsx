@@ -1,48 +1,37 @@
+/* eslint-disable import/no-named-as-default-member */
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Head from 'next/head';
 import { getDataFromTree } from '@apollo/react-ssr';
-import nookies from 'nookies';
 import initApollo from '../../utils/apollo';
 
 export default (App, { ssr = true } = {}) => {
   const WithApollo = ({ apolloClient, apolloState, ...props }) => {
-    const client =
-      apolloClient ||
-      initApollo(apolloState, {
-        getToken: () => props.token,
-      });
+    const client = apolloClient || initApollo(apolloState);
+
     return <App {...props} apolloClient={client} />;
   };
 
-  // Set the correct displayName in development
   if (process.env.NODE_ENV !== 'production') {
+    // => Set the correct displayName in development
     const displayName = App.displayName || App.name || 'Component';
 
     if (displayName === 'App') {
+      // eslint-disable-next-line no-console
       console.warn('This withApollo HOC only works with PageComponents.');
     }
 
     WithApollo.displayName = `withApollo(${displayName})`;
   }
-
   if (ssr || App.getInitialProps) {
     WithApollo.getInitialProps = async ctx => {
       const {
         Component,
         router,
-        ctx: { req, res },
+        ctx: { res },
       } = ctx;
 
-      const token = req
-        ? nookies.get(ctx.ctx).token
-        : document.cookie.split('=')[1];
-
-      const apollo = initApollo(
-        {},
-        {
-          getToken: () => token,
-        },
-      );
+      const apollo = initApollo({}, ctx.ctx);
 
       ctx.ctx.apolloClient = apollo;
 
@@ -52,16 +41,14 @@ export default (App, { ssr = true } = {}) => {
       }
 
       if (res && res.finished) {
-        // When redirecting, the response is finished.
-        // No point in continuing to render
         return {};
       }
 
       if (!process.browser) {
-        // Run all graphql queries in the component tree
-        // and extract the resulting data
+        // => Run all graphql queries in the component tree
+        // => and extract the resulting data
         try {
-          // Run all GraphQL queries
+          // => Run all GraphQL queries
           await getDataFromTree(
             <App
               {...appProps}
@@ -71,24 +58,24 @@ export default (App, { ssr = true } = {}) => {
             />,
           );
         } catch (error) {
-          // Prevent Apollo Client GraphQL errors from crashing SSR.
-          // Handle them in components via the data.error prop:
-          // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
+          // => Prevent Apollo Client GraphQL errors from crashing SSR.
+          // => Handle them in components via the data.error prop:
+          // [ref]=> https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
+          // eslint-disable-next-line no-console
           console.error('Error while running `getDataFromTree`', error);
         }
 
-        // getDataFromTree does not call componentWillUnmount
-        // head side effect therefore need to be cleared manually
+        // => getDataFromTree does not call componentWillUnmount
+        // => head side effect therefore need to be cleared manually
         Head.rewind();
       }
 
-      // Extract query data from the Apollo's store
+      // => Extract query data from the Apollo's store
       const apolloState = apollo.cache.extract();
 
       return {
         ...appProps,
         apolloState,
-        token,
       };
     };
   }

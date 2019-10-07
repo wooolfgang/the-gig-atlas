@@ -8,6 +8,7 @@
     "implicit-arrow-linebreak": "off",
     "prefer-destructuring": "off",
     "comma-dangle": "off",
-    "indent": "off"
+    "indent": "off",
+    "import/no-named-as-default-member": "off"
   }
 }
