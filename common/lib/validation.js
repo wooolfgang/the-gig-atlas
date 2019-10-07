@@ -15,18 +15,15 @@ export const id = yup.string();
 
 // user
 export const email = yup.string().email('Email must be a valid email');
-export const name = yup.string().min(3);
+export const name = yup.string();
 export const password = yup
   .string('Password must be a string')
   .min(6, 'Password must be at least 6 characters');
 export const userRole = yup.string().matches(userRoleRegex);
 export const signupInput = yup.object().shape({
   email: email.required('Email is required'),
-  name,
-  password: password.required('Password is required'),
-});
-export const signinInput = yup.object().shape({
-  email: email.required('Email is required'),
+  firstName: name,
+  lastName: name,
   password: password.required('Password is required'),
 });
 export const signinInput = yup.object().shape({
