@@ -20,10 +20,11 @@ const CustomField = ({
   help,
   required,
   type,
+  inputStyle,
+  labelStyle,
   ...props
 }) => {
   let InputComponent;
-
   if (type === 'textarea') {
     InputComponent = Textarea;
   } else if (type === 'radiocards') {
@@ -44,11 +45,11 @@ const CustomField = ({
 
   return (
     <>
-      <Label htmlFor={field.name}>
+      <Label htmlFor={field.name} style={labelStyle}>
         <span id="label">
           {label} {!required && <small>(optional)</small>}
         </span>
-        <InputComponent {...field} type={type} {...props} />
+        <InputComponent {...field} type={type} {...props} style={inputStyle} />
         {!error && <FieldHelp visible={!!help} value={help} />}
         <FieldError visible={!!error} value={error} />
       </Label>
@@ -75,12 +76,16 @@ CustomField.propTypes = {
   help: PropTypes.string,
   required: PropTypes.bool,
   type: PropTypes.string,
+  labelStyle: PropTypes.shape({}),
+  inputStyle: PropTypes.shape({}),
 };
 
 CustomField.defaultProps = {
   required: true,
   type: 'input',
   help: null,
+  labelStyle: {},
+  inputStyle: {},
 };
 
 export default CustomField;
