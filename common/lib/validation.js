@@ -23,6 +23,10 @@ export const signupInput = yup.object().shape({
   name,
   password,
 });
+export const signinInput = yup.object().shape({
+  email: email.required('Email is required'),
+  password: password.required('Password is required'),
+});
 
 // gig
 export const title = yup
