@@ -33,6 +33,8 @@ const AuthProvider = ({ googleURL }) => {
   const [isSigning, setSigning] = useState(false);
   const startAuth = (url, name) => e => {
     if (!isSigning) {
+      const stateURl = auth.setOauthState(url);
+
       msgHandler = event => {
         // => set msg from popup window to handle
         if (!event.data || event.data.type !== 'oauth') {
@@ -52,7 +54,7 @@ const AuthProvider = ({ googleURL }) => {
       };
 
       e.preventDefault();
-      openPopup(url, name, msgHandler);
+      openPopup(stateURl, name, msgHandler);
       setSigning(true);
     }
   };

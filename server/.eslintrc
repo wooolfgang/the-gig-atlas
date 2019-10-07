@@ -9,6 +9,7 @@
     "prefer-destructuring": "off",
     "comma-dangle": "off",
     "indent": "off",
-    "import/no-named-as-default-member": "off"
+    "import/no-named-as-default-member": "off",
+    "object-curly-newline": "off"
   }
 }
