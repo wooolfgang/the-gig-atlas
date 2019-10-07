@@ -11,6 +11,7 @@
     "dev": "NODE_ENV=dev nodemon --exec node babel-register.js",
     "lint": "eslint -c .eslintrc ./",
     "compose:dev": "sudo docker-compose --file prisma/docker-compose.yml up -d",
+    "prisma:generate": "prisma generate",
     "prisma:apply": "prisma deploy --force",
     "prisma:login": "prisma login --key $(grep PRISMA_CLOUD_SESSION_KEY .env | cut -d '=' -f2)",
     "test": "NODE_ENV=test yarn run seed:test && yarn jest",
