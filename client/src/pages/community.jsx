@@ -1,10 +1,10 @@
 import React from 'react';
 import Nav from '../components/Nav';
 
-const Gigs = () => (
+const Community = () => (
   <div>
     <Nav />
   </div>
 );
 
-export default Gigs;
+export default Community;

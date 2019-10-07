@@ -12,6 +12,7 @@ const NavLink = props => {
     passHref,
     prefetch,
     children,
+    style,
   } = props;
 
   return (
@@ -24,7 +25,9 @@ const NavLink = props => {
       passHref={passHref}
       prefetch={prefetch}
     >
-      <a href={href}>{children}</a>
+      <a href={href} style={style}>
+        {children}
+      </a>
     </Link>
   );
 };
@@ -38,6 +41,7 @@ NavLink.propTypes = {
   shallow: PropTypes.bool,
   passHref: PropTypes.bool,
   prefetch: PropTypes.bool,
+  style: PropTypes.shape({}),
 };
 
 NavLink.defaultProps = {
@@ -48,6 +52,7 @@ NavLink.defaultProps = {
   shallow: false,
   passHref: false,
   prefetch: false,
+  style: {},
 };
 
 export default NavLink;
