@@ -33,7 +33,7 @@ const FieldError = ({ value, visible }) => {
         <Error key={key} style={props}>
           {value}
         </Error>
-      )
+      ),
   );
 };
 
