@@ -3,12 +3,9 @@ import { google } from 'googleapis';
 import config from '../src/config';
 
 const plus = google.plus('v1');
-const { oauth } = config;
-const oauth2Client = new google.auth.OAuth2(
-  oauth.idClient,
-  oauth.secretClient,
-  oauth.redirectURI,
-);
+// const { oauth } = config;
+const { id: clientId, secret, redirectURI } = config.googleOauth;
+const oauth2Client = new google.auth.OAuth2(clientId, secret, redirectURI);
 const defaultScope = [
   'https://www.googleapis.com/auth/plus.me',
   'https://www.googleapis.com/auth/userinfo.email',
@@ -31,9 +28,7 @@ async function getUserData(code) {
   oauth2Client.credentials = tokens; // googles oop magic for maybe their statuful api
   // connect to google plus - need this to get the user's email
   const res = await plus.people.get({ userId: 'me' });
-  const {
-    data: { id, emails, name, image },
-  } = res;
+  const { id, emails, name, image } = res.data;
 
   return {
     id,
