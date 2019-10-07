@@ -1,14 +1,15 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { OAUTH } from '../../graphql/auth';
+import auth from '../../utils/auth';
 // import { useRouter } from 'next/router';
 
 /**
  * Popup window for processing OAuth code from providers
  * This windows sends authentication result to the parent window
  * @param {Object} props
- * @param {String} props.id user's id
- * @param {String} token user's new token
+ * @param {String} props.oauth sucessfull authenticatoin data
+ * @param {String} errors failed authenticatoin data
  */
 const OAuth = ({ oauth, errors }) => {
   useEffect(() => {
@@ -25,21 +26,29 @@ const OAuth = ({ oauth, errors }) => {
   return <div />;
 };
 
-OAuth.getInitialProps = async ({ query, apolloClient }) => {
-  // const res = await apolloClient.mutation();'
-  // console.log('from popup auth: ');
-  // console.log('query value: ', query);
-  // console.log('code: ', query.code);
-  // console.log('headers', req.headers);
-  const oauthInput = {
-    code: query.code,
-  };
+OAuth.getInitialProps = async ctx => {
+  const {
+    query: { provider, code, state },
+    apolloClient,
+  } = ctx;
+  const cookieState = auth.getState(ctx);
+  auth.removeStateCookie(ctx);
+
+  if (state !== cookieState) {
+    // => cancel on CSRF attack
+    return { errors: new Error('Invalid OAuth state') };
+  }
+
   try {
+    const oauthInput = {
+      code,
+      provider,
+    };
+
     const res = await apolloClient.mutate({
       mutation: OAUTH,
       variables: { input: oauthInput },
     });
-    // console.log('res of auth: ', res);
 
     const {
       data: { oauth },

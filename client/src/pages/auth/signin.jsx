@@ -1,27 +1,28 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 // import { useMutation } from '@apollo/react-hooks';
 import FormSignin from '../../components/FormSignin';
 import withNoAuth from '../../components/withNoAuthSync';
 import AuthProvider from '../../components/AuthProvider';
-import { GOOGLE_URL } from '../../graphql/auth';
+import { OAUTH_URL } from '../../graphql/auth';
 
-const Signin = ({ googleURL }) => (
+const Signin = ({ oauthURL }) => (
   <>
     <FormSignin />
-    <AuthProvider googleURL={googleURL} />
+    <AuthProvider oauthURL={oauthURL} />
   </>
 );
 
 Signin.getInitialProps = async ctx => {
   const { apolloClient } = ctx;
 
-  const res = await apolloClient.query({
-    query: GOOGLE_URL,
+  const {
+    data: { oauthURL },
+  } = await apolloClient.query({
+    query: OAUTH_URL,
   });
 
-  return {
-    googleURL: res.data.googleOAuthURL,
-  };
+  return { oauthURL };
 };
 // => set no auth for this page
 export default withNoAuth(Signin);
