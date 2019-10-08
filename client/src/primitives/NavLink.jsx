@@ -1,6 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
+const StyledA = styled.a`
+  transition: 100ms;
+  box-sizing: border-box;
+  border-bottom: 2px solid transparent;
+  transition: 200ms;
+  transition: opacity 0.15s;
+  opacity: 1;
+
+  :hover {
+    opacity: 0.8;
+  }
+`;
 
 const NavLink = props => {
   const {
@@ -25,9 +39,9 @@ const NavLink = props => {
       passHref={passHref}
       prefetch={prefetch}
     >
-      <a href={href} style={style}>
+      <StyledA href={href} style={style}>
         {children}
-      </a>
+      </StyledA>
     </Link>
   );
 };
