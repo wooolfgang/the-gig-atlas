@@ -5,7 +5,7 @@ export const StyledNav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 85px;
+  height: 75px;
   box-sizing: border-box;
   background: white;
 
@@ -13,6 +13,12 @@ export const StyledNav = styled.nav`
     color: ${props => props.theme.color.d1};
     text-decoration: none;
   }
+`;
+
+export const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${props => props.theme.color.s1};
 `;
 
 export const NavLinks = styled.div``;
