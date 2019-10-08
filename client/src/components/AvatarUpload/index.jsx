@@ -18,7 +18,7 @@ const AvatarUpload = ({ onChange, name, value }) => {
         cache,
         {
           data: { uploadImage: res },
-        }
+        },
       ) {
         const variables = { id: res.id };
         cache.writeQuery({
@@ -28,7 +28,7 @@ const AvatarUpload = ({ onChange, name, value }) => {
         });
         onChange({ target: { name, value: res ? res.id : null } });
       },
-    }
+    },
   );
   const [error, setError] = useState(queryError && queryError.toString());
 

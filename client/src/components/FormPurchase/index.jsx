@@ -74,9 +74,8 @@ const FormPurchase = ({ back }) => {
             },
           });
           setTimeout(() => {
-            Router.push('/congrats!');
+            Router.push('/');
           }, 1000);
-          alert('Created new gig!');
         } else {
           alert('Incomplete data!');
         }
@@ -117,13 +116,15 @@ const FormPurchase = ({ back }) => {
               name="expiryDate"
               type="date"
               label="Expiry Date"
-              style={{ flex: 1, marginRight: '1.75rem' }}
+              inputStyle={{ flex: 1, marginRight: '1.75rem' }}
+              labelStyle={{ height: '2rem' }}
               component={CustomField}
             />
             <Field
               name="ccv"
               type="text"
-              style={{ flex: 1, marginRight: '1.75rem' }}
+              inputStyle={{ flex: 1, marginRight: '1.75rem' }}
+              labelStyle={{ height: '2rem' }}
               label="CCV"
               component={CustomField}
             />
@@ -131,6 +132,8 @@ const FormPurchase = ({ back }) => {
               name="zipOrPostal"
               type="text"
               label="Zip/Postal"
+              inputStyle={{ flex: 1 }}
+              labelStyle={{ height: '2rem' }}
               component={CustomField}
             />
           </div>

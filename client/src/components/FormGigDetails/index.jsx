@@ -44,7 +44,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
   <>
     {loading && (
       <div style={{ marginBottom: '1.5rem' }}>
-        Loading cache... <Spinner />
+        Checking cache... <Spinner />
       </div>
     )}
     <Formik

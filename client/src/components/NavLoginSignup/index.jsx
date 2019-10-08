@@ -1,10 +1,14 @@
 import React from 'react';
-import { StyledNav, NavLinks, PostGigButton } from './style';
-import NavLink from '../../primitives/NavLink';
+import { StyledNav, NavLinks, PostGigButton, LogoContainer } from './style';
+import { NavLink, Logo } from '../../primitives';
 
 const NavLoginSignup = () => (
   <StyledNav>
-    <NavLink href="/">The Gig Atlas</NavLink>
+    <NavLink href="/">
+      <LogoContainer>
+        <Logo />
+      </LogoContainer>
+    </NavLink>
     <NavLinks>
       <NavLink href="/auth/signin" style={{ marginRight: '.9rem' }}>
         Login
