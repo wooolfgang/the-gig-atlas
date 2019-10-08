@@ -23,7 +23,10 @@ const staging = {
 };
 
 const production = {
-  // to be filled
+  public: {
+    uriServer: SERVER_URI,
+    uriServerGql: `${SERVER_URI}/gql`,
+  },
 };
 
 const config = {
