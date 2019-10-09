@@ -46,8 +46,8 @@ type Freelancer {
   location: String
   timezone: String
   isForHire: Boolean @default(value: false)
-  socials: [Social!]
-  skills: [String!]
+  socials: [Social!] @scalarList(strategy: RELATION)
+  skills: [String!] @scalarList(strategy: RELATION)
   portfolio: [PortfolioProject!]
 }
 
@@ -56,8 +56,8 @@ type PortfolioProject {
   title: String!
   description: String!
   website: String
-  avatar: File
-  images: [File]!
+  avatar: File @relation(name: "PortfolioAvatar")
+  images: [File]! @relation(name: "PortfolioImages")
 }
 
 type Social {
