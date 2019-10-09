@@ -8,7 +8,10 @@ type User {
   createdAt: DateTime! @createdAt
   
   asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE)
+  asFreelancer: Freelancer @unique @relation(name: "AsFreelancer", link: INLINE, onDelete: CASCADE)
+  
   isPrivate: Boolean @default(value: false)
+  isEmailVerified: Boolean @default(value: false)
 }
 
 enum UserRole {
@@ -31,6 +34,43 @@ type Employer {
 enum EmployerType {
   PERSONAL
   COMPANY
+}
+
+type Freelancer {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  asUser: User @unique @relation(name: "AsFreelancer")
+  bio: String
+  website: String
+  location: String
+  timezone: String
+  isForHire: Boolean @default(value: false)
+  socials: [Social!]
+  skills: [String!]
+  portfolio: [PortfolioProject!]
+}
+
+type PortfolioProject {
+  id: ID! @id
+  title: String!
+  description: String!
+  website: String
+  avatar: File
+  images: [File]!
+}
+
+type Social {
+  id: ID! @id
+  type: SocialType!
+  website: String!
+}
+
+enum SocialType {
+  UPWORK
+  GITHUB
+  LINKEDIN
+  TWITTER
 }
 
 enum GigCommunicationType {
