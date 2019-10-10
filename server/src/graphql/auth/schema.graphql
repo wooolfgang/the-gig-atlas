@@ -1,6 +1,7 @@
 type Query {
   checkValidToken: Boolean!
   oauthURL: OAuthURL!
+  authenticatedUser: User
 }
 
 type Mutation {
