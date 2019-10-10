@@ -136,10 +136,17 @@ const oauthURL = () => ({
   github: github.getConnectionURL(),
 });
 
+/**
+ * Get current logged in user
+ */
+const authenticatedUser = async (root, args, { prisma, user }, info) =>
+  prisma.user({ id: user.id }, info);
+
 export default {
   Query: {
     checkValidToken,
     oauthURL,
+    authenticatedUser,
   },
   Mutation: {
     signup,
