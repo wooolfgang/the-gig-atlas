@@ -1,37 +1,42 @@
 import Router from 'next/router';
 
 /**
- * Redirect to signin page
- * @param {Object} ctx provide ctx object to determine either Server or browser
+ * Curried function that accepts path as first argument and ctx as second
+ * Automatically handles client/server redirects
+ * @param {*} path
+ * todo => Add tests
  */
-const toSignin = ctx => {
+export const redirect = path => ctx => {
+  if (!path.includes('/')) {
+    throw Error('Invalid path for redirect function');
+  }
+
   if (ctx && ctx.res) {
-    ctx.res.writeHead(302, { Location: '/auth/signin' });
+    // => Break function early to avoid endless redirect loop
+    if (ctx.req.url === path) {
+      return;
+    }
+
+    ctx.res.writeHead(302, { Location: path });
     ctx.res.end();
   } else {
-    Router.push('/auth/signin');
+    // => Break function early to avoid endless redirect loop
+    if (ctx && ctx.pathname === path) {
+      return;
+    }
+
+    Router.push(path);
   }
 };
 
-const toSignup = () => {
-  Router.push('/auth/signup');
-};
-
-/**
- * Redirect to profile page
- * @param {Object} ctx provide ctx object to determine either Server or browser
- */
-const toProfile = ctx => {
-  if (ctx && ctx.res) {
-    ctx.res.writeHead(302, { Location: '/profile' });
-    ctx.res.end();
-  } else {
-    Router.push('/profile');
-  }
-};
+const toSignin = redirect('/login');
+const toSignup = redirect('/signup');
+const toProfile = redirect('/profile');
+const toFreelancerOnboarding = redirect('/onboarding/freelancer');
 
 export default {
   toSignin,
   toSignup,
   toProfile,
+  toFreelancerOnboarding,
 };
