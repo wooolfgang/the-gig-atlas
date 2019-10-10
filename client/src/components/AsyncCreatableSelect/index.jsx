@@ -11,6 +11,10 @@ const customStyles = {
     background: color.d6,
     border: `1px solid ${color.d4}`,
   }),
+  placeholder: defaultStyles => ({
+    ...defaultStyles,
+    color: 'rgba(0, 0, 0, 0.247)',
+  }),
 };
 
 const AsyncSelect = ({

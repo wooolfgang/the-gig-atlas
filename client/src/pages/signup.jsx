@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import withNoAuth from '../../components/withNoAuthSync';
-import FormSignup from '../../components/FormSignup';
-import NavLoginSignup from '../../components/NavLoginSignup';
-import HTMLHead from '../../components/HTMLHead';
-import AuthProvider from '../../components/AuthProvider';
-import { OAUTH_URL } from '../../graphql/auth';
+import withNoAuth from '../components/withNoAuthSync';
+import FormSignup from '../components/FormSignup';
+import NavLoginSignup from '../components/NavLoginSignup';
+import HTMLHead from '../components/HTMLHead';
+import AuthProvider from '../components/AuthProvider';
+import { OAUTH_URL } from '../graphql/auth';
 
 const Card = styled.div`
   margin-top: 15px;

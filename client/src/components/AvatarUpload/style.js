@@ -10,6 +10,7 @@ export const Avatar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: inset 0px 4px 20px rgba(0, 0, 0, 0.05);
 
   ${props =>
     props.src &&
