@@ -1,7 +1,8 @@
 const withImages = require('next-images');
+const withCSS = require('@zeit/next-css');
 const globalConfig = require('./config');
 
-module.exports = withImages({
+const nextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -15,4 +16,6 @@ module.exports = withImages({
     staticFolder: '/static',
     ...globalConfig.public,
   },
-});
+};
+
+module.exports = withCSS(withImages(nextConfig));
