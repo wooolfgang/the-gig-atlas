@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RadioCards from '../RadioCards';
-import RadioGroups from '../RadioButtons';
-import Select from '../Select';
 import AsyncCreatableSelect from '../AsyncCreatableSelect';
 import AvatarUpload from '../AvatarUpload';
 import {
   Textarea,
+  TextEditor,
   Input,
   Label,
   FieldHelp,
   FieldError,
+  RadioCards,
+  RadioButtons,
+  Select,
 } from '../../primitives';
 
 const CustomField = ({
@@ -29,14 +30,16 @@ const CustomField = ({
     InputComponent = Textarea;
   } else if (type === 'radiocards') {
     InputComponent = RadioCards;
-  } else if (type === 'radiogroups') {
-    InputComponent = RadioGroups;
+  } else if (type === 'radiobuttons') {
+    InputComponent = RadioButtons;
   } else if (type === 'select') {
     InputComponent = Select;
   } else if (type === 'asyncselect') {
     InputComponent = AsyncCreatableSelect;
   } else if (type === 'avatarupload') {
     InputComponent = AvatarUpload;
+  } else if (type === 'texteditor') {
+    InputComponent = TextEditor;
   } else {
     InputComponent = Input;
   }

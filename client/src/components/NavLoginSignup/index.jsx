@@ -1,5 +1,10 @@
 import React from 'react';
-import { StyledNav, NavLinks, PostGigButton, LogoContainer } from './style';
+import {
+  StyledNav,
+  NavLinks,
+  LogoContainer,
+  PostGigButton,
+} from '../Nav/style';
 import { NavLink, Logo } from '../../primitives';
 
 const NavLoginSignup = () => (
@@ -10,10 +15,10 @@ const NavLoginSignup = () => (
       </LogoContainer>
     </NavLink>
     <NavLinks>
-      <NavLink href="/auth/signin" style={{ marginRight: '.9rem' }}>
+      <NavLink href="/login" style={{ marginRight: '.9rem' }}>
         Login
       </NavLink>
-      <NavLink href="/auth/signup">
+      <NavLink href="/signup">
         <PostGigButton>Signup</PostGigButton>
       </NavLink>
     </NavLinks>

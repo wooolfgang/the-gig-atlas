@@ -20,7 +20,7 @@ const Nav = () => (
             <NavLink style={{ marginRight: '20px' }} href="/gigs">
               Gigs
             </NavLink>
-            <NavLink style={{ marginRight: '20px' }} href="/auth/signin">
+            <NavLink style={{ marginRight: '20px' }} href="/login">
               Login
             </NavLink>
             <NavLink href="/gig/tech/create">

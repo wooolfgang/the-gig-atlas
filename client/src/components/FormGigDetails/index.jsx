@@ -105,7 +105,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
           <Field
             name="paymentType"
             label="Payment Type"
-            type="radiogroups"
+            type="radiobuttons"
             component={CustomField}
             options={[
               {
