@@ -80,20 +80,16 @@ const dev = {
   },
   hasGraphiQl: true,
   hasDebug: true,
-  gqlDebugger: error => {
-    console.error('\nGQL ERROR DEBUGGER: => => =>');
-    console.log('Message: ', error.message);
-    console.log('positions: ', error.positions);
-    console.log('path: ', error.path);
-    console.log(error.stack);
-
-    return formatError(error);
+  // eslint-disable-next-line no-use-before-define
+  gqlDebugger,
+  payment: {
+    paypal: {
+      id: 'AWkdLY5smSbtUFamC_cCzsZKU5pKn-4_oj8WEWYKnjyhf0deCrPuUW1Q7I_pstmew16xWrLd4rNVwzr2',
+      secret: 'EEsal9cGGZ10uCKRqUS_W096gnMjq-E-y7Au-RZeE7HtAD6vNYsC4Y-hkVlJG1YOUBa7nX-ihm2i7dYQ',
+      uri: 'https://api.sandbox.paypal.com', // sest dev to -> [https://api.paypal.com]
+    },
   },
-  errLogger: (err, req, res, next) => {
-    console.log('express error >>>>>>');
-    console.log(err);
-    next(err);
-  }
+  isDev: true,
 };
 
 /**
@@ -145,3 +141,13 @@ export default allconfig;
  * @references
  * guide source: https://codingsans.com/blog/node-config-best-practices
  */
+
+function gqlDebugger(error) {
+  console.error('\nGQL ERROR DEBUGGER: => => =>');
+  console.log('Message: ', error.message);
+  console.log('positions: ', error.positions);
+  console.log('path: ', error.path);
+  console.log(error.stack);
+
+  return formatError(error);
+}

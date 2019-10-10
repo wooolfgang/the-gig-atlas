@@ -53,6 +53,9 @@ export async function createUser(input, prisma) {
   return createAuth(id, role);
 }
 
+/**
+ * Resolver for handling user password
+ */
 function signup(_, { input }, { prisma }) {
   return createUser(input, prisma);
 }

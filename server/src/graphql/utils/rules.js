@@ -1,5 +1,6 @@
 import { rule } from 'graphql-shield';
 import jwt from 'jsonwebtoken';
+import yup from 'yup';
 import config from '../../config';
 
 export const ADMIN = 'ADMIN';
