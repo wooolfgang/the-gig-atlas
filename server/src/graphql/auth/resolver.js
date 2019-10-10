@@ -122,6 +122,7 @@ const oauth = async (_, { input }, { prisma }) => {
       email,
       firstName,
       lastName,
+      isEmailVerified: true,
     };
 
     authPayload = await createUser(create, prisma);
