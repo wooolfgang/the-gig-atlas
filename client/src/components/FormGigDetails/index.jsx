@@ -146,7 +146,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
           <Field
             name="jobType"
             label="Job Type"
-            type="radiogroups"
+            type="radiobuttons"
             component={CustomField}
             options={[
               {
