@@ -131,3 +131,34 @@ type File {
   contentType: String
   url: String
 }
+
+type Product {
+  id: ID! @id
+  name: String!
+  price: Float!
+  description: String
+  createdAt: DateTime! @createdAt 
+  updatedAt: DateTime! @updatedAt
+  addonTo: Product @relation(link: INLINE)
+}
+
+enum PaymentService {
+  PAYPAL
+  STRIPE
+}
+
+enum PaymentStatus {
+  CREATED,
+  COMPLETED,
+}
+
+type Order {
+  id: ID! @id
+  payer: User!
+  serviceRefId: String! @unique
+  service: PaymentService!
+  status: PaymentStatus!
+  cost: Float!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

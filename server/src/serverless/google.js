@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { google } from 'googleapis';
-import config from '../src/config';
+import config from '../config';
 
 const plus = google.plus('v1');
 // const { oauth } = config;

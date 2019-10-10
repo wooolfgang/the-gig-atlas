@@ -1,0 +1,19 @@
+type Query {
+  paypalCDN: String!
+}
+
+type Mutation {
+  order(items: [ID!]!): String!
+  completeOrder(orderId: String!): Boolean!
+}
+
+type Order {
+  id: ID
+  payer: User
+  serviceRefId: String
+  service: PaymentService
+  status: PaymentStatus
+  cost: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+}

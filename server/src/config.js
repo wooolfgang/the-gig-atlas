@@ -64,6 +64,16 @@ const fromEnv = {
 /**
  * @DEVELOPMENT
  */
+function gqlDebugger(error) {
+  console.error('\nGQL ERROR DEBUGGER: => => =>');
+  console.log('Message: ', error.message);
+  console.log('positions: ', error.positions);
+  console.log('path: ', error.path);
+  console.log(error.stack);
+
+  return formatError(error);
+}
+
 const dev = {
   app: {
     port: 8080,
@@ -72,7 +82,7 @@ const dev = {
   testUrl: 'http://localhost:8080/gql',
   cors: {
     origin: [
-      CLIENT_URL,
+      'http://localhost:3000',
       'http://staging.thegigatlas.com',
       'https://staging.thegigatlas.com',
     ],
@@ -80,20 +90,14 @@ const dev = {
   },
   hasGraphiQl: true,
   hasDebug: true,
-  gqlDebugger: error => {
-    console.error('\nGQL ERROR DEBUGGER: => => =>');
-    console.log('Message: ', error.message);
-    console.log('positions: ', error.positions);
-    console.log('path: ', error.path);
-    console.log(error.stack);
-
-    return formatError(error);
+  gqlDebugger,
+  payment: {
+    paypal: {
+      id: 'AWkdLY5smSbtUFamC_cCzsZKU5pKn-4_oj8WEWYKnjyhf0deCrPuUW1Q7I_pstmew16xWrLd4rNVwzr2',
+      secret: 'EEsal9cGGZ10uCKRqUS_W096gnMjq-E-y7Au-RZeE7HtAD6vNYsC4Y-hkVlJG1YOUBa7nX-ihm2i7dYQ',
+      uri: 'https://api.sandbox.paypal.com', // set dev to -> [https://api.paypal.com]
+    },
   },
-  errLogger: (err, req, res, next) => {
-    console.log('express error >>>>>>');
-    console.log(err);
-    next(err);
-  }
 };
 
 /**
@@ -106,6 +110,7 @@ const test = {
   },
   testUrl: 'http://localhost:7070/gql',
   hasDebug: true,
+  payment: dev.payment,
 };
 
 /**
@@ -123,6 +128,16 @@ const production = {
     origin: CLIENT_URL,
     credentials: true,
   },
+  payment: {
+    paypal: {
+      /**
+       * @todo: set id, secret soon
+       */
+      id: '',
+      secret: '',
+      uri: 'https://api.paypal.com',
+    }
+  },
 };
 
 const config = {
@@ -139,6 +154,7 @@ if (!config[NODE_ENV]) {
 
 const allconfig = { ...config[NODE_ENV], ...fromEnv };
 
+module.exports = allconfig;
 export default allconfig;
 
 /**
