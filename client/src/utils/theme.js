@@ -36,6 +36,24 @@ export const InputStyles = css`
   border: 1px solid ${props => props.theme.color.d4};
   min-height: 2em;
 
+  ::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    color: rgba(0, 0, 0, 0.247);
+  }
+  ::-moz-placeholder {
+    /* Firefox 19+ */
+    color: rgba(0, 0, 0, 0.247);
+  }
+  :-ms-input-placeholder {
+    /* IE 10+ */
+    color: rgba(0, 0, 0, 0.247);
+  }
+
+  :-moz-placeholder {
+    color: rgba(0, 0, 0, 0.247);
+    /* Firefox 18- */
+  }
+
   ${props =>
     props.selected &&
     `

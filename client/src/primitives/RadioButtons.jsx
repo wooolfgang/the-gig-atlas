@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { RadioGroup } from './style';
+import styled from 'styled-components';
+
+const RadioGroup = styled.div``;
+
+export { RadioGroup };
 
 const RadioButtons = ({
   options,
@@ -34,7 +38,7 @@ RadioButtons.propTypes = {
       id: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       value: PropTypes.string,
-    }).isRequired
+    }).isRequired,
   ).isRequired,
   name: PropTypes.string.isRequired,
   value: PropTypes.string,

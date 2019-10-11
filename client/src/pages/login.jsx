@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import withNoAuth from '../../components/withNoAuthSync';
-import AuthProvider from '../../components/AuthProvider';
-import { OAUTH_URL } from '../../graphql/auth';
-import NavLoginSignup from '../../components/NavLoginSignup';
-import HTMLHead from '../../components/HTMLHead';
-import LoginIllustrationAnimated from '../../components/LoginIllustrationAnimated';
-import { color } from '../../utils/theme';
-import FormSignin from '../../components/FormSignin';
+import withNoAuth from '../components/withNoAuthSync';
+import AuthProvider from '../components/AuthProvider';
+import { OAUTH_URL } from '../graphql/auth';
+import NavLoginSignup from '../components/NavLoginSignup';
+import HTMLHead from '../components/HTMLHead';
+import LoginIllustrationAnimated from '../components/LoginIllustrationAnimated';
+import { color } from '../utils/theme';
+import FormSignin from '../components/FormSignin';
 
 const Container = styled.div`
   background: ${props => props.theme.color.d5};
