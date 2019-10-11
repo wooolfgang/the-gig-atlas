@@ -1,13 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
-import { StyledNav, LogoContainer } from '../../components/Nav/style';
-import { NavLink, Logo, Button } from '../../primitives';
-import Stepper from '../../components/Stepper';
-import CustomField from '../../components/CustomField';
-import timezones from '../../utils/timezones';
-import withAuthSync from '../../components/withAuthSync';
+import common from '@shared/common';
+import { StyledNav, LogoContainer } from '../../../components/Nav/style';
+import { NavLink, Logo, Button } from '../../../primitives';
+import Stepper from '../../../components/Stepper';
+import CustomField from '../../../components/CustomField';
+import timezones from '../../../utils/timezones';
+import withAuthSync from '../../../components/withAuthSync';
+import { FREELANCER_ONBOARDING_PERSONAL } from '../../../graphql/user';
+import router from '../../../utils/router';
 
 const Container = styled.div`
   width: 100vw;
@@ -49,6 +53,9 @@ const Header = styled.div`
 
 const Onboarding = ({ authenticatedUser }) => {
   const { firstName, lastName } = authenticatedUser;
+  const [freelancerOnboardingPersonal] = useMutation(
+    FREELANCER_ONBOARDING_PERSONAL,
+  );
   return (
     <div>
       <StyledNav>
@@ -66,7 +73,7 @@ const Onboarding = ({ authenticatedUser }) => {
             steps={[
               {
                 title: 'Personal Profile',
-                description: 'Be unique, be creative.',
+                description: 'Be unique, stand out.',
               },
               {
                 title: 'Freelancer Portfolio',
@@ -89,10 +96,26 @@ const Onboarding = ({ authenticatedUser }) => {
           </Header>
           <FormContainer>
             <Formik
+              validationSchema={common.validation.freelancerPersonalInput}
               initialValues={{
                 avatarFileId: '',
-                firstName,
-                lastName,
+                firstName: firstName || '',
+                lastName: lastName || '',
+                bio: '',
+              }}
+              onSubmit={async values => {
+                try {
+                  await freelancerOnboardingPersonal({
+                    variables: {
+                      input: values,
+                    },
+                  });
+                  router.toFreelancerOnboardingPortfolio();
+                } catch (e) {
+                  /**
+                   * Handle error
+                   */
+                }
               }}
               render={({ isSubmitting }) => (
                 <Form>
@@ -112,7 +135,6 @@ const Onboarding = ({ authenticatedUser }) => {
                       />
                     </>
                   )}
-
                   <Field
                     name="avatarFileId"
                     type="avatarupload"
@@ -131,12 +153,14 @@ const Onboarding = ({ authenticatedUser }) => {
                     label="Website"
                     placeholder="https://epicjohn.com"
                     component={CustomField}
+                    required={false}
                   />
                   <Field
                     name="location"
                     label="Location"
                     placeholder="Machu Pichu, Peru"
                     component={CustomField}
+                    required={false}
                   />
                   <Field
                     name="timezone"
@@ -145,6 +169,7 @@ const Onboarding = ({ authenticatedUser }) => {
                     placeholder="Select Timezone"
                     component={CustomField}
                     options={timezones}
+                    required={false}
                   />
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Button

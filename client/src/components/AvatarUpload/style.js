@@ -26,6 +26,7 @@ export const Avatar = styled.div`
   :hover,
   :focus {
     border: 1px dashed ${props => props.theme.color.s2};
+    outline: none;
   }
 `;
 

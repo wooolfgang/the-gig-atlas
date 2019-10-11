@@ -1,15 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import 'trix/dist/trix.css';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Textarea from './Textarea';
 import { InputStyles } from '../utils/theme';
-import debounce from '../utils/debounce';
 
 let Trix;
 
 if (typeof window !== 'undefined') {
   /* eslint-disable-next-line */
+  require('trix/dist/trix.css');
   Trix = require('trix');
 }
 
@@ -25,45 +24,36 @@ const TextEditorStyles = styled.div`
 `;
 
 const TextEditor = ({ onChange, onBlur, value, name, placeholder }) => {
-  const onChangeDebounced = debounce(onChange, 2000);
   const trixInput = useRef(null);
 
   useEffect(() => {
-    if (trixInput) {
-      trixInput.current.addEventListener('trix-change', event => {
-        onChangeDebounced({
-          target: {
-            name,
-            value: event.target.innerHTML,
-          },
-        });
-      });
-      trixInput.current.addEventListener('trix-blur', event => {
-        onBlur({
-          target: {
-            ...event.target,
-            name,
-          },
-        });
+    function handleChange(event) {
+      onChange({
+        target: {
+          name,
+          value: event.target.innerHTML,
+        },
       });
     }
+    function handleBlur(event) {
+      onBlur({
+        target: {
+          ...event.target,
+          name,
+        },
+      });
+    }
+    if (trixInput) {
+      trixInput.current.addEventListener('trix-change', handleChange);
+      trixInput.current.addEventListener('trix-blur', handleBlur);
+    }
 
-    return (
-      trixInput &&
-      (() => {
-        trixInput.current.removeEventListener(
-          'trix-change',
-          () => console.log('Removed trix listener'),
-          false,
-        );
-        trixInput.current.removeEventListener(
-          'trix-blur',
-          () => console.log('Removed blur listener'),
-          false,
-        );
-      })
-    );
-  });
+    return () => {
+      const { current } = trixInput;
+      current.removeEventListener('trix-change', handleChange, false);
+      current.removeEventListener('trix-blur', handleBlur, false);
+    };
+  }, [name, onBlur, onChange]);
 
   /* Use Textarea as placeholder for SSR */
   if (!Trix) {
@@ -74,7 +64,7 @@ const TextEditor = ({ onChange, onBlur, value, name, placeholder }) => {
     <div key={Trix ? 1 : 0}>
       <TextEditorStyles>
         <input id="trix" type="hidden" value={value} />
-        <trix-editor input="trix" ref={trixInput} placeholder={placeholder} />
+        <trix-editor input="trix" ref={trixInput} />
       </TextEditorStyles>
     </div>
   );

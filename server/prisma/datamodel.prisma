@@ -11,6 +11,13 @@ type User {
   asFreelancer: Freelancer @unique @relation(name: "AsFreelancer", link: INLINE, onDelete: CASCADE)
   
   isEmailVerified: Boolean @default(value: false)
+  freelancerOnboardingStep:  FreelancerOnboardingStep @default(value: PERSONAL)
+}
+
+enum FreelancerOnboardingStep {
+  PERSONAL
+  PORTFOLIO
+  FINISHED
 }
 
 enum UserRole {

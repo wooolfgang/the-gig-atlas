@@ -13,7 +13,7 @@ const SignupLocal = () => {
   const [signup, { error }] = useMutation(SIGNUP_LOCAL, {
     onCompleted: data => {
       auth.setTokenCookie(data.signup.token);
-      router.toProfile();
+      router.toFreelancerOnboardingPersonal();
     },
   });
 
