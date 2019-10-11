@@ -4,6 +4,8 @@ type Query {
 
 type Mutation {
   deleteUser(id: ID!): Boolean!
+  freelancerOnboardingPersonal(input: FreelancerOnboardingPersonal!): Boolean!
+  freelancerOnboardingPortfolio(input: FreelancerOnboardingPortfolio!): Boolean!
 }
 
 type User {
@@ -16,9 +18,31 @@ type User {
   asEmployer: Employer
   asFreelancer: Freelancer
   isEmailVerified: Boolean
+  freelancerOnboardingStep: FreelancerOnboardingStep
+}
+
+enum FreelancerOnboardingStep {
+  NOT_STARTED
+  PERSONAL
+  PORTFOLIO
+  FINISHED
 }
 
 enum UserRole {
   ADMIN
   MEMBER
+}
+
+input FreelancerOnboardingPersonal {
+  firstName: String
+  lastName: String
+  avatarFileId: String
+  bio: String
+  website: String
+  location: String
+  timezone: String
+}
+
+input FreelancerOnboardingPortfolio {
+  socials: [String!]!
 }
