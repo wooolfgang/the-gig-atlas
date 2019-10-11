@@ -52,27 +52,25 @@ Step.propTypes = {
   activeIndex: PropTypes.number.isRequired,
 };
 
-const Stepper = ({ steps, activeIndex }) => {
-  return (
-    <StepperContainer>
-      {steps.map((step, index) => (
-        <Step
-          {...step}
-          activeIndex={activeIndex}
-          index={index}
-          key={step.title}
-        />
-      ))}
-    </StepperContainer>
-  );
-};
+const Stepper = ({ steps, activeIndex }) => (
+  <StepperContainer>
+    {steps.map((step, index) => (
+      <Step
+        {...step}
+        activeIndex={activeIndex}
+        index={index}
+        key={step.title}
+      />
+    ))}
+  </StepperContainer>
+);
 
 Stepper.propTypes = {
   steps: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       description: PropTypes.string,
-    })
+    }),
   ).isRequired,
   activeIndex: PropTypes.number,
 };

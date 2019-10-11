@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default-member */
 import React, { useEffect } from 'react';
 import router from '../../utils/router';
-import { CHECK_VALID_TOKEN } from '../../graphql/auth';
+import { GET_AUTHENTICATED_USER } from '../../graphql/auth';
 import auth from '../../utils/auth';
 
 /**
@@ -23,7 +23,7 @@ const withAuthSync = WrappedComponent => {
         window.removeEventListener('storage', syncLogout);
         window.localStorage.removeItem('logout');
       };
-    }, [null]);
+    }, []);
 
     return <WrappedComponent {...props} />;
   };
@@ -40,13 +40,20 @@ const withAuthSync = WrappedComponent => {
     }
 
     const res = await apolloClient.query({
-      query: CHECK_VALID_TOKEN,
+      query: GET_AUTHENTICATED_USER,
+      // => Make sure to always fetch network first, as apollo defaults to cache
+      fetchPolicy: 'network-and-cache',
     });
 
-    if (!res.data.checkValidToken) {
+    if (!res.data.authenticatedUser) {
       router.toSignin(ctx);
 
       return {};
+    }
+
+    if (!res.data.authenticatedUser.asFreelancer) {
+      router.toFreelancerOnboarding(ctx);
+      // => Do not go for early return, as we need to pass user down as props
     }
 
     let componentProps = {};
@@ -54,7 +61,13 @@ const withAuthSync = WrappedComponent => {
       componentProps = await WrappedComponent.getInitialProps(ctx);
     }
 
-    return { ...componentProps, token };
+    const { authenticatedUser } = res.data;
+
+    return {
+      ...componentProps,
+      authenticatedUser,
+      token,
+    };
   };
 
   return Wrapper;

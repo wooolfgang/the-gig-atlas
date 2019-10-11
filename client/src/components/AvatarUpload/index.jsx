@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import Spinner from '../../primitives/Spinner';
 import { Avatar, UploadImage } from './style';
 import { GET_IMAGE, IMAGE_UPLOAD } from '../../graphql/file';
 
 const AvatarUpload = ({ onChange, name, value }) => {
-  const { loading: loading1, data: getImageData } = useQuery(GET_IMAGE, {
-    fetchPolicy: 'cache-first',
-    variables: { id: value },
-  });
-
+  const [fetchImage, { loading: loading1, data: getImageData }] = useLazyQuery(
+    GET_IMAGE,
+    {
+      fetchPolicy: 'cache-first',
+      variables: { id: value },
+    },
+  );
   const [uploadImage, { error: queryError, loading: loading2 }] = useMutation(
     IMAGE_UPLOAD,
     {
@@ -30,6 +32,13 @@ const AvatarUpload = ({ onChange, name, value }) => {
       },
     },
   );
+
+  useEffect(() => {
+    if (value && !loading1 && !loading2) {
+      fetchImage();
+    }
+  }, [fetchImage, loading1, loading2, value]);
+
   const [error, setError] = useState(queryError && queryError.toString());
 
   function validateSize(file) {
@@ -73,7 +82,6 @@ const AvatarUpload = ({ onChange, name, value }) => {
         <UploadImage>
           {loading1 || loading2 ? (
             <>
-              {loading1 && 'Loading...'}
               {loading2 && 'Uploading...'}
               <Spinner />
             </>
