@@ -83,3 +83,12 @@ type File {
   contentType: String
   url: String
 }
+
+type Product {
+  id: ID! @id
+  createdAt: DateTime! @createdAt 
+  updatedAt: DateTime! @updatedAt
+  name: String!
+  description: String
+  addonTo: Product @relation(link: INLINE)
+}

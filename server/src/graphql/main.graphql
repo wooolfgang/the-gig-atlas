@@ -9,3 +9,5 @@ scalar DateTime
 # import Queries.*, Mutations.*, * from './employer/schema.graphql'
 # import Queries.*, Mutations.*, * from './gig/schema.graphql'
 # import Queries.*, Mutations.*, * from './file/schema.graphql'
+# import Queries.*, Mutations.*, * from './checkout/schema.graphql'
+# import Queries.*, Mutations.*, * from './product/schema.graphql'
