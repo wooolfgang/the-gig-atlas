@@ -1,3 +1,15 @@
+/**
+ * Paypal money object factory
+ * @param {number} amount money value
+ * @return Money { currency_code: <code>, value: <stringed amount> }
+ */
+export function toMoney(amount) {
+  return {
+    currency_code: 'USD',
+    value: amount.toFixed(2),
+  };
+}
+
 /* eslint-disable camelcase */
 /**
  * Parse gig/order item into Paypal purchase item
@@ -21,8 +33,8 @@ export function parseItems(items) {
     return {
       name,
       description,
-      quantity,
-      unit_amount: price.toFixed(2),
+      quantity: quantity.toString(),
+      unit_amount: toMoney(price),
       category: 'DIGITAL_GOODS',
     };
   });
@@ -37,14 +49,11 @@ export function parseItems(items) {
  */
 export function processPurchaseUnit(items) {
   const [unitItems, totalPrice] = parseItems(items);
-  const currency_code = 'USD';
   const amount = {
     breakdown: {
-      item_total: {
-        currency_code,
-        value: totalPrice.toFixed(2),
-      },
+      item_total: toMoney(totalPrice),
     },
+    ...toMoney(totalPrice),
   };
   const purchaseUnit = {
     amount,
