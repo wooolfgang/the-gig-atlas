@@ -1,6 +1,5 @@
 import { rule } from 'graphql-shield';
 import jwt from 'jsonwebtoken';
-import yup from 'yup';
 import config from '../../config';
 
 export const ADMIN = 'ADMIN';
@@ -31,11 +30,15 @@ const loadAuthPayload = async ctx => {
     return new Error('No token specified');
   }
 
-  const payload = await verifyToken(token);
-  ctx.user = payload;
-  ctx.isAuthenticated = true;
+  try {
+    const payload = await verifyToken(token);
+    ctx.user = payload;
+    ctx.isAuthenticated = true;
 
-  return payload;
+    return payload;
+  } catch (e) {
+    throw new Error('Invalid token');
+  }
 };
 
 /**
