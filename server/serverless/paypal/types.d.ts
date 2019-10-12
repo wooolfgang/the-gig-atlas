@@ -34,18 +34,18 @@ export interface AmountWitBreakdown {
 }
 
 export interface Item {
-  currency: string;
   name: string;
   /**
    * The item price or rate per unit.
    * If you specify unit_amount, purchase_units[].amount.breakdown.item_total is required.
    * Must equal unit_amount * quantity for all items.
    */
-  unit_amount: string; 
-  quantity: number;
-  sku?: string;
+  unit_amount: Money;
+  quantity: string;
   description?: string;
-  tax?: string;
+  category?: 'DIGITAL_GOODS' | 'PHYSICAL_GOODS';
+  sku?: string;
+  tax?: Money;
   url?: string;
 }
 
