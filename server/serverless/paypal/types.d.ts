@@ -82,9 +82,14 @@ export interface PurchaseUnit {
 }
 
 export interface Payer {
-  name: string;
+  name: {
+    given_name: string;
+    family_name: string;
+  };
   email_address: string;
 }
+
+type Intent = 'CAPTURE' | 'AUTHORIZE';
 
 export interface CreateOrder {
   /**
@@ -98,8 +103,47 @@ export interface CreateOrder {
    * must re-authorize the payment. You must make a separate request
    * to capture payments on demand.
    */
-  intent: 'CAPTURE' | 'AUTHORIZE';
+  intent: Intent;
   purchase_units: PurchaseUnit[];
   payer?: Object;
   application_context?: Object;
+}
+
+enum OrderStatus {
+  /**
+   * The order was created with the specified context.
+   */
+  CREATED = 'CREATED',
+  /**
+   * The order was saved and persisted. The order status
+   * continues to be in progress until a capture is made
+   * with final_capture = true for all purchase units within the order.
+   */
+  SAVED = 'SAVED',
+  /**
+   * The customer approved the payment through the PayPal
+   * wallet or another form of guest or unbranded payment.
+   * For example, a card, bank account, or so on.
+   */
+  APPROVED = 'APPROVED',
+  /**
+   * All purchase units in the order are voided.
+   */
+  VOIDED = 'VOIDED',
+  /**
+   * The payment was authorized or the authorized
+   * payment was captured for the order.
+   */
+  COMPLETED = 'COMPLETED',
+}
+
+export interface OrderResponse {
+  create_time: string;
+  update_time: string;
+  id: string;
+  intent: Intent;
+  payer: Payer;
+  purchase_units: PurchaseUnit[];
+  status: OrderStatus;
+  links: any[];
 }

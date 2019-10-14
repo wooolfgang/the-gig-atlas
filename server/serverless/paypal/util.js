@@ -63,4 +63,28 @@ export function processPurchaseUnit(items) {
   return purchaseUnit;
 }
 
-export default { processPurchaseUnit };
+export function debugError(e) {
+  if (e.response) {
+    console.log('Paypal request error: >>>> \n Response data:');
+    console.log(e.response.data);
+    console.log('error on paypal order:\n', e.toJSON());
+  } else {
+    console.log('paypal parse error');
+    console.log(e);
+  }
+}
+
+export function debugResult(toResult) {
+  return toResult
+    .then(({ data }) => {
+      console.log('Result data: ');
+      console.log(data);
+
+      return data;
+    })
+    .catch(e => {
+      return Promise.reject(e.then(error => debugError(error)));
+    });
+}
+
+export default { processPurchaseUnit, debugError };
