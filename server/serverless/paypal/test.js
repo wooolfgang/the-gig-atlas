@@ -1,7 +1,9 @@
 // import axios from 'axios';
-import { getToken, createOrder } from '.';
+import { getToken } from './auth';
+import { createOrder, authorizePayment } from './order';
+// import { listProfiles, setProfile } fro./_web-profileile';
 
-describe('Test Paypal Sandbox API', () => {
+describe.skip('Test Paypal Sandbox API', () => {
   it.skip('Handles Authorization from paypal', async () => {
     // console.log('here on test');
     const { token_type, app_id } = await getToken();
@@ -12,7 +14,7 @@ describe('Test Paypal Sandbox API', () => {
     // expect(res).toBeInstanceOf(String);
   });
 
-  it('Creates order (not to be paid) to paypal', async () => {
+  it.skip('Creates order (not to be paid) to paypal', async () => {
     const dummyItems = [
       {
         name: 'Gig Post',
@@ -31,8 +33,21 @@ describe('Test Paypal Sandbox API', () => {
       name: { given_name: 'Martin', surname: 'Doe' },
       email: 'martin@t5t.com',
     };
-    const res = await createOrder(dummyItems, payor);
-    console.log('response after order test');
-    console.log(res);
+    const orderId = await createOrder(dummyItems, payor);
+
+    const res = await authorizePayment(orderId);
+
+    // console.log('response after order test');
+    // console.log(res);
   });
+
+  // it.skip('creates new web profile', async () => {
+  //   const profile = await setProfile();
+  // });
+
+  // it.skip('Displays current Web profile', async () => {
+  //   const profile = await listProfiles(false);
+
+  //   console.log('result profile: ', profile);
+  // });
 });
