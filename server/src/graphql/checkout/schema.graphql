@@ -3,5 +3,10 @@ type Query {
 }
 
 type Mutation {
-  order(items: [ID!]!): String!
+  order(items: [ID!]!): OrderId!
+}
+
+type OrderId {
+  system: String!
+  service: String! 
 }

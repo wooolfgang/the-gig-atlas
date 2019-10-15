@@ -84,7 +84,7 @@ export interface PurchaseUnit {
 export interface Payer {
   name: {
     given_name: string;
-    family_name: string;
+    surname: string;
   };
   email_address: string;
 }
