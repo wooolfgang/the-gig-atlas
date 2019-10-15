@@ -60,7 +60,7 @@ export function processPurchaseUnit(items) {
     items: unitItems,
   };
 
-  return purchaseUnit;
+  return [purchaseUnit, totalPrice];
 }
 
 export function debugError(e) {

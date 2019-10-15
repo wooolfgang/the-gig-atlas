@@ -22,13 +22,14 @@ const baseReqData = {
  */
 export async function createOrder(items, payor) {
   // const url = 'https://api.sandbox.paypal.com/v2/checkout/orders';
+  const [unit, totalPrice] = util.processPurchaseUnit(items);
   const dataBody = {
     ...baseReqData,
     payer: {
       name: payor.name,
       email_address: payor.email,
     },
-    purchase_units: [util.processPurchaseUnit(items)],
+    purchase_units: [unit],
   };
   console.log('data body', dataBody);
   const { amount, items: itemses } = dataBody.purchase_units[0];
@@ -46,7 +47,7 @@ export async function createOrder(items, payor) {
     const { id: orderId, status, create_time } = data;
     console.log('The order create result: ', data);
 
-    return orderId;
+    return [orderId, totalPrice];
   } catch (e) {
     util.debugError(e);
     throw e;
