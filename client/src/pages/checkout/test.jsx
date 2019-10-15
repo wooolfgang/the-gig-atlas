@@ -2,11 +2,18 @@
 /* eslint-disable react/prop-types */
 import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import React, { useEffect } from 'react';
-import { PAYPAL_CDN, ORDER } from '../../graphql/checkout';
+import getConfig from 'next/config';
+import { ORDER } from '../../graphql/checkout';
 
-const Test = ({ paypalCDN }) => {
+const { publicRuntimeConfig } = getConfig();
+
+const Test = () => {
   const apolloClient = useApolloClient();
   const [createOrder] = useMutation(ORDER);
+  // eslint-disable-next-line prefer-destructuring
+  const paypalCDN = publicRuntimeConfig.paypalCDN;
+  // console.log(publicRuntimeConfig);
+  // console.log(paypalCDN);
 
   useEffect(() => {
     window.apolloClient = apolloClient;
@@ -51,21 +58,6 @@ const Test = ({ paypalCDN }) => {
       <div id="pay-btn" />
     </>
   );
-};
-
-Test.getInitialProps = async ({ apolloClient }) => {
-  // if (typeof window === 'undefined') {
-  //   return null;
-  // }
-
-  const { data } = await apolloClient.query({ query: PAYPAL_CDN });
-
-  console.log('here on data', data);
-
-  return {
-    // apolloClient,
-    paypalCDN: data.paypalCDN,
-  };
 };
 
 export default Test;
