@@ -31,10 +31,6 @@ export async function createOrder(items, payor) {
     },
     purchase_units: [unit],
   };
-  console.log('data body', dataBody);
-  const { amount, items: itemses } = dataBody.purchase_units[0];
-  console.log('amount >', amount);
-  console.log('items >', itemses);
 
   const config = {
     url,
@@ -44,8 +40,7 @@ export async function createOrder(items, payor) {
 
   try {
     const { data } = await request(config);
-    const { id: orderId, status, create_time } = data;
-    console.log('The order create result: ', data);
+    const { id: orderId } = data;
 
     return [orderId, totalPrice];
   } catch (e) {
@@ -56,6 +51,7 @@ export async function createOrder(items, payor) {
 }
 
 /**
+ * @note no apparent use right now, see capture instead
  * Authorize order after customer approve their payment
  * @param {String} orderId the order id of customers approved payment
  */
@@ -68,9 +64,6 @@ export async function authorizePayment(orderId) {
   try {
     const { data } = await request(config);
 
-    console.log('Authorize order result: ');
-    console.log(data);
-
     return data;
   } catch (e) {
     util.debugError(e);
@@ -78,3 +71,50 @@ export async function authorizePayment(orderId) {
   }
   // [ref] => https://developer.paypal.com/docs/api/orders/v2/#orders_authorize
 }
+
+/**
+ * Capture approved order to be COMPLETED
+ * @param {String} orderId order id from paypal
+ */
+export async function capturePayment(orderId) {
+  const config = {
+    url: `${url}/${orderId}/capture`,
+    method: 'post',
+  };
+
+  try {
+    const { data } = await request(config);
+
+    return data;
+  } catch (e) {
+    util.debugError(e);
+    throw e;
+  }
+}
+
+/**
+ * Query signle order record by id
+ * @param {String} orderId order id from paypal
+ */
+export async function selectOrder(orderId) {
+  const config = {
+    url: `${url}/${orderId}`,
+    method: 'get',
+  };
+
+  try {
+    const { data } = await request(config);
+
+    return data;
+  } catch (e) {
+    util.debugError(e);
+    throw e;
+  }
+}
+
+export default {
+  createOrder,
+  authorizePayment,
+  selectOrder,
+  capturePayment,
+};

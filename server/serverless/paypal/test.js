@@ -1,18 +1,23 @@
 // import axios from 'axios';
-import { getToken } from './auth';
-import { createOrder, authorizePayment } from './order';
+// import { getToken } from './auth';
+import {
+  createOrder,
+  authorizePayment,
+  selectOrder,
+  capturePayment,
+} from './order';
 // import { listProfiles, setProfile } fro./_web-profileile';
 
 describe.skip('Test Paypal Sandbox API', () => {
-  it.skip('Handles Authorization from paypal', async () => {
-    // console.log('here on test');
-    const { token_type, app_id } = await getToken();
+  // it.skip('Handles Authorization from paypal', async () => {
+  //   // console.log('here on test');
+  //   const { token_type, app_id } = await getToken();
 
-    expect(token_type).toBe('Bearer');
-    expect(app_id).toBe('APP-80W284485P519543T');
+  //   expect(token_type).toBe('Bearer');
+  //   expect(app_id).toBe('APP-80W284485P519543T');
 
-    // expect(res).toBeInstanceOf(String);
-  });
+  //   // expect(res).toBeInstanceOf(String);
+  // });
 
   it.skip('Creates order (not to be paid) to paypal', async () => {
     const dummyItems = [
@@ -49,5 +54,20 @@ describe.skip('Test Paypal Sandbox API', () => {
   //   const profile = await listProfiles(false);
 
   //   console.log('result profile: ', profile);
+  // });
+
+  // it('authorize approved order', async () => {
+  //   const res = await authorizePayment('8RC24221FW459203M');
+  //   console.log('auth response: ');
+  //   console.log(res);
+  // });
+
+  // it.skip('query selected order', async () => {
+  //   const res = await selectOrder('8RC24221FW459203M');
+  // });
+
+  // it('captures approved order', async () => {
+  //   const data = await capturePayment('8RC24221FW459203M');
+  //   console.log('approve data: ', data);
   // });
 });
