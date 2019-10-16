@@ -9,6 +9,7 @@ export default {
     /**
      * @todo: set isEmployerRule
      */
-    order: allow, //isAuthenticated,
+    order: isAuthenticated,
+    completeOrder: isAuthenticated,
   },
 };

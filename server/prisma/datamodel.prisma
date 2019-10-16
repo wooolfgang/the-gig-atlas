@@ -107,10 +107,10 @@ enum PaymentStatus {
 type Order {
   id: ID! @id
   payer: User!
-  serviceRefId: String!
+  serviceRefId: String! @unique
   service: PaymentService!
   status: PaymentStatus!
   cost: Float!
-  createdAt: DateTime! @createdAt 
+  createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }

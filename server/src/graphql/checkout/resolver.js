@@ -1,14 +1,13 @@
-import paypal from '../../../serverless/paypal';
+import paypal from '../../../serverless/paypal/order';
 
 function isProductsValid(ids, products) {
   return ids.every(id => products.some(product => product.id === id));
 }
 
-async function order(_, { ids }, { prisma, user }) {
-  // return paypal.createOrder(dummyItems, payor);
+async function order(_, { items: ids }, { prisma, user }) {
   const [products, buyer] = await Promise.all([
     prisma.products({ where: { id_in: ids } }),
-    prisma.user(user.id),
+    prisma.user({ id: user.id }),
   ]);
 
   if (!isProductsValid(ids, products)) {
@@ -38,13 +37,21 @@ async function order(_, { ids }, { prisma, user }) {
     cost: totalPrice,
   };
 
-  const { id: systemId } = await prisma.createOrder(createOrder);
-  const orderId = {
-    system: systemId,
-    service: paypalOrderId,
-  };
+  await prisma.createOrder(createOrder);
 
-  return orderId;
+  return paypalOrderId;
+}
+
+async function completeOrder(_, { orderId }, { prisma }) {
+  const completedOrder = await paypal.capturePayment(orderId);
+  const completedSys = await prisma.updateOrder({
+    where: { serviceRefId: orderId },
+    data: {
+      status: 'COMPLETED',
+    },
+  });
+
+  return true;
 }
 
 export default {
@@ -53,5 +60,6 @@ export default {
   },
   Mutation: {
     order,
+    completeOrder,
   },
 };

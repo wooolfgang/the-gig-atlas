@@ -3,10 +3,17 @@ type Query {
 }
 
 type Mutation {
-  order(items: [ID!]!): OrderId!
+  order(items: [ID!]!): String!
+  completeOrder(orderId: String!): Boolean!
 }
 
-type OrderId {
-  system: String!
-  service: String! 
+type Order {
+  id: ID
+  payer: User
+  serviceRefId: String
+  service: PaymentService
+  status: PaymentStatus
+  cost: Float
+  createdAt: DateTime
+  updatedAt: DateTime
 }

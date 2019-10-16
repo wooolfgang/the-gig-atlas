@@ -8,8 +8,14 @@ export const PAYPAL_CDN = gql`
 `;
 
 // Mutations
-export const ORDER = gql`
-  mutation ORDER($items: [ID!]!) {
+export const ORDER_CREATE = gql`
+  mutation ORDER_CREATE($items: [ID!]!) {
     order(items: $items)
+  }
+`;
+
+export const ORDER_COMPLETE = gql`
+  mutation ORDER_COMPLETE($orderId: String!) {
+    completeOrder(orderId: $orderId)
   }
 `;
