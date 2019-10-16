@@ -8,7 +8,6 @@ const { admin } = cfg;
 export default async () => {
   try {
     await prisma.deleteUser({ email: admin.email });
-    console.log('Removed old admin account');
   } catch (e) {
     console.log('Nothing to reset on admin account');
   }
@@ -26,7 +25,9 @@ export default async () => {
 
     await prisma.createUser(newAdmin);
 
-    console.log('Inserted Admin(s): ', newAdmin, '\n');
+    console.log('\n>>> Seed on admin');
+    console.log('Removed old admin account.');
+    console.log('New admin created: ', newAdmin);
   } catch (e) {
     console.error('error on inserting admin\n', e);
     process.exit(1);

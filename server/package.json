@@ -17,8 +17,8 @@
     "test": "NODE_ENV=test yarn run seed:test && yarn jest",
     "test_on": "NODE_ENV=dev jest serverless/paypal/test.js --watch",
     "test:watch": "NODE_ENV=dev jest --watch",
-    "seed:admin": "NODE_ENV=dev node ./prisma/seed/index.js admin",
-    "seed": "yarn run seed:admin",
+    "seed": "NODE_ENV=dev node ./prisma/seed/index.js",
+    "seed:default": "yarn run seed admin product",
     "seed:test": "NODE_ENV=test node ./prisma/seed/index.js admin",
     "nodemon:clear": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"
   },
