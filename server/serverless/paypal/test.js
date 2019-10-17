@@ -3,7 +3,7 @@
 import {
   createOrder,
   authorizePayment,
-  selectOrder,
+  // selectOrder,
   capturePayment,
 } from './order';
 // import { listProfiles, setProfile } fro./_web-profileile';

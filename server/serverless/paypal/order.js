@@ -1,16 +1,16 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable import/prefer-default-export */
-import { request } from './connect';
+import request from './connect';
 import util from './util';
 
 const url = '/v2/checkout/orders';
-const baseReqData = {
-  intent: 'CAPTURE',
-  application_context: {
-    brand_name: 'The Gig Atlas',
-    shipping_preference: 'NO_SHIPPING',
-    user_action: 'PAY_NOW',
-  },
-};
+
+/**
+ * Order namespace, handles order related transaction to paypal
+ * see mindmeister doc for the detailed flow
+ * See types.ts for more info about Object properties
+ */
+//
 
 /**
  * Creates order for employer new gig post
@@ -24,7 +24,12 @@ export async function createOrder(items, payor) {
   // const url = 'https://api.sandbox.paypal.com/v2/checkout/orders';
   const [unit, totalPrice] = util.processPurchaseUnit(items);
   const dataBody = {
-    ...baseReqData,
+    intent: 'CAPTURE',
+    application_context: {
+      brand_name: 'The Gig Atlas',
+      shipping_preference: 'NO_SHIPPING',
+      user_action: 'PAY_NOW',
+    },
     payer: {
       name: payor.name,
       email_address: payor.email,
@@ -44,7 +49,7 @@ export async function createOrder(items, payor) {
 
     return [orderId, totalPrice];
   } catch (e) {
-    util.debugError(e);
+    // util.debugError(e);
     throw e;
   }
   // [ref]=> https://developer.paypal.com/docs/api/orders/v2/#orders_create
@@ -66,7 +71,7 @@ export async function authorizePayment(orderId) {
 
     return data;
   } catch (e) {
-    util.debugError(e);
+    // util.debugError(e);
     throw e;
   }
   // [ref] => https://developer.paypal.com/docs/api/orders/v2/#orders_authorize
@@ -87,13 +92,13 @@ export async function capturePayment(orderId) {
 
     return data;
   } catch (e) {
-    util.debugError(e);
+    // util.debugError(e);
     throw e;
   }
 }
 
 /**
- * Query signle order record by id
+ * Query single order record by id
  * @param {String} orderId order id from paypal
  */
 export async function selectOrder(orderId) {
@@ -107,7 +112,7 @@ export async function selectOrder(orderId) {
 
     return data;
   } catch (e) {
-    util.debugError(e);
+    // util.debugError(e);
     throw e;
   }
 }
