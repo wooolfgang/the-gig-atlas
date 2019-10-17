@@ -63,7 +63,7 @@ type PortfolioProject {
   id: ID! @id
   title: String!
   description: String!
-  website: String
+  url: String
   avatar: File @relation(name: "PortfolioAvatar")
   images: [File]! @relation(name: "PortfolioImages")
 }
@@ -71,7 +71,7 @@ type PortfolioProject {
 type Social {
   id: ID! @id
   type: SocialType!
-  website: String!
+  url: String!
 }
 
 enum SocialType {
