@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RadioCards from '../RadioCards';
-import RadioGroups from '../RadioButtons';
-import Select from '../Select';
 import AsyncCreatableSelect from '../AsyncCreatableSelect';
 import AvatarUpload from '../AvatarUpload';
 import {
   Textarea,
+  TextEditor,
   Input,
   Label,
   FieldHelp,
   FieldError,
+  RadioCards,
+  RadioButtons,
+  Select,
 } from '../../primitives';
 
 const CustomField = ({
@@ -20,22 +21,25 @@ const CustomField = ({
   help,
   required,
   type,
+  inputStyle,
+  labelStyle,
   ...props
 }) => {
   let InputComponent;
-
   if (type === 'textarea') {
     InputComponent = Textarea;
   } else if (type === 'radiocards') {
     InputComponent = RadioCards;
-  } else if (type === 'radiogroups') {
-    InputComponent = RadioGroups;
+  } else if (type === 'radiobuttons') {
+    InputComponent = RadioButtons;
   } else if (type === 'select') {
     InputComponent = Select;
   } else if (type === 'asyncselect') {
     InputComponent = AsyncCreatableSelect;
   } else if (type === 'avatarupload') {
     InputComponent = AvatarUpload;
+  } else if (type === 'texteditor') {
+    InputComponent = TextEditor;
   } else {
     InputComponent = Input;
   }
@@ -44,11 +48,11 @@ const CustomField = ({
 
   return (
     <>
-      <Label htmlFor={field.name}>
+      <Label htmlFor={field.name} style={labelStyle}>
         <span id="label">
           {label} {!required && <small>(optional)</small>}
         </span>
-        <InputComponent {...field} type={type} {...props} />
+        <InputComponent {...field} type={type} {...props} style={inputStyle} />
         {!error && <FieldHelp visible={!!help} value={help} />}
         <FieldError visible={!!error} value={error} />
       </Label>
@@ -75,12 +79,16 @@ CustomField.propTypes = {
   help: PropTypes.string,
   required: PropTypes.bool,
   type: PropTypes.string,
+  labelStyle: PropTypes.shape({}),
+  inputStyle: PropTypes.shape({}),
 };
 
 CustomField.defaultProps = {
   required: true,
   type: 'input',
   help: null,
+  labelStyle: {},
+  inputStyle: {},
 };
 
 export default CustomField;

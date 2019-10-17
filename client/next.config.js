@@ -1,5 +1,5 @@
 const withImages = require('next-images');
-// const globalConfig = require('./config');
+const withCSS = require('@zeit/next-css');
 
 require('dotenv').config();
 
@@ -50,7 +50,7 @@ if (!allConfig[NODE_ENV]) {
 
 const currentConfig = { ...allConfig[NODE_ENV], ...fromEnv };
 
-module.exports = withImages({
+const nextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -66,4 +66,6 @@ module.exports = withImages({
     staticFolder: '/static',
     ...currentConfig.public,
   },
-});
+};
+
+module.exports = withCSS(withImages(nextConfig));

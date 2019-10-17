@@ -10,12 +10,13 @@ export const Avatar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: inset 0px 4px 20px rgba(0, 0, 0, 0.05);
 
   ${props =>
     props.src &&
     `
       border: 1px solid ${props.theme.color.d3};
-      background: black url(${props.src}) center center no-repeat;
+      background: #fff url(${props.src}) center center no-repeat;
       -webkit-background-size: cover;
       -moz-background-size: cover;
       -o-background-size: cover;

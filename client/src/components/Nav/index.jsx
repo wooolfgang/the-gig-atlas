@@ -1,17 +1,28 @@
 import React from 'react';
-import { StyledNav, NavLinks, PostGigButton } from './style';
+import { StyledNav, NavLinks, PostGigButton, LogoContainer } from './style';
 import { MediaConsumer } from '../MediaProvider';
-import NavLink from '../NavLink';
+import { NavLink, Logo } from '../../primitives';
 
 const Nav = () => (
   <MediaConsumer>
     {({ size }) => (
       <StyledNav>
-        <NavLink href="/">The Gig Atlas</NavLink>
+        <NavLink href="/">
+          <LogoContainer>
+            <Logo />
+          </LogoContainer>
+        </NavLink>
         {size === 'desktop' || size === 'giant' || !size ? (
           <NavLinks>
-            <NavLink href="/freelancers">Freelancers</NavLink>
-            <NavLink href="/gigs">Find Gigs</NavLink>
+            <NavLink style={{ marginRight: '20px' }} href="/community">
+              Community
+            </NavLink>
+            <NavLink style={{ marginRight: '20px' }} href="/gigs">
+              Gigs
+            </NavLink>
+            <NavLink style={{ marginRight: '20px' }} href="/login">
+              Login
+            </NavLink>
             <NavLink href="/gig/tech/create">
               <PostGigButton>Post A Gig</PostGigButton>
             </NavLink>

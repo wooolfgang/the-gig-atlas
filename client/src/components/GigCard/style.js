@@ -6,6 +6,7 @@ export const Card = styled.div`
   box-sizing: border-box;
   background: ${props => props.theme.color.d6};
   transition: all 150ms ease-in-out;
+  overflow: hidden;
 
   :focus,
   :hover {
@@ -26,7 +27,7 @@ export const Avatar = styled.div`
     props.src &&
     `
       border: 1px solid ${props.theme.color.d3};
-      background: black url(${props.src}) center center no-repeat;
+      background: #fff url(${props.src}) center center no-repeat;
       -webkit-background-size: cover;
       -moz-background-size: cover;
       -o-background-size: cover;

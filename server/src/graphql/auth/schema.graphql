@@ -1,6 +1,7 @@
 type Query {
   checkValidToken: Boolean!
   oauthURL: OAuthURL!
+  authenticatedUser: User
 }
 
 type Mutation {
@@ -13,7 +14,7 @@ input SignupInput {
   email: String!
   firstName: String!
   lastName: String!
-  password: String
+  password: String!
 }
 
 type AuthPayload {

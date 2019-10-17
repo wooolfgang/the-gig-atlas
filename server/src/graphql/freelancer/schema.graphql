@@ -1,0 +1,39 @@
+type Freelancer {
+  id: ID
+  createdAt: DateTime
+  updatedAt: DateTime
+  asUser: User
+  bio: String
+  avatar: File
+  website: String
+  location: String
+  timezone: String
+  isPrivate: Boolean
+  isForHire: Boolean
+  socials: [Social!]
+  skills: [String!]
+  portfolio: [PortfolioProject!]
+}
+
+type PortfolioProject {
+  id: ID
+  title: String
+  description: String
+  website: String
+  avatar: File
+  images: [File]!
+}
+
+type Social {
+  id: ID!
+  type: SocialType
+  website: String
+}
+
+enum SocialType {
+  UPWORK
+  GITHUB
+  LINKEDIN
+  TWITTER
+}
+

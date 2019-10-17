@@ -12,7 +12,7 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
   <>
     {loading && (
       <div style={{ marginBottom: '1.5rem' }}>
-        Loading cache... <Spinner />
+        Checking cache... <Spinner />
       </div>
     )}
     <Formik
@@ -20,7 +20,7 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={common.validation.employerInput}
-      render={() => (
+      render={({ values }) => (
         <Form>
           <h2> Tell us about yourself</h2>
           <Field
@@ -51,7 +51,11 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
           <Field
             name="displayName"
             type="text"
-            label="Display Name"
+            label={
+              values.employerType === 'COMPANY'
+                ? 'Company Name'
+                : 'Display Name'
+            }
             help="This can be your company or personal name"
             component={CustomField}
           />
