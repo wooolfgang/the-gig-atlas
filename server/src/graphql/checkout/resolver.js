@@ -41,7 +41,11 @@ async function order(_, { items: ids }, { prisma, user }) {
 
   return paypalOrderId;
 }
-
+/**
+ * @todo: integrate with gig
+ * Handles order after user approved the payment
+ * @param {String} orderId if of user approved order
+ */
 async function completeOrder(_, { orderId }, { prisma }) {
   const completedOrder = await paypal.capturePayment(orderId);
   const completedSys = await prisma.updateOrder({
