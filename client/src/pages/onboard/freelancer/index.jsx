@@ -4,20 +4,20 @@ import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import common from '@shared/common';
-import { StyledNav, LogoContainer } from '../../../components/Nav/style';
-import { NavLink, Logo, Button } from '../../../primitives';
 import Stepper from '../../../components/Stepper';
 import CustomField from '../../../components/CustomField';
-import timezones from '../../../utils/timezones';
 import withAuthSync from '../../../components/withAuthSync';
-import { FREELANCER_ONBOARDING_PERSONAL } from '../../../graphql/user';
+import NavLogoOnly from '../../../components/NavLogoOnly';
+import { FREELANCER_ONBOARDING_PERSONAL } from '../../../graphql/freelancer';
 import router from '../../../utils/router';
+import Button from '../../../primitives/Button';
+// import timezones from '../../../utils/timezones';
 
-const Container = styled.div`
+export const Container = styled.div`
   width: 100vw;
 `;
 
-const StepperContainer = styled.div`
+export const StepperContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 900px;
@@ -26,13 +26,13 @@ const StepperContainer = styled.div`
   padding-bottom: 1rem;
 `;
 
-const BodyContainer = styled.div`
+export const BodyContainer = styled.div`
   background: ${props => props.theme.color.d6};
   padding: 1rem 0rem;
   box-sizing: border-box;
 `;
 
-const FormContainer = styled.div`
+export const FormContainer = styled.div`
   padding-top: 2rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -43,7 +43,7 @@ const FormContainer = styled.div`
   margin: auto;
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   margin: auto;
   width: 900px;
   max-width: 100vw;
@@ -58,14 +58,7 @@ const Onboarding = ({ authenticatedUser }) => {
   );
   return (
     <div>
-      <StyledNav>
-        <NavLink href="/">
-          <LogoContainer>
-            <Logo />
-          </LogoContainer>
-        </NavLink>
-        <div />
-      </StyledNav>
+      <NavLogoOnly />
       <Container>
         <StepperContainer>
           <Stepper
@@ -155,6 +148,11 @@ const Onboarding = ({ authenticatedUser }) => {
                     component={CustomField}
                     required={false}
                   />
+                  {/*
+                    Temporarily not use this for now to make the onboarding as simple as possible
+                    for the freelancer
+                  */}
+                  {/*
                   <Field
                     name="location"
                     label="Location"
@@ -170,7 +168,7 @@ const Onboarding = ({ authenticatedUser }) => {
                     component={CustomField}
                     options={timezones}
                     required={false}
-                  />
+                  /> */}
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Button
                       style={{
@@ -180,6 +178,7 @@ const Onboarding = ({ authenticatedUser }) => {
                         alignItems: 'center',
                       }}
                       type="submit"
+                      styleType="primary"
                       disabled={isSubmitting}
                       loading={isSubmitting}
                     >

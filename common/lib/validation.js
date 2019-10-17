@@ -150,9 +150,29 @@ export const freelancerPersonalInput = yup.object().shape({
   timezone: yup.string('Timezone must be a string'), // todo => create regex for timezone
 });
 
-export const freelancerPortfolioInput = yup.object().shape({});
+export const portfolioInput = yup.object().shape({
+  title: yup.string().required('Title is required'),
+  description: yup.string().required('Description is required'),
+  url: yup.string().url('Website must be a correct url format'),
+  images: yup.array(),
+});
 
-export const freelancerInput = {
-  ...freelancerPersonalInput,
-  ...freelancerPortfolioInput,
-};
+export const freelancerPortfolioInput = yup.object().shape({
+  socials: yup
+    .array()
+    .of(
+      yup.object().shape({
+        type: yup.string(),
+        url: yup.string(),
+      }),
+    )
+    .min(1, 'Please add at least 1 social'),
+  skills: yup
+    .array()
+    .of(yup.string())
+    .min(1, 'Please add at least 1 skill'),
+  portfolio: yup
+    .array()
+    .of(portfolioInput)
+    .min(1, 'Please add at least 1 portfolio project'),
+});

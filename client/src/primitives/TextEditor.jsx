@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Textarea from './Textarea';
 import { InputStyles } from '../utils/theme';
+import debounce from '../utils/debounce';
 
 let Trix;
 
@@ -27,14 +28,14 @@ const TextEditor = ({ onChange, onBlur, value, name, placeholder }) => {
   const trixInput = useRef(null);
 
   useEffect(() => {
-    function handleChange(event) {
+    const handleChange = debounce(event => {
       onChange({
         target: {
           name,
           value: event.target.innerHTML,
         },
       });
-    }
+    }, 1000);
     function handleBlur(event) {
       onBlur({
         target: {
