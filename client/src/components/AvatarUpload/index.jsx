@@ -5,7 +5,7 @@ import Spinner from '../../primitives/Spinner';
 import { Avatar, UploadImage } from './style';
 import { GET_IMAGE, IMAGE_UPLOAD } from '../../graphql/file';
 
-const AvatarUpload = ({ onChange, name, value }) => {
+const AvatarUpload = ({ onChange, onBlur, name, value }) => {
   const [fetchImage, { loading: loading1, data: getImageData }] = useLazyQuery(
     GET_IMAGE,
     {
@@ -69,6 +69,15 @@ const AvatarUpload = ({ onChange, name, value }) => {
     }
   }
 
+  function handleBlur(e) {
+    onBlur({
+      target: {
+        ...e.target,
+        name,
+      },
+    });
+  }
+
   return (
     <div>
       <input
@@ -78,7 +87,12 @@ const AvatarUpload = ({ onChange, name, value }) => {
         onChange={handleChange}
       />
       <label htmlFor="image-upload">
-        <Avatar src={getImageData && getImageData.file.url} />
+        <Avatar
+          src={getImageData && getImageData.file.url}
+          tabIndex={0}
+          onBlur={handleBlur}
+          onSelect={handleBlur}
+        />
         <UploadImage>
           {loading1 || loading2 ? (
             <>
@@ -106,6 +120,7 @@ const AvatarUpload = ({ onChange, name, value }) => {
 
 AvatarUpload.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([
     PropTypes.string,

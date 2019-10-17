@@ -24,9 +24,11 @@ const AsyncSelect = ({
   onChange,
   name,
   value,
+  placeholder,
 }) => (
   <AsyncCreatableSelect
     cacheOptions
+    placeholder={placeholder}
     defaultOptions
     value={isMulti && value.map ? value.map(v => ({ label: v, value: v })) : {}}
     loadOptions={loadOptions}
@@ -50,6 +52,7 @@ AsyncSelect.propTypes = {
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
   ]),
+  placeholder: PropTypes.string,
 };
 
 AsyncSelect.defaultProps = {
@@ -59,6 +62,7 @@ AsyncSelect.defaultProps = {
   isMulti: true,
   isClearable: true,
   value: [],
+  placeholder: 'Select...',
 };
 
 export default AsyncSelect;

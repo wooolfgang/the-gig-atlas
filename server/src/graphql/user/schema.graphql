@@ -16,6 +16,7 @@ type User {
   asEmployer: Employer
   asFreelancer: Freelancer
   isEmailVerified: Boolean
+  freelancerOnboardingStep: FreelancerOnboardingStep
 }
 
 enum UserRole {
