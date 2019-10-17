@@ -15,3 +15,9 @@ export const FREELANCER_ONBOARDING_PORTFOLIO = gql`
     freelancerOnboardingPortfolio(input: $input)
   }
 `;
+
+export const SKIP_FREELANCER_ONBOARDING = gql`
+  mutation SKIP_FREELANCER_ONBOARDING {
+    skipFreelancerOnboarding
+  }
+`;

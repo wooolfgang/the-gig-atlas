@@ -5,8 +5,9 @@ export const StyledNav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 75px;
+  height: 67.5px;
   box-sizing: border-box;
+  background: #fff;
 
   a {
     color: ${props => props.theme.color.d1};
