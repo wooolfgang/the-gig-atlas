@@ -52,10 +52,10 @@ module.exports = {
   // forceCoverageMatch: [],
 
   // A path to a module which exports an async function that is triggered once before all test suites
-  // globalSetup: null,
+  globalSetup: `${__dirname}/global-setup.js`,
 
   // A path to a module which exports an async function that is triggered once after all test suites
-  // globalTeardown: null,
+  globalTeardown: `${__dirname}/global-teardown.js`,
 
   // A set of global variables that need to be available in all test environments
   // globals: {},
@@ -91,7 +91,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  preset: 'jest-puppeteer',
+  // preset: 'jest-puppeteer',
 
   // Run tests from one or more projects
   // projects: null,

@@ -1,11 +1,11 @@
 // import axios from 'axios';
 // import { getToken } from './auth';
-import {
-  createOrder,
-  authorizePayment,
-  // selectOrder,
-  capturePayment,
-} from './order';
+// import {
+//   createOrder,
+//   authorizePayment,
+//   // selectOrder,
+//   capturePayment,
+// } from './order';
 // import { listProfiles, setProfile } fro./_web-profileile';
 
 describe.skip('Test Paypal Sandbox API', () => {
@@ -19,32 +19,32 @@ describe.skip('Test Paypal Sandbox API', () => {
   //   // expect(res).toBeInstanceOf(String);
   // });
 
-  it.skip('Creates order (not to be paid) to paypal', async () => {
-    const dummyItems = [
-      {
-        name: 'Gig Post',
-        description: 'Post a gig',
-        price: 55,
-        quantity: 1,
-      },
-      {
-        name: 'Blue Adjust',
-        description: 'Blue animation',
-        price: 10,
-        quantity: 1,
-      },
-    ];
-    const payor = {
-      name: { given_name: 'Martin', surname: 'Doe' },
-      email: 'martin@t5t.com',
-    };
-    const orderId = await createOrder(dummyItems, payor);
+  // it.skip('Creates order (not to be paid) to paypal', async () => {
+  //   const dummyItems = [
+  //     {
+  //       name: 'Gig Post',
+  //       description: 'Post a gig',
+  //       price: 55,
+  //       quantity: 1,
+  //     },
+  //     {
+  //       name: 'Blue Adjust',
+  //       description: 'Blue animation',
+  //       price: 10,
+  //       quantity: 1,
+  //     },
+  //   ];
+  //   const payor = {
+  //     name: { given_name: 'Martin', surname: 'Doe' },
+  //     email: 'martin@t5t.com',
+  //   };
+  //   const orderId = await createOrder(dummyItems, payor);
 
-    const res = await authorizePayment(orderId);
+  //   const res = await authorizePayment(orderId);
 
-    // console.log('response after order test');
-    // console.log(res);
-  });
+  //   // console.log('response after order test');
+  //   // console.log(res);
+  // });
 
   // it.skip('creates new web profile', async () => {
   //   const profile = await setProfile();

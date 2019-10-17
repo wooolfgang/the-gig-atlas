@@ -1,6 +1,7 @@
+/* eslint-disable import/named */
 /* eslint-disable no-unreachable */
 import axios from 'axios';
-import { payment, isDev } from '../../src/config';
+import { payment } from '../../src/config';
 // import util from './util';
 
 if (!payment || !payment.paypal) {
