@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import uuidv4 from 'uuid/v4';
 import config from '../../config';
-import google from '../../../serverless/google';
-import github from '../../../serverless/github';
+import google from '../../serverless/google';
+import github from '../../serverless/github';
 import { verifyToken } from '../utils/rules';
 
 /**
