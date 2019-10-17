@@ -1,4 +1,5 @@
 import uuidv4 from 'uuid/v4';
+import argon2 from 'argon2';
 // eslint-disable-next-line import/no-cycle
 import { transformEmployerInput } from '../employer/resolver';
 
@@ -21,6 +22,7 @@ export default {
   Mutation: {
     createGig: async (_, { gig, employer }, { prisma }) => {
       const existingUser = await prisma.$exists.user({ email: employer.email });
+      const password = await argon2.hash(uuidv4());
       const createGigInput = {
         ...transformGigInput(gig),
         employer: {
@@ -36,7 +38,7 @@ export default {
                   create: {
                     email: employer.email,
                     role: 'MEMBER',
-                    password: uuidv4(),
+                    password,
                   },
                 },
           },

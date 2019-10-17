@@ -11,9 +11,11 @@ type User {
   firstName: String
   lastName: String
   email: String
-  asEmployer: Employer
   role: UserRole
   createdAt: Date
+  asEmployer: Employer
+  asFreelancer: Freelancer
+  isEmailVerified: Boolean
 }
 
 enum UserRole {

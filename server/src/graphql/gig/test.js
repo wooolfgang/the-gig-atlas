@@ -1,4 +1,5 @@
 import axios from 'axios';
+import argon2 from 'argon2';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
 
@@ -213,5 +214,13 @@ describe('Testing gig resolvers', () => {
     expect(employerResult.avatar.id).toEqual(newEmployerData.avatarFileId);
     expect(employerResult.displayName).toEqual(newEmployerData.displayName);
     expect(employerResult.asUser.email).toEqual(existingUser.email);
+  });
+
+  it('Created user from gig should be properly hashed by argon', async () => {
+    const user = await prisma.user({ email: employer.email });
+    const randomhash = await argon2.hash('adskjsadksjdaskldjaskl');
+    const res = await argon2.verify(user.password, randomhash);
+    expect(user.password).toBeTruthy();
+    expect(res).toEqual(false);
   });
 });

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import auth from '../../utils/auth';
 import router from '../../utils/router';
+import Button from '../../primitives/Button';
 
 /**
  * Creates and open a new window popup for handling OAuth from providers
@@ -82,20 +83,26 @@ const AuthProvider = ({ oauthURL }) => {
   };
 
   return (
-    <div>
-      <button
+    <>
+      <Button
         onClick={startAuth(oauthURL.google, 'Google OAuth')}
         disabled={isSigning}
+        style={{
+          backgroundColor: '#4285F4',
+          color: 'white',
+          marginBottom: '12px',
+        }}
       >
-        Google
-      </button>
-      <button
+        Continue With Google
+      </Button>
+      <Button
         onClick={startAuth(oauthURL.github, 'Github OAuth')}
         disabled={isSigning}
+        style={{ backgroundColor: '#24292e', color: 'white' }}
       >
-        Github
-      </button>
-    </div>
+        Continue With Github
+      </Button>
+    </>
   );
 };
 

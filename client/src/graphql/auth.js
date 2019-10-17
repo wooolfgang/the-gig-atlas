@@ -17,6 +17,21 @@ export const OAUTH_URL = gql`
   }
 `;
 
+export const GET_AUTHENTICATED_USER = gql`
+  query {
+    authenticatedUser {
+      id
+      email
+      firstName
+      lastName
+      isEmailVerified
+      asFreelancer {
+        id
+      }
+    }
+  }
+`;
+
 // MUTATIONS
 export const SIGNUP_LOCAL = gql`
   mutation SIGNUP_LOCAL($input: SignupInput!) {

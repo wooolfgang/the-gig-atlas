@@ -5,7 +5,7 @@ export const StyledNav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 85px;
+  height: 75px;
   box-sizing: border-box;
 
   a {
@@ -14,11 +14,13 @@ export const StyledNav = styled.nav`
   }
 `;
 
-export const NavLinks = styled.div`
-  a {
-    margin: 17.5px;
-  }
+export const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${props => props.theme.color.s1};
 `;
+
+export const NavLinks = styled.div``;
 
 export const PostGigButton = styled.button`
   background: none;
@@ -28,4 +30,9 @@ export const PostGigButton = styled.button`
   cursor: pointer;
   padding: 7px 13px;
   border-radius: 2px;
+  transition: background-color 0.15s;
+
+  :hover {
+    background-color: ${props => props.theme.color.p1d};
+  }
 `;

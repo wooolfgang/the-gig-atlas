@@ -44,7 +44,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
   <>
     {loading && (
       <div style={{ marginBottom: '1.5rem' }}>
-        Loading cache... <Spinner />
+        Checking cache... <Spinner />
       </div>
     )}
     <Formik
@@ -105,7 +105,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
           <Field
             name="paymentType"
             label="Payment Type"
-            type="radiogroups"
+            type="radiobuttons"
             component={CustomField}
             options={[
               {
@@ -146,7 +146,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
           <Field
             name="jobType"
             label="Job Type"
-            type="radiogroups"
+            type="radiobuttons"
             component={CustomField}
             options={[
               {

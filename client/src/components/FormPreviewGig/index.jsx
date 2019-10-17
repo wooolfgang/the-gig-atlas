@@ -30,7 +30,7 @@ const FormPreviewGig = ({ back, next }) => {
   if (loading1 || loading2) {
     return (
       <>
-        Loading cache... <Spinner />
+        Generating preview... <Spinner />
       </>
     );
   }

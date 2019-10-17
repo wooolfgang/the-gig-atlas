@@ -11,6 +11,13 @@ import {
   ThirdRow,
   Centered,
 } from './style';
+import { color } from '../../utils/theme';
+
+const JOB_TYPE = {
+  PART_TIME: 'Part-time',
+  FULL_TIME: 'Full-time',
+  CONTRACT: 'Contract',
+};
 
 const GigCard = ({
   margin,
@@ -36,8 +43,9 @@ const GigCard = ({
       </FirstRow>
       <SecondRow width={isMobile ? '80%' : '60%'}>
         <Title>{title}</Title>
-        <span>
-          {jobType} | {locationRestriction} | ${minFee}-${maxFee}
+        <span style={{ fontSize: '1rem', color: color.d2 }}>
+          {JOB_TYPE[jobType]} ‧ ${minFee}-${maxFee}{' '}
+          {locationRestriction ? `‧ ${locationRestriction}` : '‧ Remote'}
         </span>
       </SecondRow>
       {!isMobile && (
@@ -50,7 +58,14 @@ const GigCard = ({
                 .slice(1)
                 .join(' ')}
             </small>
-            <span style={{ marginBottom: '8px' }}>{projectType}</span>
+            <span
+              style={{
+                marginBottom: '8px',
+                fontSize: '0.9rem',
+              }}
+            >
+              {projectType && projectType.toLowerCase()}
+            </span>
             <div>
               {technologies &&
                 technologies.map((t, i) => <Tech key={i}>{t}</Tech>)}
