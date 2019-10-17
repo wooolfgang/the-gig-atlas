@@ -14,33 +14,6 @@ export default {
 
       return !!res;
     },
-
-    freelancerOnboardingPersonal: async (_, { input }, { prisma, user }) => {
-      const { avatarFileId, firstName, lastName, ...asFreelancer } = input;
-      const res = await prisma.updateUser({
-        where: {
-          id: user.id,
-        },
-        data: {
-          firstName,
-          lastName,
-          freelancerOnboardingStep: 'PORTFOLIO',
-          asFreelancer: {
-            create: {
-              ...asFreelancer,
-              avatar: {
-                connect: {
-                  id: avatarFileId,
-                },
-              },
-            },
-          },
-        },
-      });
-      return !!res;
-    },
-
-    freelancerOnboardingPortfolio: async (_, { input }, { prisma, user }) => {},
   },
   User: {
     asEmployer: async (_, _args, { prisma, user: { id } }, info) => {
