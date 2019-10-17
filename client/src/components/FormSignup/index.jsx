@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import common from '@shared/common';
 import { useMutation } from '@apollo/react-hooks';
@@ -6,14 +6,15 @@ import auth from '../../utils/auth';
 import { SIGNUP_LOCAL } from '../../graphql/auth';
 import CustomField from '../CustomField';
 import router from '../../utils/router';
-import Button from '../../primitives/Button';
+import { Button } from '../../primitives';
 import ErrorBanner from '../../primitives/ErrorBanner';
 
 const SignupLocal = () => {
-  const [signup, { error }] = useMutation(SIGNUP_LOCAL, {
+  const [error, setError] = useState(null);
+  const [signup] = useMutation(SIGNUP_LOCAL, {
     onCompleted: data => {
       auth.setTokenCookie(data.signup.token);
-      router.toProfile();
+      router.toFreelancerOnboardingPersonal();
     },
   });
 
@@ -22,15 +23,15 @@ const SignupLocal = () => {
       <Formik
         onSubmit={async (values, actions) => {
           try {
-            console.log('these are the values', values);
             await signup({ variables: { input: values } });
+            actions.setSubmitting(true);
           } catch (e) {
             /**
              * @todo: handle error
              */
-            console.error(e);
+            setError(e);
+            actions.setSubmitting(false);
           }
-          actions.setSubmitting(false);
         }}
         initialValues={{
           email: '',
@@ -74,10 +75,11 @@ const SignupLocal = () => {
             <Button
               style={{ marginTop: '.8rem' }}
               type="submit"
+              styleType="primary"
               disabled={isSubmitting}
               loading={isSubmitting}
             >
-              {isSubmitting ? 'Signing up...' : 'Signup With Email'}
+              {isSubmitting ? 'Submitting...' : 'Signup With Email'}
             </Button>
           </Form>
         )}

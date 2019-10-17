@@ -1,3 +1,9 @@
+type Mutation {
+  freelancerOnboardingPersonal(input: FreelancerOnboardingPersonal!): Boolean!
+  freelancerOnboardingPortfolio(input: FreelancerOnboardingPortfolio!): Boolean!
+  skipFreelancerOnboarding: Boolean!
+}
+
 type Freelancer {
   id: ID
   createdAt: DateTime
@@ -19,7 +25,7 @@ type PortfolioProject {
   id: ID
   title: String
   description: String
-  website: String
+  url: String
   avatar: File
   images: [File]!
 }
@@ -27,7 +33,7 @@ type PortfolioProject {
 type Social {
   id: ID!
   type: SocialType
-  website: String
+  url: String
 }
 
 enum SocialType {
@@ -37,3 +43,42 @@ enum SocialType {
   TWITTER
 }
 
+enum FreelancerOnboardingStep {
+  NOT_STARTED
+  PERSONAL
+  PORTFOLIO
+  FINISHED
+}
+
+
+input FreelancerOnboardingPersonal {
+  firstName: String
+  lastName: String
+  avatarFileId: String
+  bio: String
+  website: String
+  location: String
+  timezone: String
+}
+
+input ImageInput {
+  id: ID!
+}
+
+input PortfolioInput {
+  title: String!
+  description: String!
+  images: [ImageInput]!
+  url: String
+}
+
+input SocialInput {
+  type: SocialType!
+  url: String!
+}
+
+input FreelancerOnboardingPortfolio {
+  socials: [SocialInput!]!
+  portfolio: [PortfolioInput!]!
+  skills: [String!]!
+}
