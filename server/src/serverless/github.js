@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import axios from 'axios';
-import config from '../src/config';
+import config from '../config';
 
 const { id, secret, redirectURI } = config.githubOauth;
 
