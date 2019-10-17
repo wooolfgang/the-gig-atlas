@@ -8,6 +8,7 @@ import Modal from '../Modal';
 import CustomField from '../CustomField';
 import PorfolioImagesUploader from '../PortfolioImagesUploader';
 import { PortfolioContainer, PortfolioCard } from './style';
+import PortfolioProjectsChooser from '../PortfolioProjectsChooser';
 
 async function fetchGithubProjects(username) {
   const res = await fetch(`https://api.github.com/users/${username}/repos`);
@@ -19,14 +20,17 @@ function parseGithubProjects(projects) {
   return projects.map(project => ({
     title: project.name,
     description: project.description,
+    images: [],
   }));
 }
 
 const PortfolioProjectsCreate = ({ onChange, portfolio }) => {
   const [githubUsername, setGithubUsername] = useState(null);
+  const [githubProjects, setGithubProjects] = useState([]);
   const [githubError, setGithubError] = useState(null);
   const [isFetchingGithub, setIsFetchingGithub] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalGithubOpen, setIsModalGithubOpen] = useState(false);
 
   async function fetchGithub() {
     setIsFetchingGithub(true);
@@ -39,8 +43,9 @@ const PortfolioProjectsCreate = ({ onChange, portfolio }) => {
     }
 
     const projects = parseGithubProjects(res);
-    onChange(projects);
+    setGithubProjects(projects);
     setIsFetchingGithub(false);
+    setIsModalGithubOpen(true);
   }
 
   return (
@@ -49,8 +54,12 @@ const PortfolioProjectsCreate = ({ onChange, portfolio }) => {
         <Input
           placeholder="wooolfgang"
           style={{ width: '250px' }}
-          onChange={e => setGithubUsername(e.target.value)}
+          onChange={e => {
+            setGithubError('');
+            setGithubUsername(e.target.value);
+          }}
           onKeyDown={e => {
+            e.stopPropagation();
             if (e.keyCode === 13) {
               fetchGithub();
             }
@@ -167,6 +176,14 @@ const PortfolioProjectsCreate = ({ onChange, portfolio }) => {
             )}
           />
         </Modal>
+        <PortfolioProjectsChooser
+          visible={isModalGithubOpen}
+          projects={githubProjects}
+          closeModal={() => setIsModalGithubOpen(false)}
+          onSubmit={projects => {
+            onChange(projects);
+          }}
+        />
       </div>
       <PortfolioContainer>
         {portfolio.map((project, index) => (

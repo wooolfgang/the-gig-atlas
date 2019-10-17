@@ -153,7 +153,7 @@ const OnboardingPortfolio = () => {
                 handleSubmit,
                 touched,
               }) => (
-                <Form onSubmit={e => e.preventDefault()}>
+                <Form>
                   <Field
                     name="skills"
                     type="asyncselect"
@@ -211,7 +211,7 @@ const OnboardingPortfolio = () => {
                         display: 'flex',
                         alignItems: 'center',
                       }}
-                      type="submit"
+                      type="button"
                       styleType="primary"
                       disabled={isSubmitting}
                       loading={isSubmitting}
