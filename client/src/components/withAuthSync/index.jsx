@@ -42,7 +42,7 @@ const withAuthSync = WrappedComponent => {
     const res = await apolloClient.query({
       query: GET_AUTHENTICATED_USER,
       // => Make sure to always fetch network first, as apollo defaults to cache
-      fetchPolicy: 'network-and-cache',
+      fetchPolicy: 'network-only',
     });
 
     if (!res.data.authenticatedUser) {
@@ -51,8 +51,13 @@ const withAuthSync = WrappedComponent => {
       return {};
     }
 
-    if (!res.data.authenticatedUser.asFreelancer) {
-      router.toFreelancerOnboarding(ctx);
+    const onboardingStep = res.data.authenticatedUser.freelancerOnboardingStep;
+    if (onboardingStep !== 'FINISHED') {
+      if (onboardingStep === 'PORTFOLIO') {
+        router.toFreelancerOnboardingPortfolio(ctx);
+      } else {
+        router.toFreelancerOnboardingPersonal(ctx);
+      }
       // => Do not go for early return, as we need to pass user down as props
     }
 

@@ -10,6 +10,7 @@ import TextEditor from './TextEditor';
 import RadioCards from './RadioCards';
 import RadioButtons from './RadioButtons';
 import Select from './Select';
+import Spinner from './Spinner';
 
 export {
   FieldError,
@@ -24,4 +25,5 @@ export {
   RadioCards,
   RadioButtons,
   Select,
+  Spinner,
 };

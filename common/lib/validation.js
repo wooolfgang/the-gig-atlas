@@ -3,6 +3,7 @@ import * as yup from 'yup';
 /* eslint-disable arrow-parens */
 /**
  * name regex pattern: https://stackoverflow.com/questions/2385701/regular-expression-for-first-and-last-name
+ *
  */
 
 export const employerTypeRegex = /^(PERSONAL|COMPANY)$/;
@@ -22,8 +23,8 @@ export const password = yup
 export const userRole = yup.string().matches(userRoleRegex);
 export const signupInput = yup.object().shape({
   email: email.required('Email is required'),
-  firstName: name,
-  lastName: name,
+  firstName: name.required('First name is required'),
+  lastName: name.required('Last name is required'),
   password: password.required('Password is required'),
 });
 export const signinInput = yup.object().shape({
@@ -85,6 +86,14 @@ export const communicationWebsite = yup.string().when('communicationType', {
     .required('Website url is required'),
 });
 export const locationRestriction = yup.string();
+export const avatarFileId = yup
+  .string('Avatar is required')
+  .required('Avatar is required');
+export const website = yup
+  .string('Website must be a string')
+  .url('Website must be a url')
+  .required('Website is required');
+
 export const gigInput = yup.object().shape({
   title,
   description,
@@ -104,10 +113,7 @@ export const employerInput = yup.object().shape({
   displayName: yup
     .string('Display name must be a string')
     .required('Display name is required'),
-  website: yup
-    .string('Website must be a string')
-    .url('Website must be a url')
-    .required('Website is required'),
+  website,
   introduction: yup
     .string('Introduction must be a string')
     .required('Introduction is required'),
@@ -119,7 +125,7 @@ export const employerInput = yup.object().shape({
     .string('Employer type must be a string')
     .required('Employer type is required')
     .matches(employerTypeRegex),
-  avatarFileId: yup.string('Avatar is required').required('Avatar is required'),
+  avatarFileId,
 });
 
 // employer
@@ -131,4 +137,42 @@ export const setEmployerInput = yup.object().shape({
 export const createGigInput = yup.object().shape({
   gig: gigInput.required('Gig input is required'),
   employer: employerInput.required('Employer input is required'),
+});
+
+// freelancer
+export const freelancerPersonalInput = yup.object().shape({
+  firstName: name.required('First name is required'),
+  lastName: name.required('Last name is required'),
+  avatarFileId,
+  bio: yup.string('Bio must be a string').required('Bio is required'),
+  website: yup.string('Website must be a string').url('Website must be a url'),
+  location: yup.string('Location must be a string'),
+  timezone: yup.string('Timezone must be a string'), // todo => create regex for timezone
+});
+
+export const portfolioInput = yup.object().shape({
+  title: yup.string().required('Title is required'),
+  description: yup.string().required('Description is required'),
+  url: yup.string().url('Website must be a correct url format'),
+  images: yup.array(),
+});
+
+export const freelancerPortfolioInput = yup.object().shape({
+  socials: yup
+    .array()
+    .of(
+      yup.object().shape({
+        type: yup.string(),
+        url: yup.string(),
+      }),
+    )
+    .min(1, 'Please add at least 1 social'),
+  skills: yup
+    .array()
+    .of(yup.string())
+    .min(1, 'Please add at least 1 skill'),
+  portfolio: yup
+    .array()
+    .of(portfolioInput)
+    .min(1, 'Please add at least 1 portfolio project'),
 });

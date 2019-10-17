@@ -32,11 +32,15 @@ export const redirect = path => ctx => {
 const toSignin = redirect('/login');
 const toSignup = redirect('/signup');
 const toProfile = redirect('/profile');
-const toFreelancerOnboarding = redirect('/onboarding/freelancer');
+const toFreelancerOnboardingPersonal = redirect('/onboard/freelancer');
+const toFreelancerOnboardingPortfolio = redirect(
+  '/onboard/freelancer/portfolio',
+);
 
 export default {
   toSignin,
   toSignup,
   toProfile,
-  toFreelancerOnboarding,
+  toFreelancerOnboardingPersonal,
+  toFreelancerOnboardingPortfolio,
 };

@@ -25,7 +25,7 @@ const Select = ({
   ...props
 }) => (
   <ReactSelect
-    value={defaultValue}
+    value={options.filter(o => o.value === defaultValue)[0]}
     styles={customStyles}
     options={options}
     isClearable={isClearable}
@@ -33,7 +33,7 @@ const Select = ({
       onChange({
         target: {
           name,
-          value: val,
+          value: val.value,
         },
       });
     }}
