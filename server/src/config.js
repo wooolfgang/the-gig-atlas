@@ -98,7 +98,6 @@ const dev = {
       uri: 'https://api.sandbox.paypal.com', // set dev to -> [https://api.paypal.com]
     },
   },
-  isDev: true,
 };
 
 /**
@@ -111,6 +110,7 @@ const test = {
   },
   testUrl: 'http://localhost:7070/gql',
   hasDebug: true,
+  payment: dev.payment,
 };
 
 /**

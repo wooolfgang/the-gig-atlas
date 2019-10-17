@@ -40,10 +40,8 @@
     "jest": "^24.9.0",
     "jest-dev-server": "^4.3.0",
     "jest-environment-node": "^24.9.0",
-    "jest-puppeteer": "^4.3.0",
     "nodemon": "^1.19.2",
-    "prisma": "^1.34.8",
-    "puppeteer": "^1.20.0"
+    "prisma": "^1.34.8"
   },
   "dependencies": {
     "@shared/common": "^0.0.1",
