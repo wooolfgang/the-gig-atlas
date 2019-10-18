@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AsyncCreatableSelect from '../AsyncCreatableSelect';
 import AvatarUpload from '../AvatarUpload';
 import {
-  Textarea,
+  TextArea,
   TextEditor,
   Input,
   Label,
@@ -27,7 +27,7 @@ const CustomField = ({
 }) => {
   let InputComponent;
   if (type === 'textarea') {
-    InputComponent = Textarea;
+    InputComponent = TextArea;
   } else if (type === 'radiocards') {
     InputComponent = RadioCards;
   } else if (type === 'radiobuttons') {
@@ -52,7 +52,13 @@ const CustomField = ({
         <span id="label">
           {label} {!required && <small>(optional)</small>}
         </span>
-        <InputComponent {...field} type={type} {...props} style={inputStyle} />
+        <InputComponent
+          {...field}
+          type={type}
+          {...props}
+          style={inputStyle}
+          hasError={!!error}
+        />
         {!error && <FieldHelp visible={!!help} value={help} />}
         <FieldError visible={!!error} value={error} />
       </Label>

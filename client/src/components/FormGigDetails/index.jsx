@@ -3,10 +3,16 @@ import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import { useQuery } from '@apollo/react-hooks';
 import common from '@shared/common';
-import { Input, FieldError, FieldHelp } from '../../primitives';
+import {
+  Input,
+  FieldError,
+  FieldHelp,
+  Spinner,
+  Button,
+} from '../../primitives';
 import CustomField from '../CustomField';
-import { Price, Next, RateContainer } from './style';
-import Spinner from '../../primitives/Spinner';
+import { Price, RateContainer } from './style';
+
 import { GET_GIG_DETAILS } from '../../graphql/gig';
 
 const FieldInputComponent = ({
@@ -52,7 +58,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
       initialValues={initialValues}
       validationSchema={common.validation.gigInput}
       onSubmit={onSubmit}
-      render={({ values }) => (
+      render={({ values, isSubmitting }) => (
         <Form>
           <Field
             name="title"
@@ -63,7 +69,7 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
           />
           <Field
             name="description"
-            type="textarea"
+            type="texteditor"
             label="Description"
             component={CustomField}
           />
@@ -224,14 +230,18 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
             <span>
               Total:<Price> $89.99 </Price>
             </span>
-            <Next type="submit">
-              <span style={{ marginRight: '5px' }}>Enter your info </span>
-              <img
-                src="/static/arrow-right.svg"
-                alt="arrow-right-icon"
-                style={{ width: '1rem' }}
-              />
-            </Next>
+            <div style={{ display: 'flex' }}>
+              <Button type="submit" styleType="primary" loading={isSubmitting}>
+                <span style={{ marginRight: '5px' }}>Enter your info </span>
+                {!isSubmitting && (
+                  <img
+                    src="/static/arrow-right.svg"
+                    alt="arrow-right-icon"
+                    style={{ width: '1rem' }}
+                  />
+                )}
+              </Button>
+            </div>
           </div>
         </Form>
       )}
