@@ -48,6 +48,7 @@ export default {
     },
     deleteGig: async (_, args, { prisma }) => {
       await prisma.deleteGig(args);
+
       return true;
     },
   },

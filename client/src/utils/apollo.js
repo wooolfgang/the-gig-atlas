@@ -7,11 +7,10 @@ import { persistCache } from 'apollo-cache-persist';
 import auth from './auth';
 
 const { publicRuntimeConfig } = getConfig();
-
 const isServer = typeof window === 'undefined';
 let apolloClient = null;
 
-const endpoint = publicRuntimeConfig.uriServerGql;
+// const endpoint = publicRuntimeConfig.uriServerGql;
 // => Polyfill fetch() on the server (used by apollo-client)
 if (isServer) {
   global.fetch = fetch;
@@ -39,7 +38,7 @@ function create(initialState, ctx) {
     return next(operation);
   });
   const uploadLink = new CreateUploadLink({
-    uri: endpoint, // [info]=> Server URL (must be absolute)
+    uri: publicRuntimeConfig.gqlServer, // [info]=> Server URL (must be absolute)
     credentials: 'include',
   });
 
@@ -57,7 +56,7 @@ function create(initialState, ctx) {
  * @param {Object} initialState
  * @param {Object} ctx provide context to for server or browser
  */
-export default function initApollo(initialState, ctx = {}) {
+export default function initApollo(initialState, ctx) {
   // => Make sure to create a new client for every server-side request so that data
   // => isn't shared between connections (which would be bad)
   // [ref]=> https://github.com/zeit/next.js/blob/canary/examples/with-apollo/lib/apollo.js
