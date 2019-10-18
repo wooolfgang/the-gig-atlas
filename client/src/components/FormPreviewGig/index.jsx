@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { GET_IMAGE } from '../../graphql/file';
-import Spinner from '../../primitives/Spinner';
-import { Back, Next, Price } from '../FormGigDetails/style';
+import { Spinner, Button } from '../../primitives';
+import { Back, Price } from '../FormGigDetails/style';
 import Gig from '../Gig';
 import { GET_CLIENT_INFO, GET_GIG_DETAILS } from '../../graphql/gig';
 
@@ -74,14 +74,14 @@ const FormPreviewGig = ({ back, next }) => {
               style={{ width: '1rem' }}
             />
           </Back>
-          <Next type="button" onClick={next}>
+          <Button type="button" onClick={next} styleType="primary">
             <span style={{ marginRight: '5px' }}>Finish Purchase </span>
             <img
               src="/static/arrow-right.svg"
               alt="arrow-right-icon"
               style={{ width: '1rem' }}
             />
-          </Next>
+          </Button>
         </div>
       </div>
     </div>
