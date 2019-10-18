@@ -9,6 +9,7 @@ export const color = {
   /* secondary colors */
   s1: '#183DBD',
   s2: '#3568fc',
+  s3: '#1a73e8;',
 
   /* dark colors from darkest to lightest */
   d1: '#333333',
@@ -21,6 +22,18 @@ export const color = {
 
   /* error colors */
   e1: '#cc0000',
+
+  neutral0: 'hsl(0, 0%, 100%)',
+  neutral5: 'hsl(0, 0%, 95%)',
+  neutral10: 'hsl(0, 0%, 90%)',
+  neutral20: 'hsl(0, 0%, 80%)',
+  neutral30: 'hsl(0, 0%, 70%)',
+  neutral40: 'hsl(0, 0%, 60%)',
+  neutral50: 'hsl(0, 0%, 50%)',
+  neutral60: 'hsl(0, 0%, 40%)',
+  neutral70: 'hsl(0, 0%, 30%)',
+  neutral80: 'hsl(0, 0%, 20%)',
+  neutral90: 'hsl(0, 0%, 10%)',
 };
 
 const theme = {
@@ -30,11 +43,12 @@ const theme = {
 export const InputStyles = css`
   box-sizing: border-box;
   font-size: 1rem;
-  border: none;
   box-shadow: inset 0px 4px 20px rgba(0, 0, 0, 0.05);
   background: ${props => props.theme.color.d6};
   border: 1px solid ${props => props.theme.color.d4};
   min-height: 2em;
+  outline: 0;
+  transition: all 100ms;
 
   ::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */
@@ -55,16 +69,19 @@ export const InputStyles = css`
   }
 
   ${props =>
-    props.selected &&
+    props.hasError &&
     `
-    outline: 0;
-    border: 1px solid ${props.theme.color.s2};
+    border: 1px solid ${props.theme.color.e1} !important;
   `}
 
-  :hover,
-  :focus {
-    outline: 0;
-    border: 1px solid ${props => props.theme.color.s2};
+  ${props =>
+    props.selected &&
+    `
+    border: 1px solid ${props.theme.color.s3};
+  `}
+
+  &:focus {
+    border: 1px solid ${props => props.theme.color.s3};
   }
 `;
 

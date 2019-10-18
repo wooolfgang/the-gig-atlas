@@ -44,6 +44,11 @@ const CardOption = ({
     tabIndex="0"
     role="button"
     aria-pressed="false"
+    onKeyDown={e => {
+      if (e.keyCode === 13) {
+        onChange({ target: { name, value } });
+      }
+    }}
     onClick={() => {
       onChange({ target: { name, value } });
     }}

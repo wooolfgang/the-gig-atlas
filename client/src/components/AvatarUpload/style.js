@@ -23,6 +23,12 @@ export const Avatar = styled.div`
       background-size: cover;
     `}
 
+  ${props =>
+    props.hasError &&
+    `
+    border: 1px dashed ${props.theme.color.e1};
+  `}
+
   :hover,
   :focus {
     border: 1px dashed ${props => props.theme.color.s2};

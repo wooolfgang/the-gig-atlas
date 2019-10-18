@@ -4,10 +4,9 @@ import styled from 'styled-components';
 import withNoAuth from '../components/withNoAuthSync';
 import AuthProvider from '../components/AuthProvider';
 import { OAUTH_URL } from '../graphql/auth';
-import NavLoginSignup from '../components/NavLoginSignup';
 import HTMLHead from '../components/HTMLHead';
-import LoginIllustrationAnimated from '../components/LoginIllustrationAnimated';
 import { color } from '../utils/theme';
+import NavLoginSignup from '../components/NavLoginSignup';
 import FormSignin from '../components/FormSignin';
 
 const Container = styled.div`
@@ -16,18 +15,12 @@ const Container = styled.div`
 `;
 
 const Body = styled.div`
-  background: ${props => props.theme.color.d5};
   width: 100vw;
-  margin-top: -6.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  padding: 3.125rem 2rem 3.125rem 2rem;
-`;
-
-const IllustrationContainer = styled.div`
-  margin-top: -2rem;
+  padding: 1rem 2rem;
 `;
 
 const Card = styled.div`
@@ -46,9 +39,6 @@ const Signin = ({ oauthURL }) => (
     <Container>
       <HTMLHead />
       <NavLoginSignup />
-      <IllustrationContainer>
-        <LoginIllustrationAnimated width={150} height={150} />
-      </IllustrationContainer>
       <Body>
         <h1 style={{ margin: '1.875rem 0 0px 0' }}> Login to The Gig Atlas</h1>
         <p>

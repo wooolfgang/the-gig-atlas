@@ -24,6 +24,7 @@ const Body = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 0 2rem;
+  padding-bottom: 1.2rem;
   box-sizing: border-box;
 `;
 
