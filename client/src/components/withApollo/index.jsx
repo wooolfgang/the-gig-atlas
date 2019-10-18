@@ -5,7 +5,9 @@ import Head from 'next/head';
 import { getDataFromTree } from '@apollo/react-ssr';
 import initApollo from '../../utils/apollo';
 
-export default (App, { ssr = true } = {}) => {
+const isServer = typeof window === 'undefined';
+
+export default App => {
   const WithApollo = ({ apolloClient, apolloState, ...props }) => {
     const client = apolloClient || initApollo(apolloState);
 
@@ -23,7 +25,7 @@ export default (App, { ssr = true } = {}) => {
 
     WithApollo.displayName = `withApollo(${displayName})`;
   }
-  if (ssr || App.getInitialProps) {
+  if (isServer) {
     WithApollo.getInitialProps = async ctx => {
       const {
         Component,
@@ -41,7 +43,8 @@ export default (App, { ssr = true } = {}) => {
       }
 
       if (res && res.finished) {
-        return {};
+        // console.log('on finished');
+        return appProps;
       }
 
       if (!process.browser) {
