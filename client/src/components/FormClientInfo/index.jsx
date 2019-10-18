@@ -4,8 +4,8 @@ import common from '@shared/common';
 import { Formik, Form, Field } from 'formik';
 import { useQuery } from '@apollo/react-hooks';
 import CustomField from '../CustomField';
-import { Back, Next, Price } from '../FormGigDetails/style';
-import Spinner from '../../primitives/Spinner';
+import { Back, Price } from '../FormGigDetails/style';
+import { Spinner, Button } from '../../primitives';
 import { GET_CLIENT_INFO } from '../../graphql/gig';
 
 const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
@@ -20,7 +20,7 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={common.validation.employerInput}
-      render={({ values }) => (
+      render={({ values, isSubmitting }) => (
         <Form>
           <h2> Tell us about yourself</h2>
           <Field
@@ -62,7 +62,7 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
 
           <Field
             name="introduction"
-            type="textarea"
+            type="texteditor"
             label="Introduction"
             help="What does you company do, your visions, etc."
             component={CustomField}
@@ -100,14 +100,16 @@ const FormContainer = ({ initialValues, loading, onSubmit, back }) => (
                   style={{ width: '1rem' }}
                 />
               </Back>
-              <Next type="submit">
+              <Button type="submit" styleType="primary" loading={isSubmitting}>
                 <span style={{ marginRight: '5px' }}>Preview your post </span>
-                <img
-                  src="/static/arrow-right.svg"
-                  alt="arrow-right-icon"
-                  style={{ width: '1rem' }}
-                />
-              </Next>
+                {!isSubmitting && (
+                  <img
+                    src="/static/arrow-right.svg"
+                    alt="arrow-right-icon"
+                    style={{ width: '1rem' }}
+                  />
+                )}
+              </Button>
             </div>
           </div>
         </Form>

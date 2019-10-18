@@ -8,8 +8,8 @@ const PrimaryStyles = css`
 `;
 
 const DefaultStyles = css`
-  background: none;
-  border: none;
+  background: ${props => props.theme.color.d5};
+  border: 1px solid ${props => props.theme.color.d4};
 `;
 
 const SecondaryStyles = css`
@@ -38,7 +38,7 @@ const BUTTON_STYLE_TYPES = {
 const StyledButton = styled.button`
   border: none;
   border-radius: 2px;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 1rem;
   padding: 0.6rem 0.8rem;
   display: flex;

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import Spinner from '../../primitives/Spinner';
 import { Avatar, UploadImage } from './style';
 import { GET_IMAGE, IMAGE_UPLOAD } from '../../graphql/file';
 
-const AvatarUpload = ({ onChange, onBlur, name, value }) => {
+const AvatarUpload = ({ onChange, onBlur, name, value, hasError }) => {
+  const inputRef = useRef(null);
   const [fetchImage, { loading: loading1, data: getImageData }] = useLazyQuery(
     GET_IMAGE,
     {
@@ -69,15 +70,6 @@ const AvatarUpload = ({ onChange, onBlur, name, value }) => {
     }
   }
 
-  function handleBlur(e) {
-    onBlur({
-      target: {
-        ...e.target,
-        name,
-      },
-    });
-  }
-
   return (
     <div>
       <input
@@ -85,13 +77,18 @@ const AvatarUpload = ({ onChange, onBlur, name, value }) => {
         id="image-upload"
         style={{ display: 'none' }}
         onChange={handleChange}
+        ref={inputRef}
       />
       <label htmlFor="image-upload">
         <Avatar
           src={getImageData && getImageData.file.url}
+          hasError={hasError}
           tabIndex={0}
-          onBlur={handleBlur}
-          onSelect={handleBlur}
+          onKeyDown={e => {
+            if (e.keyCode === 13 && inputRef) {
+              inputRef.current.click();
+            }
+          }}
         />
         <UploadImage>
           {loading1 || loading2 ? (
@@ -122,6 +119,7 @@ AvatarUpload.propTypes = {
   onChange: PropTypes.func.isRequired,
   onBlur: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
+  hasError: PropTypes.bool,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.array,
@@ -131,6 +129,7 @@ AvatarUpload.propTypes = {
 
 AvatarUpload.defaultProps = {
   value: null,
+  hasError: false,
 };
 
 export default AvatarUpload;

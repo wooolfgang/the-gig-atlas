@@ -124,7 +124,7 @@ const Banner = () => (
 );
 
 const Index = () => {
-  const { data, loading } = useQuery(GET_GIGS_LIST_FOR_LANDING, {
+  const { data } = useQuery(GET_GIGS_LIST_FOR_LANDING, {
     fetchPolicy: 'cache-and-network',
   });
   return (
@@ -145,13 +145,7 @@ const Index = () => {
             </p>
             <GigsSvg />
           </div>
-          {loading ? (
-            <span>
-              Loading... <Spinner />{' '}
-            </span>
-          ) : (
-            <GigsList gigs={data ? data.gigsListLanding : []} />
-          )}
+          <GigsList gigs={data ? data.gigsListLanding : []} />
         </GigsGrid>
       </GigsContainer>
     </>

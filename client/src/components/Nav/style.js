@@ -21,7 +21,10 @@ export const LogoContainer = styled.div`
   color: ${props => props.theme.color.s1};
 `;
 
-export const NavLinks = styled.div``;
+export const NavLinks = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 export const PostGigButton = styled.button`
   background: none;

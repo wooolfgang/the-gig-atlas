@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Textarea from './Textarea';
+import TextArea from './TextArea';
 import { InputStyles } from '../utils/theme';
-import debounce from '../utils/debounce';
 
 let Trix;
 
@@ -24,48 +23,65 @@ const TextEditorStyles = styled.div`
   }
 `;
 
-const TextEditor = ({ onChange, onBlur, value, name, placeholder }) => {
-  const trixInput = useRef(null);
+const TextEditor = ({
+  onChange,
+  onBlur,
+  value,
+  name,
+  placeholder,
+  hasError,
+}) => {
+  const random = Math.random().toString(36);
+  const trixId = useRef(random);
+  const mounted = useRef(false);
 
   useEffect(() => {
-    const handleChange = debounce(event => {
+    const handleChange = event => {
       onChange({
         target: {
           name,
           value: event.target.innerHTML,
         },
       });
-    }, 1000);
-    function handleBlur(event) {
+    };
+
+    const handleBlur = event => {
       onBlur({
         target: {
           ...event.target,
           name,
         },
       });
-    }
-    if (trixInput) {
-      trixInput.current.addEventListener('trix-change', handleChange);
-      trixInput.current.addEventListener('trix-blur', handleBlur);
+    };
+
+    const trix = document.getElementById(trixId.current);
+    if (trix) {
+      if (!mounted.current && value) {
+        trix.editor.loadHTML(value);
+        mounted.current = true;
+      }
+      trix.addEventListener('trix-blur', handleBlur);
+      trix.addEventListener('trix-change', handleChange);
     }
 
     return () => {
-      const { current } = trixInput;
-      current.removeEventListener('trix-change', handleChange, false);
-      current.removeEventListener('trix-blur', handleBlur, false);
+      if (trix) {
+        trix.removeEventListener('trix-blur', handleBlur, false);
+        trix.removeEventListener('trix-change', handleChange, false);
+      }
     };
-  }, [name, onBlur, onChange]);
+  }, [name, onBlur, onChange, value]);
 
   /* Use Textarea as placeholder for SSR */
   if (!Trix) {
-    return <Textarea placeholder={placeholder} />;
+    return <TextArea placeholder={placeholder} />;
   }
 
   return (
-    <div key={Trix ? 1 : 0}>
-      <TextEditorStyles>
+    <div>
+      <TextEditorStyles hasError={hasError}>
         <input id="trix" type="hidden" value={value} />
-        <trix-editor input="trix" ref={trixInput} />
+        <trix-editor input="trix" id={trixId.current} />
       </TextEditorStyles>
     </div>
   );
@@ -77,11 +93,13 @@ TextEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onBlur: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  hasError: PropTypes.bool,
 };
 
 TextEditor.defaultProps = {
   value: '',
   placeholder: '',
+  hasError: false,
 };
 
 export default TextEditor;
