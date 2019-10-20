@@ -4,12 +4,22 @@ import PropTypes from 'prop-types';
 import { color } from '../../utils/theme';
 
 const customStyles = {
-  control: styles => ({
+  control: (styles, state) => ({
     ...styles,
     borderRadius: '0px',
     boxShadow: 'inset 0px 4px 20px rgba(0, 0, 0, 0.05)',
     background: color.d6,
-    border: `1px solid ${color.d4}`,
+    border: `1px solid ${
+      // eslint-disable-next-line no-nested-ternary
+      state.isFocused
+        ? color.s3
+        : state.selectProps.hasError
+        ? color.e1
+        : color.d4
+    }`,
+    '&:hover': {
+      border: '1px solid none',
+    },
   }),
   placeholder: defaultStyles => ({
     ...defaultStyles,
@@ -25,6 +35,7 @@ const AsyncSelect = ({
   name,
   value,
   placeholder,
+  hasError,
 }) => (
   <AsyncCreatableSelect
     cacheOptions
@@ -34,6 +45,7 @@ const AsyncSelect = ({
     loadOptions={loadOptions}
     isMulti={isMulti}
     isClearable={isClearable}
+    hasError={hasError}
     styles={customStyles}
     onChange={values => {
       const newValue = values ? values.map(v => v.value) : [];
@@ -53,6 +65,7 @@ AsyncSelect.propTypes = {
     PropTypes.arrayOf(PropTypes.string),
   ]),
   placeholder: PropTypes.string,
+  hasError: PropTypes.bool,
 };
 
 AsyncSelect.defaultProps = {
@@ -63,6 +76,7 @@ AsyncSelect.defaultProps = {
   isClearable: true,
   value: [],
   placeholder: 'Select...',
+  hasError: false,
 };
 
 export default AsyncSelect;

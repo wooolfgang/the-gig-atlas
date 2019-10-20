@@ -30,7 +30,10 @@ const Gig = ({ employer: _employer, gig: _gig, preview }) => {
           >
             {employer.website}
           </a>
-          <span>{employer.introduction}</span>
+          <div
+            contentEditable="true"
+            dangerouslySetInnerHTML={{ __html: employer.introduction }}
+          />
         </div>
       </ClientContainer>
       <GigContainer>
@@ -44,7 +47,11 @@ const Gig = ({ employer: _employer, gig: _gig, preview }) => {
             gig.technologies.map &&
             gig.technologies.map(tech => <Tech key={tech}>{tech}</Tech>)}
         </div>
-        <div style={{ marginBottom: '2rem' }}>{gig.description}</div>
+        <div
+          style={{ marginBottom: '2rem' }}
+          contentEditable="true"
+          dangerouslySetInnerHTML={{ __html: gig.description }}
+        />
         <ApplyButton>Apply For Gig</ApplyButton>
       </GigContainer>
     </Container>
