@@ -25,7 +25,7 @@ export default App => {
 
     WithApollo.displayName = `withApollo(${displayName})`;
   }
-  if (isServer) {
+  if (isServer || App.getInitialProps) {
     WithApollo.getInitialProps = async ctx => {
       const {
         Component,
