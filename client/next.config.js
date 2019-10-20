@@ -29,6 +29,8 @@ const staging = {
 const production = {
   // to be filled
   public: {
+    uriServer: SERVER_URI,
+    gqlServer: `${SERVER_URI}/gql`,
     paypalCDN: `${URL_PAYPAL_CDN}AWkdLY5smSbtUFamC_cCzsZKU5pKn-4_oj8WEWYKnjyhf0deCrPuUW1Q7I_pstmew16xWrLd4rNVwzr2`,
   },
 };
