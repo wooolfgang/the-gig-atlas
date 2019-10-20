@@ -6,9 +6,9 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import * as Yup from 'yup';
 import common from '@shared/common';
 import CustomField from '../CustomField';
-import { Price, Next, Back } from '../FormGigDetails/style';
+import { Price, Back } from '../FormGigDetails/style';
 import { GET_IMAGE } from '../../graphql/file';
-import Spinner from '../../primitives/Spinner';
+import { Spinner, Button } from '../../primitives';
 import GigCard from '../GigCard';
 import {
   GET_GIG_DETAILS,
@@ -182,18 +182,26 @@ const FormPurchase = ({ back }) => {
                   style={{ width: '1rem' }}
                 />
               </Back>
-              <Next type="submit">
-                <span style={{ marginRight: '5px' }}>Publish </span>
-                {isSubmitting ? (
-                  <Spinner />
-                ) : (
-                  <img
-                    src="/static/arrow-right.svg"
-                    alt="arrow-right-icon"
-                    style={{ width: '1rem' }}
-                  />
-                )}
-              </Next>
+              <div>
+                <Button
+                  type="submit"
+                  styleType="primary"
+                  loading={isSubmitting}
+                  style={{
+                    width: 'auto',
+                    display: 'inline-block',
+                  }}
+                >
+                  <span style={{ marginRight: '5px' }}>Publish </span>
+                  {!isSubmitting && (
+                    <img
+                      src="/static/arrow-right.svg"
+                      alt="arrow-right-icon"
+                      style={{ width: '1rem' }}
+                    />
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </Form>
