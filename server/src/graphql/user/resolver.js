@@ -1,4 +1,4 @@
-import { createFragment } from '../util';
+import { createFragment } from '../utils/fragment';
 
 export default {
   Query: {

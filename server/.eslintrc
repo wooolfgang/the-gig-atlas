@@ -10,6 +10,7 @@
     "comma-dangle": "off",
     "indent": "off",
     "import/no-named-as-default-member": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "camelcase": "off"
   }
 }

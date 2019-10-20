@@ -6,6 +6,10 @@
   "author": "jansel369 <dianzel555@gmail.com>",
   "license": "ISC",
   "main": "build/common.js",
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "build": "babel lib -d build"
+  },
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -19,10 +23,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wooolfgang/dev-capita.git"
-  },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "babel lib -d build"
   },
   "bugs": {
     "url": "https://github.com/wooolfgang/dev-capita/issues"

@@ -30,11 +30,15 @@ const loadAuthPayload = async ctx => {
     return new Error('No token specified');
   }
 
-  const payload = await verifyToken(token);
-  ctx.user = payload;
-  ctx.isAuthenticated = true;
+  try {
+    const payload = await verifyToken(token);
+    ctx.user = payload;
+    ctx.isAuthenticated = true;
 
-  return payload;
+    return payload;
+  } catch (e) {
+    throw new Error('Invalid token');
+  }
 };
 
 /**
