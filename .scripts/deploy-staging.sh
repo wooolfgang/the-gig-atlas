@@ -4,6 +4,8 @@
 #GITHUB_BASE_REF -> The base branch when you PR, usually it's the develop branch
 #https://help.github.com/en/articles/virtual-environments-for-github-actions#environment-variables
 
+#GITHUB_HEAD_REF -> The current branch that is being merged
+#GITHUB_BASE_REF -> The base branch when you PR, usually it's the develop branch
 
 sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no dev@167.179.102.140 <<EOF
   cd the-gig-atlas || exit 1
