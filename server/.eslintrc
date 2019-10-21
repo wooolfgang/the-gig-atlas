@@ -11,6 +11,7 @@
     "indent": "off",
     "import/no-named-as-default-member": "off",
     "object-curly-newline": "off",
-    "camelcase": "off"
+    "camelcase": "off",
+    "no-underscore-dangle": "off"
   }
 }
