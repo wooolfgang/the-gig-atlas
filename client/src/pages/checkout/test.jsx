@@ -12,22 +12,27 @@ const { publicRuntimeConfig } = getConfig();
  * THIS FILE FOR TEST PURPOSE ONLY
  */
 
-const Test = ({ products }) => {
+const Test = ({ products, paypalCDN }) => {
   const apolloClient = useApolloClient();
-  // const [createOrder] = useMutation(ORDER_CREATE);
   // eslint-disable-next-line prefer-destructuring
-  const paypalCDN = publicRuntimeConfig.paypalCDN;
-  // console.log(publicRuntimeConfig);
-  // console.log(paypalCDN);
 
   useEffect(() => {
     // window.apolloClient = apolloClient;
     const { paypal } = window;
+
+    if (!paypal) {
+      /**
+       * @todo handle not available paypal
+       */
+      console.error('Paypal not available!');
+      return;
+    }
     // console.log('apolloClient', apolloClient);
     const button = paypal.Buttons({
       createOrder: async () => {
         try {
           const items = products.map(p => p.id);
+          console.log('the items: ', items);
           const {
             data: { order: orderId },
           } = await apolloClient.mutate({
@@ -74,9 +79,12 @@ const Test = ({ products }) => {
 Test.getInitialProps = async ({ apolloClient }) => {
   try {
     const { data } = await apolloClient.query({ query: ALL_PRODUCTS });
+    // eslint-disable-next-line prefer-destructuring
+    const paypalCDN = publicRuntimeConfig.paypalCDN;
+
     // const { products } = data;
 
-    return data;
+    return { ...data, paypalCDN };
   } catch (e) {
     console.log('failed to query products: \n', e);
     return {};
