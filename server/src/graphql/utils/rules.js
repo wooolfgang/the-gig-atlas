@@ -1,5 +1,6 @@
 import { rule } from 'graphql-shield';
 import jwt from 'jsonwebtoken';
+import { header } from '@shared/common';
 import config from '../../config';
 
 export const ADMIN = 'ADMIN';
@@ -25,10 +26,8 @@ export const verifyToken = token =>
  * @param {ResolverContext} ctx graphql resolver's context
  */
 const loadAuthPayload = async ctx => {
-  const token = ctx.req.get('Authorization');
-  if (!token) {
-    return new Error('No token specified');
-  }
+  const authorization = ctx.req.get('Authorization');
+  const token = header.getToken(authorization);
 
   try {
     const payload = await verifyToken(token);
@@ -72,10 +71,8 @@ export const isAuthenticated = rule()(async (_, _1, ctx) => {
  * Ahorization for expired and no jwt only
  */
 export const hasNoAuth = rule()(async (_, _args, { req }) => {
-  const token = req.get('Authorization');
-  if (!token) {
-    return true;
-  }
+  const authorization = req.get('Authorization');
+  const token = header.getToken(authorization);
 
   try {
     await verifyToken(token);
