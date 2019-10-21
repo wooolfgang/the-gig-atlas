@@ -56,7 +56,8 @@ interface AppCtx {
         a Continue button appears. Use this option when you want to control the activation
         of the subscription and do not want PayPal to activate the subscription.
       SUBSCRIBE_NOW. After you redirect the customer to the PayPal subscription consent
-        page, a Subscribe Now button appears. Use this option when you want PayPal to activate the subscription.
+        page, a Subscribe Now button appears. Use this option when you want PayPal to
+        activate the subscription.
       Default: SUBSCRIBE_NOW.
    */
   user_action?: 'CONTINUE' | 'SUBSCRIBE_NOW';
@@ -425,6 +426,9 @@ interface UpdateData {
  * plan with pricing tiers based on the quantity purchased. For more information
  */
 
+ /**
+  * __SUBSCRIPTION_CREATE__
+  */
  interface Subscriber {
    name: Name;
    email_address: string;
@@ -454,3 +458,16 @@ interface UpdateData {
     */
    application_context?: AppCtx;
  }
+
+ /**
+  * __SUBSCRIPTION_CAPTURE_AUTHORIZE__
+  */
+
+interface CaptureInput {
+  /**
+   * The reason or note for the subscription charge.
+   */
+  note: string;
+  capture_type: 'OUTSTANDING_BALANCE',
+  amount: Money,
+}
