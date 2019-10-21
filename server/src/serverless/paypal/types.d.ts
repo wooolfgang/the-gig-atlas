@@ -70,6 +70,19 @@ interface AppCtx {
  cancel_url: string; // not needed
 }
 
+interface Patch {
+  op: 'add' | 'remove' | 'replace' | 'move' | 'copy' | 'test';
+  path: string;
+  value: any;
+  /**
+   * The JSON Pointer to the target documentlocation from which to
+   * move the value. Required for the move operation.
+   */
+  from: string;
+
+  // [ref]=> https://developer.paypal.com/docs/api/subscriptions/v1/#definition-patch
+}
+
 /**
  * ___ORDER__
  */
@@ -244,6 +257,10 @@ interface CreateProduct {
  */
 //
 
+/**
+ * __PALN_CREATE__
+ */
+
 interface PricingSchema {
   /**
    * The version of the pricing scheme.
@@ -317,6 +334,7 @@ interface BillingCycle {
 interface PaymentReference {
   /**
    * Indicates whether to automatically bill the outstanding amount in the next billing cycle.
+   * default: true
    */
   auto_bill_outstanding?: boolean;
   /**
@@ -383,6 +401,20 @@ interface CreatePlan {
    */
   quantity_supported?: boolean;
 }
+
+/**
+ * __PLAN_PRICE_UPDATE__
+ */
+
+interface UpdatePricingScheme {
+  billing_cycle_sequence: number;
+  pricing_scheme: PricingSchema;
+}
+
+interface UpdateData {
+  pricing_schemes: UpdatePricingScheme[];
+}
+
 /**
  * ___SUBSCRIPTION__
  * You can use billing plans and subscriptions to create subscriptions
