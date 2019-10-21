@@ -1,10 +1,13 @@
-import { allow } from 'graphql-shield';
+import { allow, chain } from 'graphql-shield';
 import common from '@shared/common';
-import { validate } from '../utils/rules';
+import { validate, dompurify } from '../utils/rules';
 
 export default {
   Mutation: {
-    createGig: validate(common.validation.createGigInput),
+    createGig: chain(
+      dompurify(['gig.description', 'employer.introduction']),
+      validate(common.validation.createGigInput),
+    ),
     deleteGig: allow,
   },
   Query: {
