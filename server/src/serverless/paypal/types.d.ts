@@ -1,7 +1,78 @@
+import { string } from "yup";
+
 export interface Money {
   currency_code: string;
   value: string;
 }
+
+interface Name {
+  given_name: string;
+  surname: string;
+}
+
+interface PaymentMethod {
+  /**
+   * The customer-selected payment method on the merchant site.
+    Default: PAYPAL
+   */
+  payer_selected?: string;
+  /**
+   * The merchant-preferred payment sources. The possible values are:
+        UNRESTRICTED. Accepts any type of payment from the customer.
+        IMMEDIATE_PAYMENT_REQUIRED. Accepts only immediate payment
+          from the customer. For example, credit card, PayPal balance, or instant ACH. Ensures that at the time of capture, the payment does not have the `pending` status.
+        Default: UNRESTRICTED.
+   */
+  payee_preferred?: 'UNRESTRICTED' | 'IMMEDIATE_PAYMENT_REQUIRED';
+}
+
+interface AppCtx {
+  /**
+   * The label that overrides the business name in the PayPal account on the PayPal site.
+   */
+  brand_name?: string;
+  /**
+   * The BCP 47-formatted locale of pages that the PayPal payment experience shows.
+   * PayPal supports a five-character code. For example, da-DK, he-IL, id-ID, ja-JP,
+   * no-NO, pt-BR, ru-RU, sv-SE, th-TH, zh-CN, zh-HK, or zh-TW.
+   * Minimum length: 2.
+   */
+  locale?: string;
+  /**
+   * The location from which the shipping address is derived. The possible values are:
+      GET_FROM_FILE. Get the customer-provided shipping address on the PayPal site.
+      NO_SHIPPING. Redacts the shipping address from the PayPal site.
+        Recommended for digital goods.
+      SET_PROVIDED_ADDRESS. Get the merchant-provided address. The customer cannot
+        change this address on the PayPal site. If merchant does not pass an address,
+        customer can choose the address on PayPal pages.
+      Default: GET_FROM_FILE.
+   */
+  shipping_preference?: 'GET_FROM_FILE' | 'NO_SHIPPING' | 'SET_PROVIDED_ADDRESS';
+  /**
+   * Configures the label name to Continue or Subscribe Now for subscription consent
+   * experience. The possible values are:
+      CONTINUE. After you redirect the customer to the PayPal subscription consent page,
+        a Continue button appears. Use this option when you want to control the activation
+        of the subscription and do not want PayPal to activate the subscription.
+      SUBSCRIBE_NOW. After you redirect the customer to the PayPal subscription consent
+        page, a Subscribe Now button appears. Use this option when you want PayPal to activate the subscription.
+      Default: SUBSCRIBE_NOW.
+   */
+  user_action?: 'CONTINUE' | 'SUBSCRIBE_NOW';
+  /**
+   * The customer and merchant payment preferences. Currently only PAYPAL payment method is supported.
+   * 
+  */
+ payment_method?: PaymentMethod;
+
+ return_url: string; // not needed
+ cancel_url: string; // not needed
+}
+
+/**
+ * ___ORDER__
+ */
 
 export interface Breakdown {
   /**
@@ -82,10 +153,7 @@ export interface PurchaseUnit {
 }
 
 export interface Payer {
-  name: {
-    given_name: string;
-    surname: string;
-  };
+  name: Name;
   email_address: string;
 }
 
@@ -106,7 +174,7 @@ export interface CreateOrder {
   intent: Intent;
   purchase_units: PurchaseUnit[];
   payer?: Object;
-  application_context?: Object;
+  application_context?: AppCtx;
 }
 
 enum OrderStatus {
@@ -147,3 +215,210 @@ export interface OrderResponse {
   status: OrderStatus;
   links: any[];
 }
+
+/**
+ * ___PRODUCT__
+ * Merchants can use the Catalog Products API to
+ * create products, which are goods and services.
+ */
+
+interface CreateProduct {
+  name: string;
+  type: 'SERVICE';
+  id?: string;
+  description?: string;
+  category?: 'ONLINE_SERVICE';
+  image_url?: string;
+  home_url?: string;
+}
+
+/**
+ * ___PLAN__
+ * You can use billing plans and subscriptions to create subscriptions
+ * that process recurring PayPal payments for physical or digital goods,
+ * or services. A plan includes pricing and billing cycle information
+ * that defines the amount and frequency of charge for a subscription.
+ * You can also define a fixed plan, such as a $5 basic plan or a
+ * volume- or graduated-based plan with pricing tiers based on the
+ * quantity purchased. For more information,
+ */
+//
+
+interface PricingSchema {
+  /**
+   * The version of the pricing scheme.
+   */
+  version: number; // int
+  /**
+   * The fixed amount to charge for the subscription. For regular pricing,
+   * it is limited to a 20% increase from the current amount and the change
+   * is applicable for both existing and future subscriptions. For trial
+   * period pricing, there is no limit or constraint in changing the amount
+   * and the change is applicable only on future subscriptions.
+   */
+  fixed_price?: Money;
+  create_time?: string;
+  update_time?: string
+}
+
+interface Frequency {
+  /**
+   * The interval at which the subscription is charged or billed. The possible values are:
+   *  @DAY A daily billing cycle.
+   *  @WEEK A weekly billing cycle.
+   *  @MONTH A monthly billing cycle.
+   *  @YEAR A yearly billing cycle.
+   */
+  interval_unit: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
+  /**
+   * The number of intervals after which a subscriber
+   * is billed. For example, if the interval_unit is
+   * DAY with an interval_count of 2, the subscription is
+   * billed once every two days. The following table lists
+   * the maximum allowed values for the interval_count for each interval_unit:
+   * @interval_units     -> | DAY | WEEK | MONTH | YEAR |
+   * @max_interval_count -> | 365 |  52 |    12 |    1 |
+   */
+  interval_count?: number; // int
+
+}
+
+interface BillingCycle {
+  /**
+   * The active pricing scheme for this billing cycle.
+   * A free trial billing cycle does not require a pricing scheme.
+   */
+  pricing_schema?: PricingSchema;
+  /**
+   * The frequency details for this billing cycle.
+   */
+  frequency: Frequency;
+  /**
+   * The tenure type of the billing cycle. In case of a plan
+   * having trial period, only 1 trial period is allowed per plan. The possible values are:
+   *  @REGULAR A regular billing cycle.
+   *  @TRIAL A trial billing cycle.
+   */
+  tenure_type: 'REGULAR' | 'TRIAL';
+  /**
+   * The order in which this cycle is to run among other billing cycles.
+   * For example, a trial billing cycle has a sequence of 1 while a regular
+   * billing cycle has a sequence of 2, so that trial cycle runs before the regular cycle.
+   */
+  sequence: number; // integer
+  /**
+   * The number of times this billing cycle runs. Trial billing cycles can only have a
+   * value of 1 for total_cycles. Regular billing cycles can either have infinite cycles
+   * (value of 0 for total_cycles) or a finite number of cycles (value between 1 and 999 for total_cycles).
+   */
+  total_cycles?: number // integer;
+}
+
+interface PaymentReference {
+  /**
+   * Indicates whether to automatically bill the outstanding amount in the next billing cycle.
+   */
+  auto_bill_outstanding?: boolean;
+  /**
+   * The initial set-up fee for the service.
+   */
+  setup_fee?: Money;
+  /**
+   * The action to take on the subscription if the initial payment for the setup fails. The possible values are:
+   *  @CONTINUE Continues the subscription if the initial payment for the setup fails.
+   *  @CANCE Cancels the subscription if the initial payment for the setup fails.
+   *  @Default -> CANCEL.
+   */
+  setup_fee_failure_action?: 'CONTINUE' | 'CANCEL';
+  /**
+   * The maximum number of payment failures before a subscription is suspended.
+   * For example, if payment_failure_threshold is 2, the subscription automatically
+   * updates to the SUSPEND state if two consecutive payments fail.
+   *   Default: 0.
+   */
+  payment_failure_threshold?: number // int
+}
+
+interface Tax {
+  /**
+   * The tax percentage on the billing amount.
+   */
+  percentage: string;
+  /**
+   * Indicates whether the tax was already included in the billing amount.
+   *  Default: true.
+   */
+  inclusive?: boolean;
+}
+
+interface CreatePlan {
+  /**
+   * product id of as its reference for the plan
+   */
+  product_id: string;
+  name: string;
+  /**
+   * An array of billing cycles for trial and regular billing.
+   * A plan can have multiple billing cycles but only one trial billing cycle.
+   */
+  billing_cycles: BillingCycle[];  
+  /**
+   * The initial state of the plan. Allowed input values
+   * are CREATED and ACTIVE. The allowed values are:
+   * @CREATED The plan was created. You cannot create subscriptions for a plan in this state.
+   * @INACTIVE The plan is inactive.
+   * @ACTIVE The plan is active. You can only create subscriptions for a plan in this state.
+   * @Default ACTIVE.
+   */
+  status?: 'CREATED' | 'INACTIVE' | 'ACTIVE';
+  description?: string;
+  /**
+   * The payment preferences for a subscription.
+   */
+  payment_preferences?: PaymentReference;
+  taxes?: Tax;
+  /**
+   * Indicates whether you can subscribe to this plan
+   * by providing a quantity for the goods or service.
+   */
+  quantity_supported?: boolean;
+}
+/**
+ * ___SUBSCRIPTION__
+ * You can use billing plans and subscriptions to create subscriptions
+ * that process recurring PayPal payments for physical or digital goods,
+ * or services. A plan includes pricing and billing cycle information that
+ * defines the amount and frequency of charge for a subscription. You can also
+ * define a fixed plan, such as a $5 basic plan or a volume- or graduated-based
+ * plan with pricing tiers based on the quantity purchased. For more information
+ */
+
+ interface Subscriber {
+   name: Name;
+   email_address: string;
+   shipping_address: any; // not needed
+ }
+
+ interface CreateSubscription {
+   plan_id: string;
+   /**
+    * The date and time when the subscription started, in Internet date and time format.
+    *    Default: Current time.
+    */
+   start_time?: string;
+   /**
+    * The quantity of the product in the subscription.
+        Minimum length: 1.
+    */
+   quantity?: string;
+   shipping_amount?: Money;
+   /**
+    * The subscriber information.
+    */
+   subscriber?: Subscriber;
+   /**
+    * The application context, which customizes the
+    * payer experience during the subscription approval process with PayPal.
+    */
+   application_context?: AppCtx;
+ }
