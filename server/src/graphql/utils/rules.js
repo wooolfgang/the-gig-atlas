@@ -1,6 +1,11 @@
 import { rule } from 'graphql-shield';
 import jwt from 'jsonwebtoken';
+import { JSDOM } from 'jsdom';
+import DOMPurify from 'dompurify';
 import config from '../../config';
+
+const { window } = new JSDOM('<!DOCTYPE html>');
+const domPurify = DOMPurify(window);
 
 export const ADMIN = 'ADMIN';
 export const MEMBER = 'MEMBER';
@@ -117,4 +122,46 @@ export const validate = schema =>
     } catch (e) {
       return e;
     }
+  });
+
+export const purify = (fields, object) => {
+  const field = fields.shift();
+
+  if (fields.length === 0) {
+    if (typeof object[field] !== 'string') {
+      throw new Error(
+        'Error trying to sanitize an input that is not a valid string',
+      );
+    }
+    // eslint-disable-next-line no-param-reassign
+    object[field] = domPurify.sanitize(object[field]);
+    return true;
+  }
+
+  return purify(fields, object[field]);
+};
+
+/**
+ * Compares the args object. Uses dot notation
+ * @param {String or Array} field
+ * Ex: "input.description" compares it to args.input.description and purifies it
+ */
+export const dompurify = field =>
+  rule()(async (_, args) => {
+    if (!field) {
+      console.warn(
+        "No field input in dompurify. Verify if you're using this function correctly",
+      );
+      return false;
+    }
+
+    if (field instanceof Array) {
+      return field.every(f => purify(f.split('.'), args) === true);
+    }
+
+    if (typeof field === 'string') {
+      return purify(field.split('.'), args);
+    }
+
+    return false;
   });
