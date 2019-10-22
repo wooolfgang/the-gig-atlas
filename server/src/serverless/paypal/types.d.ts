@@ -238,12 +238,13 @@ export interface OrderResponse {
 
 interface CreateProduct {
   name: string;
-  type: 'SERVICE';
   id?: string;
   description?: string;
+  // given
+  type: 'SERVICE';
   category?: 'ONLINE_SERVICE';
-  image_url?: string;
-  home_url?: string;
+  image_url?: string; // no need
+  home_url?: string; /// no need
 }
 
 /**
@@ -461,6 +462,7 @@ interface UpdateData {
 
  /**
   * __SUBSCRIPTION_CAPTURE_AUTHORIZE__
+  * not needed for now
   */
 
 interface CaptureInput {
