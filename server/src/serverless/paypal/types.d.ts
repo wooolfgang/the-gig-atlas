@@ -238,9 +238,9 @@ export interface OrderResponse {
 
 interface CreateProduct {
   name: string;
-  id?: string;
   description?: string;
   // given
+  id?: string;
   type: 'SERVICE';
   category?: 'ONLINE_SERVICE';
   image_url?: string; // no need
@@ -282,7 +282,8 @@ interface PricingSchema {
 
 interface Frequency {
   /**
-   * The interval at which the subscription is charged or billed. The possible values are:
+   * The interval at which the subscription is charged or billed.
+   * The possible values are:
    *  @DAY A daily billing cycle.
    *  @WEEK A weekly billing cycle.
    *  @MONTH A monthly billing cycle.
@@ -307,14 +308,15 @@ interface BillingCycle {
    * The active pricing scheme for this billing cycle.
    * A free trial billing cycle does not require a pricing scheme.
    */
-  pricing_schema?: PricingSchema;
+  pricing_scheme?: PricingSchema;
   /**
    * The frequency details for this billing cycle.
    */
   frequency: Frequency;
   /**
    * The tenure type of the billing cycle. In case of a plan
-   * having trial period, only 1 trial period is allowed per plan. The possible values are:
+   * having trial period, only 1 trial period is allowed per plan.
+   * The possible values are:
    *  @REGULAR A regular billing cycle.
    *  @TRIAL A trial billing cycle.
    */
@@ -322,20 +324,23 @@ interface BillingCycle {
   /**
    * The order in which this cycle is to run among other billing cycles.
    * For example, a trial billing cycle has a sequence of 1 while a regular
-   * billing cycle has a sequence of 2, so that trial cycle runs before the regular cycle.
+   * billing cycle has a sequence of 2, so that trial cycle runs before the
+   * regular cycle.
    */
   sequence: number; // integer
   /**
-   * The number of times this billing cycle runs. Trial billing cycles can only have a
-   * value of 1 for total_cycles. Regular billing cycles can either have infinite cycles
-   * (value of 0 for total_cycles) or a finite number of cycles (value between 1 and 999 for total_cycles).
+   * The number of times THIS billing cycle runs.Trial billing cycles
+   * can only have a value of 1 for total_cycles. Regular billing cycles
+   * can either have infinite cycles (value of 0 for total_cycles) or a
+   * finite number of cycles (value between 1 and 999 for total_cycles).
    */
   total_cycles?: number // integer;
 }
 
 interface PaymentReference {
   /**
-   * Indicates whether to automatically bill the outstanding amount in the next billing cycle.
+   * Indicates whether to automatically bill the outstanding amount in
+   * the next billing cycle.
    * default: true
    */
   auto_bill_outstanding?: boolean;

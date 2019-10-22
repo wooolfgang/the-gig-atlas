@@ -4,8 +4,6 @@ import util from './util';
 
 const url = '/v1/billing/plans';
 
-
-
 function _validatePlan(plan) {
   return plan;
 }
@@ -46,6 +44,14 @@ function _setListQueryURL(query) {
   return `${url}?total_required=true${concats}`;
 }
 
+/**
+ * Query plans
+ * @param {Object} query - query obj
+ * @param {string} query.product_id - filters by product id
+ * @param {string} query.plan_ids - Filters the response by list of plan IDs up to 10.
+ * @param {number} query.page_size -  The number of items to return in the response. default: 10
+ * @param {number} query.page - offset page position, starts at 1: default 1
+ */
 export async function listPlans(query) {
   const config = {
     url: _setListQueryURL(query),
@@ -54,14 +60,13 @@ export async function listPlans(query) {
 
   try {
     const { data } = await request(config);
-    // const { total_items, total_pages, products } = data;
 
-    // return orderId;
     return data;
   } catch (e) {
     util.debugError(e);
     throw e;
   }
+  // [ref]=> https://developer.paypal.com/docs/api/subscriptions/v1/#plans_list
 }
 
 export async function showPlanDetail(id) {
@@ -112,10 +117,18 @@ export async function deactivatePlan(id) {
   }
 }
 
-export async function updatePricing(id) {
+/**
+ * Update pricing of plan
+ * @param {string} id - plan id
+ * @param {Object} priceScheme pricing schem obj
+ */
+export async function updatePricing(id, priceScheme) {
   const config = {
     url: `${url}/${id}/update-pricing-schemes`,
     method: 'post',
+    data: {
+      pricing_schemes: [priceScheme],
+    },
   };
 
   try {
@@ -126,4 +139,5 @@ export async function updatePricing(id) {
     util.debugError(e);
     throw e;
   }
+  // [ref] => https://developer.paypal.com/docs/api/subscriptions/v1/#plans_update-pricing-schemes
 }
