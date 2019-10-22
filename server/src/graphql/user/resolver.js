@@ -16,19 +16,23 @@ export default {
     },
   },
   User: {
-    asEmployer: async (_, _args, { prisma, user: { id } }, info) => {
-      const fragment = createFragment(info, 'FromUser', 'Employer');
+    asEmployer: async (root, _args, { prisma }, info) => {
+      const fragment = createFragment(info, 'AsEmployerFromUser', 'Employer');
 
       return prisma
-        .user({ id })
+        .user({ id: root.id })
         .asEmployer()
         .$fragment(fragment);
     },
-    asFreelancer: async (_, _args, { prisma, user: { id } }, info) => {
-      const fragment = createFragment(info, 'FromUser', 'Freelancer');
+    asFreelancer: async (root, _args, { prisma }, info) => {
+      const fragment = createFragment(
+        info,
+        'AsFreelancerFromUser',
+        'Freelancer',
+      );
 
       return prisma
-        .user({ id })
+        .user({ id: root.id })
         .asFreelancer()
         .$fragment(fragment);
     },
