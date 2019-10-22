@@ -173,11 +173,11 @@ type Thread {
 
   title: String! 
   body: String!
-  commentCount: Int! 
-  upvoteCount: Int! 
-  viewCount: Int!
+  commentCount: Int! @default(value: 0)
+  viewCount: Int! @default(value: 0)
+  upvoteCount: Int! @default(value: 1)
   tags: [ThreadTag!]! @scalarList(strategy: RELATION)
-
+  
   postedBy: User! @relation(name: "ThreadsByUser")
   comments: [Comment]! @relation(name: "ThreadComments", onDelete: "CASCADE")
 }
@@ -188,12 +188,12 @@ type Comment {
   updatedAt: DateTime! @updatedAt
 
   text: String! 
-  upvoteCount: Int!
+  upvoteCount: Int! @default(value: 1)
   isRoot: Boolean!
   isDeleted: Boolean @default(value: false)
 
-  children: [Comment]! @relation(name: "CommentChildren")
-  parent: Comment @relation(name: "CommentParent", link: INLINE)
+  children: [Comment]! @relation(name: "CommentAsParent")
+  parent: Comment @relation(name: "CommentAsParent", link: INLINE)
   thread: Thread! @relation(name: "ThreadComments")
   postedBy: User! @relation(name: "CommentPoster")
 }
