@@ -16,9 +16,16 @@ import {
   updatePricing,
 } from './plan';
 
+import {
+  createSubscription,
+} from './subscription';
+
 import { toMoney } from './util';
 
 describe('Paypal API', () => {
+  let prodId = 'PROD-3R491622GH226671W';
+  let planId = 'P-97956232MM305144XLWXOMZY';
+
   it.skip('creates new product', async () => {
     const product = {
       name: 'Gig Post',
@@ -108,6 +115,18 @@ describe('Paypal API', () => {
 
   it.skip('shows plan detial', async () => {
     const res = await showPlanDetail('P-97956232MM305144XLWXOMZY');
+    console.log(res);
+  });
+
+  // subscription
+
+  it.skip('creates new subscription', async () => {
+    const user = {
+      firstName: 'Johan',
+      lastName: 'Doena',
+      email: 'johan999@gmail.com',
+    };
+    const res = await createSubscription(planId, user);
     console.log(res);
   });
 });

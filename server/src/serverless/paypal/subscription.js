@@ -5,10 +5,10 @@ const url = '/v1/billing/subscriptions';
 
 /**
  * Create a new subscription to be paid
- * @param {String} planId corresponding plan id to subscribe
- * @param {Obje} user the user containing firstName, lastName and email
+ * @param {string} planId - corresponding plan id to subscribe
+ * @param {Object} user - the user containing firstName, lastName and email
  */
-export async function create(planId, user) {
+export async function createSubscription(planId, user) {
   const dataBody = {
     plan_id: planId,
     subscriber: {
@@ -33,9 +33,8 @@ export async function create(planId, user) {
 
   try {
     const { data } = await request(config);
-    const { id: orderId } = data;
 
-    return orderId;
+    return data;
   } catch (e) {
     util.debugError(e);
     throw e;
@@ -53,7 +52,7 @@ export async function update() {
  * Show details of subscription
  * @param {string} id subscription id
  */
-export async function show(id) {
+export async function showSubscription(id) {
   const config = {
     url: `${url}/${id}`,
     method: 'get',
@@ -73,13 +72,11 @@ export async function show(id) {
  * Reactivate subscription of employer of cancelled subscription
  * @param {satring} id id of cancelled subscription
  */
-export async function activate(id) {
+export async function activateSubscripton(id, reason = 'Reactivation') {
   const config = {
     url: `${url}/${id}/activate`,
     method: 'post',
-    data: {
-      reason: 'Reactivation',
-    },
+    data: { reason },
   };
 
   try {
