@@ -135,11 +135,11 @@ type File {
 type Product {
   id: ID! @id
   name: String!
-  price: Float!
+  price: Float! #// price to refer for billing cyle in subscription or in order
+  codename: String! @unique #// to avoid dublication
   description: String
   createdAt: DateTime! @createdAt 
   updatedAt: DateTime! @updatedAt
-  addonTo: Product @relation(link: INLINE)
 }
 
 enum PaymentService {
@@ -152,6 +152,15 @@ enum PaymentStatus {
   COMPLETED,
 }
 
+enum SubscriptionStatus {
+  CREATED, #// status after created
+  APPROVED, #// status after user approved payment
+  ACTIVE, #// set to active after server confirmed payment
+  SUSPENDED, #// says it all
+  CANCELLED,
+  EXPIRED,
+}
+
 type Order {
   id: ID! @id
   payer: User!
@@ -161,4 +170,31 @@ type Order {
   cost: Float!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+}
+
+
+enum PlanStatus {
+  CREATED,
+  INACTIVE,
+  ACTIVE,
+}
+
+type Plan {
+  id: ID! @id
+  codename: String @unique #// avoid dubplication
+  serviceId: String!
+  status: PlanStatus!
+  cyclePrice: Float!
+  description: String
+  products: [Product!]! @relation(link: TABLE)
+}
+
+type PlanSubscription {
+  id: ID! @id
+  subscriber: User!
+  serviceId: String! @unique
+  service: PaymentService!
+  status: SubscriptionStatus!
+  endAt: DateTime!
+  plan: Plan! @relation(link: INLINE)
 }
