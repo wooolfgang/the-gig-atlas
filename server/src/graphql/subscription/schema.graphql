@@ -1,0 +1,37 @@
+type Query {
+  plan: Plan
+  listPlans: [Plan]!
+  subscription: Subscription
+  listSubscription: [Subscription]!
+}
+
+type Mutation {
+  newSubscription(planId: ID): Subscription!
+
+}
+
+type Subscription {
+  id: ID
+  subscriber: User
+  serviceRefId: String
+  service: PaymentService # enum: get from prisma generated
+  status: SubscriptionStatus #enum: get from prisma generated
+}
+
+type Plan {
+  id: String
+  codename: String
+  serviceId: String
+  name: String
+  status: PlanStatus # get form prisma generated datamobel
+  description: String
+  cyclePrice: Float
+  products: [Product!]
+}
+
+# To create a new plan:
+# 1. get product(s) from local db
+# 2. create new product to service (paypal) db
+# 3. create a new plan to service (paypal) db from created product
+# 4. create a new plan to local service from newly created paymentservice plan
+

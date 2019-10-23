@@ -111,6 +111,10 @@ async function listProducts(pageSize = 10, pagePos = 1) {
   }
 }
 
+/**
+ * Allow use of async iterator
+ * access from listProducts.iter
+ */
 function _listProductIter(pageSize = 10, pagePos = 1) {
   return {
     pageSize,
