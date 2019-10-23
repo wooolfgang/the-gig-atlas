@@ -45,7 +45,7 @@ export async function createSubscription(planId, user) {
  * @todo: implement subscription update soon
  */
 export async function update() {
-
+  //
 }
 
 /**

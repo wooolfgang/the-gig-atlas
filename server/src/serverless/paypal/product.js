@@ -34,9 +34,8 @@ export async function createProduct(product) {
 
   try {
     const { data } = await request(config);
-    const { id: orderId } = data;
 
-    return orderId;
+    return data;
   } catch (e) {
     util.debugError(e);
     throw e;
@@ -95,7 +94,24 @@ export async function updateProduct(id, ...operations) {
  * @param {int} pagePos initial page position
  * @returns async iterator for list products
  */
-export function listProducts(pageSize = 10, pagePos = 1) {
+async function listProducts(pageSize = 10, pagePos = 1) {
+  const config = {
+    url: `${url}?total_required=true&page_size=${pageSize}&page=${pagePos}`,
+    method: 'get',
+  };
+
+  try {
+    const { data } = await request(config);
+    // const { total_items } = data;
+
+    return data;
+  } catch (e) {
+    util.debugError(e);
+    throw e;
+  }
+}
+
+function _listProductIter(pageSize = 10, pagePos = 1) {
   return {
     pageSize,
     pagePos,
@@ -109,32 +125,24 @@ export function listProducts(pageSize = 10, pagePos = 1) {
             return { done: true };
           }
 
-          const config = {
-            url: `${url}?total_required=true&page_size=${pageSize}&page=${currentPos}`,
-            method: 'get',
+          const data = await listProducts(pageSize, currentPos);
+          const { total_items } = data;
+
+          isDone = pageSize * currentPos >= total_items;
+          currentPos += pagePos;
+
+          return {
+            done: false,
+            value: data,
           };
-
-          try {
-            const { data } = await request(config);
-            const { total_items } = data;
-
-            if (pageSize * currentPos >= total_items) {
-              isDone = true;
-            }
-            currentPos += pagePos;
-
-            return {
-              done: false,
-              value: data,
-            };
-          } catch (e) {
-            util.debugError(e);
-            throw e;
-          }
         },
-      }
-    }
+      };
+    },
   };
 
   // [ref]=> iterator reference: https://javascript.info/async-iterators-generators
 }
+
+listProducts.iter = _listProductIter;
+
+export { listProducts };
