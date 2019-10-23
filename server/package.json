@@ -15,7 +15,7 @@
     "prisma:apply": "prisma deploy --force",
     "prisma:login": "prisma login --key $(grep PRISMA_CLOUD_SESSION_KEY .env | cut -d '=' -f2)",
     "test": "NODE_ENV=test yarn run seed:test && yarn jest",
-    "test_on": "NODE_ENV=dev jest serverless/paypal/test.js --watch",
+    "test:paypal": "NODE_ENV=dev jest serverless/paypal/test.js --watch",
     "test:watch": "NODE_ENV=dev jest --watch",
     "seed": "NODE_ENV=dev node ./prisma/seed/index.js",
     "seed:default": "yarn run seed admin product",

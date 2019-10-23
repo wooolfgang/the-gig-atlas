@@ -22,45 +22,54 @@ import {
 
 import { toMoney } from './util';
 
-describe('Paypal API', () => {
-  let prodId = 'PROD-3R491622GH226671W';
-  let planId = 'P-97956232MM305144XLWXOMZY';
+/**
+ * Test queries data from Paypal developers sandbox api by internet
+ * avg up to 10 seconds to run test
+ */
+describe.skip('Paypal API', () => {
+  const insertedProd = {
+    name: 'Gig Post',
+    description: 'The standard gig post',
+  };
+  let prodId; // = 'PROD-3R491622GH226671W';
+  let planId; // = 'P-97956232MM305144XLWXOMZY';
+  let subsId; // = 'I-V6UM3M2DP2J6';
 
-  it.skip('creates new product', async () => {
-    const product = {
-      name: 'Gig Post',
-      description: 'The standard gig post',
-    };
+  it('creates new product', async () => {
 
-    const res = await createProduct(product);
-    console.log(res);
+    const data = await createProduct(insertedProd);
+    const { id, name, description } = data;
+    prodId = id;
+
+    expect(name).toBe(insertedProd.name);
+    expect(description).toBe(insertedProd.description);
   });
 
-  it.skip('list all products', async () => {
-    const products = listProducts();
-
-    for await (const prod of products) {
-      console.log(prod);
-    }
+  it('list all products', async () => {
+    const res = await listProducts(20, 1);
+    expect(res.total_items).toBeGreaterThanOrEqual(1);
   });
 
-  it.skip('shows product by id', async () => {
-    const prod = await showProduct('PROD-3R491622GH226671W');
-    console.log(prod);
+  it('shows product by id', async () => {
+    const prod = await showProduct(prodId);
+
+    expect(prod.name).toBe(insertedProd.name);
+    expect(prod.type).toBe('SERVICE');
+    expect(prod.category).toBe('ONLINE_SERVICES');
   });
 
-  it.skip('updates products', async () => {
-    const id = 'PROD-3R491622GH226671W';
+  it('updates products', async () => {
     const operation = {
       op: 'replace',
       path: '/description',
       value: 'Updated Gig description',
     };
-    const prod = await updateProduct(id, operation);
-    console.log(prod);
+    const prod = await updateProduct(prodId, operation);
+
+    expect(prod.description).toBe(operation.value);
   });
 
-  it.skip('creates new plan', async () => {
+  it('creates new plan', async () => {
     const firstTrialMonth = {
       tenure_type: 'TRIAL',
       sequence: 1,
@@ -83,50 +92,43 @@ describe('Paypal API', () => {
         fixed_price: toMoney(39.99),
       },
     };
-    // const restRegular = {
-    //   tenure_type: 'REGULAR',
-    //   sequence: 3,
-    //   total_cycles: 10,
-    //   frequency: {
-    //     interval_unit: 'MONTH',
-    //     interval_count: 1,
-    //   },
-    //   pricing_scheme: {
-    //     version: 1,
-    //     fixed_price: toMoney(34.99),
-    //   },
-    // };
     const create = {
-      product_id: 'PROD-3R491622GH226671W',
+      product_id: prodId,
       name: 'Trial First Gig Post',
       describe: 'One year plan with free trial on first month',
       status: 'ACTIVE',
       billing_cycles: [firstTrialMonth, secondMonthRegular],
     };
     const plan = await createPlan(create);
+    planId = plan.id;
 
-    console.log(plan); // -> id: P-97956232MM305144XLWXOMZY
+    expect(plan.product_id).toBe(prodId);
+    expect(plan.name).toBe(create.name);
+    expect(plan.status).toBe(create.status);
   });
 
-  it.skip('shows list of created plans', async () => {
-    const plans = await listPlans({ page_size: 20 });
-    console.log(plans);
+  it('shows list of created plans', async () => {
+    const res = await listPlans({ counts: 20 });
+
+    expect(res.plans.length).toBeGreaterThanOrEqual(1);
   });
 
-  it.skip('shows plan detial', async () => {
-    const res = await showPlanDetail('P-97956232MM305144XLWXOMZY');
-    console.log(res);
+  it('shows plan detial', async () => {
+    const res = await showPlanDetail(planId);
+
+    expect(res.product_id).toBe(prodId);
   });
 
-  // subscription
-
-  it.skip('creates new subscription', async () => {
+  it('creates new subscription', async () => {
     const user = {
       firstName: 'Johan',
       lastName: 'Doena',
       email: 'johan999@gmail.com',
     };
     const res = await createSubscription(planId, user);
-    console.log(res);
+
+    subsId = res.id;
+
+    expect(res.status).toBe('APPROVAL_PENDING');
   });
 });

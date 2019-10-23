@@ -35,21 +35,22 @@ export async function createPlan(plan) {
   }
 }
 
-function _setListQueryURL(query) {
-  const concats = Object.keys(query).reduce(
-    (queries, field) => queries.concat(`&${field}=${query[field]}`),
-    '',
-  );
+function _setListQueryURL({ prodId, planIds, counts, page }) {
+  let qurl = `${url}?total_required=true`;
+  qurl = prodId ? qurl.concat(`&product_id=${prodId}`) : qurl;
+  qurl = planIds ? qurl.concat(`&plan_ids=${planIds}`) : qurl;
+  qurl = counts ? qurl.concat(`&page_size=${counts}`) : qurl;
+  qurl = page ? qurl.concat(`&page=${page}`) : qurl;
 
-  return `${url}?total_required=true${concats}`;
+  return qurl;
 }
 
 /**
  * Query plans
  * @param {Object} query - query obj
- * @param {string} query.product_id - filters by product id
- * @param {string} query.plan_ids - Filters the response by list of plan IDs up to 10.
- * @param {number} query.page_size -  The number of items to return in the response. default: 10
+ * @param {string} query.prodId - filters by product id
+ * @param {string} query.planIds - Filters the response by list of plan IDs up to 10.
+ * @param {number} query.counts -  The number of items to return in the response. default: 10
  * @param {number} query.page - offset page position, starts at 1: default 1
  */
 export async function listPlans(query) {
