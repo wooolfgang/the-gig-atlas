@@ -18,8 +18,3 @@ type User {
   isEmailVerified: Boolean
   freelancerOnboardingStep: FreelancerOnboardingStep
 }
-
-enum UserRole {
-  ADMIN
-  MEMBER
-}

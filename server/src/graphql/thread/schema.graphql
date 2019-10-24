@@ -1,0 +1,60 @@
+type Mutation {
+  createThread(input: ThreadInput!): Thread!
+  createComment(input: CommentInput!): Comment!
+}
+
+type Query {
+  threads(
+    where: ThreadWhereInput
+    orderBy: ThreadOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Thread]!
+}
+
+type Thread {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+
+  title: String
+  body: String
+  commentCount: Int
+  upvoteCount: Int
+  viewCount: Int
+
+  tags: [ThreadTag!]!
+  postedBy: User
+  comments: [Comment]!
+}
+
+type Comment {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+
+  text: String
+  upvoteCount: Int
+  isRoot: Boolean
+  isDeleted: Boolean
+
+  children: [Comment]!
+  parent: Comment
+  thread: Thread
+  postedBy: User
+}
+
+input ThreadInput {
+  title: String!
+  body: String!
+  tags: [ThreadTag!]!
+}
+
+input CommentInput {
+  text: String!
+  threadId: ID!
+  parentId: ID
+}

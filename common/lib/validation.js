@@ -11,6 +11,7 @@ export const userRoleRegex = /^(ADMIN|MEMBER)$/;
 export const jobTypeRegex = /^(FULL_TIME|PART_TIME|CONTRACT)$/;
 export const paymentTypeRegex = /^(HOURLY|FIXED)$/;
 export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
+export const threadTagRegex = /^(FREELANCE|DESIGN|DISCUSS|WEBDEV|PRODUCTIVITY)$/;
 
 export const id = yup.string();
 
@@ -175,4 +176,21 @@ export const freelancerPortfolioInput = yup.object().shape({
     .array()
     .of(portfolioInput)
     .min(1, 'Please add at least 1 portfolio project'),
+});
+
+// thread
+export const threadInput = yup.object().shape({
+  title: yup.string().required('Title is required'),
+  body: yup.string().required('Body is required'),
+  tags: yup
+    .array()
+    .of(yup.string().matches(threadTagRegex, 'Invalid thread tag'))
+    .required(),
+});
+
+// thread comment
+export const commentInput = yup.object().shape({
+  text: yup.string().required('Text is required'),
+  threadId: yup.string().required('ThreadId is required'),
+  parentId: yup.string(),
 });
