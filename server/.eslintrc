@@ -12,6 +12,7 @@
     "import/no-named-as-default-member": "off",
     "object-curly-newline": "off",
     "camelcase": "off",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "import/prefer-default-export": "off"
   }
 }

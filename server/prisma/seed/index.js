@@ -10,7 +10,7 @@ require('@babel/register')({
 
 const seeds = {
   admin: require('./admin').default,
-  product: require('./product').default,
+  plan: require('./plan').default,
 };
 
 const toSeeds = [];
