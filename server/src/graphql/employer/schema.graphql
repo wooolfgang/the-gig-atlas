@@ -21,11 +21,6 @@ type Employer {
   gigs: [Gig]!
 }
 
-enum EmployerType {
-  PERSONAL
-  COMPANY
-}
-
 input EmployerInput {
   displayName: String!
   website: String!
