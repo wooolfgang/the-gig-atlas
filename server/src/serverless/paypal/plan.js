@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable import/prefer-default-export */
 import request from './connect';
 import util from './util';
@@ -35,6 +36,47 @@ export async function createPlan(plan) {
   }
 }
 
+/**
+ * Type PlanStdInput
+ * @typedef {Object} PlanStdInput
+ * @property {string} prodId - product id from paypal db
+ * @property {string} codename - plan unique codename
+ * @property {string} description - plan detail description
+ * @property {number} monthlyCharge - plan monthly charge
+ */
+
+/**
+ * Encapsulated Create plan with pre-made standard value
+ * Plan is automatically set to ACTIVATED
+ * @param {PlanStdInput} input - plan pbject
+ */
+export function createStdPlan(input) {
+  const { prodId, codename, description, monthlyCharge } = input;
+  // [] => Shows standard monthly billing cycle
+  const monthlyCycle = {
+    tenure_type: 'REGULAR',
+    sequence: 1,
+    total_cycles: 12,
+    frequency: {
+      interval_unit: 'MONTH',
+      interval_count: 1,
+    },
+    pricing_scheme: {
+      version: 1,
+      fixed_price: util.toMoney(monthlyCharge),
+    },
+  };
+  const create = {
+    description,
+    name: codename,
+    product_id: prodId,
+    status: 'ACTIVE',
+    billing_cycles: [monthlyCycle],
+  };
+
+  return createPlan(create);
+}
+
 function _setListQueryURL({ prodId, planIds, counts, page }) {
   let qurl = `${url}?total_required=true`;
   qurl = prodId ? qurl.concat(`&product_id=${prodId}`) : qurl;
@@ -53,7 +95,7 @@ function _setListQueryURL({ prodId, planIds, counts, page }) {
  * @param {number} query.counts -  The number of items to return in the response. default: 10
  * @param {number} query.page - offset page position, starts at 1: default 1
  */
-export async function listPlans(query) {
+async function listPlans(query) {
   const config = {
     url: _setListQueryURL(query),
     method: 'get',
@@ -68,6 +110,67 @@ export async function listPlans(query) {
     throw e;
   }
   // [ref]=> https://developer.paypal.com/docs/api/subscriptions/v1/#plans_list
+}
+
+function _listPlansIter(pageSize = 10, pagePos = 1) {
+  return {
+    pageSize,
+    pagePos,
+    [Symbol.asyncIterator]() {
+      let currentPos = this.pagePos;
+      let isDone = false;
+
+      return {
+        async next() {
+          if (isDone) {
+            return { done: true };
+          }
+
+          const data = await listPlans({ counts: pageSize, page: currentPos });
+          const { total_items } = data;
+
+          isDone = pageSize * currentPos >= total_items;
+          currentPos += pagePos;
+
+          return {
+            done: false,
+            value: data,
+          };
+        },
+      };
+    },
+  };
+}
+
+listPlans.iter = _listPlansIter;
+
+export { listPlans };
+
+/**
+ * Create or find plan return obj
+ * @typedef {Object} DuplicatePlan
+ * @property {Object} plan - the plan obj
+ * @property {boolean} isDubplicate - return if plan already exist
+ */
+
+/**
+ * Create new standard plan if there is no dupblicate
+ * returns the duplicate plan if exist
+ * @param {PlanStdInput} input - plan pbject
+ * @returns {Promise<DuplicatePlan>}
+ */
+export async function createOrFindPlan(input) {
+  const plansIter = _listPlansIter(10);
+  const { codename } = input;
+
+  for await (const { plans } of plansIter) {
+    const current = plans.find(plan => plan.name === codename);
+    if (current) {
+      return { plan: current, isDuplicate: true };
+    }
+  }
+
+  return createStdPlan(input).then(p => ({ plan: p, isDuplicate: false }));
 }
 
 export async function showPlanDetail(id) {

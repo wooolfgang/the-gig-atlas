@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 /* eslint-disable import/prefer-default-export */
 import request from './connect';
@@ -150,3 +151,34 @@ function _listProductIter(pageSize = 10, pagePos = 1) {
 listProducts.iter = _listProductIter;
 
 export { listProducts };
+
+/**
+ * Create or find plan return obj
+ * @typedef {Object} DuplicateProduct
+ * @property {Object} product - the plan obj
+ * @property {boolean} isDubplicate - return if plan already exist
+ */
+
+/**
+ * Create new standard plan if there is no dupblicate
+ * returns the duplicate plan if exist
+ * @param {PlanStdInput} input - plan pbject
+ * @returns {DuplicateProduct}
+ */
+export async function insertOrFindProduct({ codename, description }) {
+  const productsIter = _listProductIter(10);
+
+  for await (const { products } of productsIter) {
+    // => find products in the paypal db
+    const product = products.find(prod => prod.name === codename);
+    if (product) {
+      return { product, isDubplicate: true };
+    }
+  }
+
+  // => create new product if there is no dubplicate
+  return createProduct({ name: codename, description }).then(p => ({
+    product: p,
+    isDubplicate: false,
+  }));
+}

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /**
  * Paypal checkout sesrvice
  * Order - one time payment
@@ -8,8 +9,22 @@
 
 import request from './connect';
 import order from './order';
+import plan from './plan';
+import product from './product';
+import subscription from './subscription';
 
 export default {
   request,
   order,
+  plan,
+  product,
+  subscription,
+};
+
+export {
+  request,
+  order,
+  plan,
+  product,
+  subscription,
 };
