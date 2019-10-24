@@ -245,3 +245,14 @@ export async function updatePricing(id, priceScheme) {
   }
   // [ref] => https://developer.paypal.com/docs/api/subscriptions/v1/#plans_update-pricing-schemes
 }
+
+export default {
+  createPlan,
+  createStdPlan,
+  listPlans,
+  createOrFindPlan,
+  showPlanDetail,
+  activatePlan,
+  deactivatePlan,
+  updatePricing,
+};

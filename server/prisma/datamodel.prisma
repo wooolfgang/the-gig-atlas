@@ -169,14 +169,14 @@ enum PlanStatus { # // determines if plan is currently available or not
   ACTIVE,
 }
 
+
 type Plan { # // Let the user choose the type of plan for their subscription
   id: ID! @id
-  codename: String @unique #// client's static reference rather than by using id
+  codename: String! @unique #// client's static reference rather than by using id
   serviceId: String!
   status: PlanStatus!
   cyclePrice: Float!
   description: String
-  products: [Product!]! @relation(link: TABLE)
 }
 
 enum SubscriptionStatus {

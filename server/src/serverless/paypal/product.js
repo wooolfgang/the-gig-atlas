@@ -163,22 +163,30 @@ export { listProducts };
  * Create new standard plan if there is no dupblicate
  * returns the duplicate plan if exist
  * @param {PlanStdInput} input - plan pbject
- * @returns {DuplicateProduct}
+ * @returns {Promise<DuplicateProduct>}
  */
-export async function insertOrFindProduct({ codename, description }) {
+export async function createOrFindProduct({ codename, description }) {
   const productsIter = _listProductIter(10);
 
   for await (const { products } of productsIter) {
     // => find products in the paypal db
     const product = products.find(prod => prod.name === codename);
     if (product) {
-      return { product, isDubplicate: true };
+      return { product, isDuplicate: true };
     }
   }
 
   // => create new product if there is no dubplicate
   return createProduct({ name: codename, description }).then(p => ({
     product: p,
-    isDubplicate: false,
+    isDuplicate: false,
   }));
 }
+
+export default {
+  createProduct,
+  showProduct,
+  updateProduct,
+  listProducts,
+  createOrFindProduct,
+};
