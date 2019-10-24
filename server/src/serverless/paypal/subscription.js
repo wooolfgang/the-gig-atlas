@@ -90,7 +90,7 @@ export async function activateSubscripton(id, reason = 'Reactivation') {
   }
 }
 
-export async function cancel(id, reason = 'Ended') {
+export async function cancelSubscription(id, reason = 'Ended') {
   const config = {
     url: `${url}/${id}/cancel`,
     method: 'post',
@@ -155,3 +155,12 @@ export async function listTransactions(id, startTime, endTime) {
     throw e;
   }
 }
+
+export default {
+  createSubscription,
+  showSubscription,
+  activateSubscripton,
+  cancelSubscription,
+  captureAuthorized,
+  listTransactions,
+};

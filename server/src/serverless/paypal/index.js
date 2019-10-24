@@ -9,9 +9,9 @@
 
 import request from './connect';
 import order from './order';
-import plan from './plan';
-import product from './product';
-import subscription from './subscription';
+import * as product from './product';
+import * as plan from './plan';
+import * as subscription from './subscription';
 
 export default {
   request,

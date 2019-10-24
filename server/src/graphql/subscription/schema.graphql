@@ -1,13 +1,14 @@
 type Query {
-  plan: Plan
+  plan(id: ID!): Plan
   listPlans: [Plan]!
-  subscription: Subscription
+  subscription(id: ID!): Subscription
   listSubscription: [Subscription]!
 }
 
 type Mutation {
-  newSubscription(planId: ID): Subscription!
-
+  subscribe(planId: ID!): Subscription!
+  approve(id: ID!): Boolean!
+  cancel(id: ID!): Boolean!
 }
 
 type Subscription {

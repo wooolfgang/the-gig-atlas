@@ -74,4 +74,8 @@ export function debugError(e) {
   }
 }
 
-export default { processPurchaseUnit, debugError };
+export default {
+  processPurchaseUnit,
+  debugError,
+  toMoney,
+};

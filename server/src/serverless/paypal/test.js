@@ -95,7 +95,7 @@ describe.skip('Paypal API', () => {
     const create = {
       product_id: prodId,
       name: 'Trial First Gig Post',
-      describe: 'One year plan with free trial on first month',
+      description: 'One year plan with free trial on first month',
       status: 'ACTIVE',
       billing_cycles: [firstTrialMonth, secondMonthRegular],
     };
