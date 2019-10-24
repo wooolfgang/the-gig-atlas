@@ -152,15 +152,6 @@ enum PaymentStatus {
   COMPLETED,
 }
 
-enum SubscriptionStatus {
-  CREATED, #// status after created
-  APPROVED, #// status after user approved payment
-  ACTIVE, #// set to active after server confirmed payment
-  SUSPENDED, #// says it all
-  CANCELLED,
-  EXPIRED,
-}
-
 type Order {
   id: ID! @id
   payer: User!
@@ -173,20 +164,28 @@ type Order {
 }
 
 
-enum PlanStatus {
-  CREATED,
+enum PlanStatus { # // determines if plan is currently available or not
   INACTIVE,
   ACTIVE,
 }
 
-type Plan {
+type Plan { # // Let the user choose the type of plan for their subscription
   id: ID! @id
-  codename: String @unique #// avoid dubplication
+  codename: String @unique #// client's static reference rather than by using id
   serviceId: String!
   status: PlanStatus!
   cyclePrice: Float!
   description: String
   products: [Product!]! @relation(link: TABLE)
+}
+
+enum SubscriptionStatus {
+  CREATED, #// status after created
+  APPROVED, #// status after user approved payment
+  ACTIVE, #// set to active after confirmed payment
+  SUSPENDED, #// says it all
+  CANCELLED,
+  EXPIRED,
 }
 
 type PlanSubscription {
@@ -195,6 +194,8 @@ type PlanSubscription {
   serviceId: String! @unique
   service: PaymentService!
   status: SubscriptionStatus!
+  #// time reference when subscription is still active
+  #// shows the remaining time of use after cancelled subscription
   endAt: DateTime!
   plan: Plan! @relation(link: INLINE)
 }

@@ -82,7 +82,7 @@ describe.skip('Paypal API', () => {
     const secondMonthRegular = {
       tenure_type: 'REGULAR',
       sequence: 2,
-      total_cycles: 1,
+      total_cycles: 11,
       frequency: {
         interval_unit: 'MONTH',
         interval_count: 1,
