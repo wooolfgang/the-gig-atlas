@@ -198,4 +198,6 @@ type PlanSubscription {
   #// shows the remaining time of use after cancelled subscription
   endAt: DateTime!
   plan: Plan! @relation(link: INLINE)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }

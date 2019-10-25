@@ -23,5 +23,5 @@ export async function createOrFindPlan(plan) {
     };
   }
 
-  return prisma.createPlan(plan).then(p => ({ isDuplicate: false, plan: p}));
+  return prisma.createPlan(plan).then(p => ({ isDuplicate: false, plan: p }));
 }
