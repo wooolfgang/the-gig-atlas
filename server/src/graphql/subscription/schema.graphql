@@ -1,17 +1,17 @@
 type Query {
   plan(id: ID!): Plan
   listPlans: [Plan]!
-  subscription(id: ID!): Subscription
-  listSubscription: [Subscription]!
+  subscription(id: ID!): PlanSubscription
+  listSubscriptions: [PlanSubscription]!
 }
 
 type Mutation {
-  subscribe(planId: ID!): Subscription!
-  approve(id: ID!): Boolean!
-  cancel(id: ID!): Boolean!
+  subscribe(planCode: String!): SubscribeResult!
+  # approve(id: ID!): Boolean!
+  # cancel(id: ID!): Boolean!
 }
 
-type Subscription {
+type PlanSubscription {
   id: ID
   subscriber: User
   serviceRefId: String
@@ -24,15 +24,17 @@ type Plan {
   codename: String
   serviceId: String
   name: String
-  status: PlanStatus # get form prisma generated datamobel
+  status: PlanStatus # get from prisma generated datamobel
   description: String
   cyclePrice: Float
-  products: [Product!]
+}
+
+type SubscribeResult {
+  id: String!
+  status: String
 }
 
 # To create a new plan:
-# 1. get product(s) from local db
-# 2. create new product to service (paypal) db
-# 3. create a new plan to service (paypal) db from created product
-# 4. create a new plan to local service from newly created paymentservice plan
-
+# 1. create new product to service (paypal) db
+# 2. create a new plan to service (paypal) db from created product
+# 3. create a new plan to local service from newly created paymentservice plan

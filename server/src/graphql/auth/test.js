@@ -35,7 +35,7 @@ afterAll(async () => {
 describe('basic signup', () => {
   let newId;
 
-  it('creates a new user as role=MEMBER', async () => {
+  it('creates a new user of role=MEMBER', async () => {
     const res = await axios.post(testUrl, {
       query: `
         mutation Test($input: SignupInput!) {

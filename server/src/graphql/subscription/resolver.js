@@ -1,3 +1,4 @@
+import subscription from '../../serverless/paypal/subscription';
 
 function queryPlan(_, { id }, { prisma }) {
   return prisma.plan({ id });
@@ -15,8 +16,35 @@ function queryListSubscription(_, { paging = {} }, { prisma }) {
   return prisma.planSubscription(paging);
 }
 
-async function subscribe(_, {}, { prisma }) {
-  
+/**
+ * Subscribe gig after creation
+ * @todo connect to gig
+ */
+async function subscribe(_, { planCode }, { prisma, user }) {
+  const [plan, subscriber] = await Promise.all([
+    prisma.plan({ codename: planCode }),
+    prisma.user({ id: user.id }),
+  ]);
+  if (!plan) {
+    throw new Error(`Plan '${planCode}' not found.`);
+  } else if (plan.status !== 'ACTIVE') {
+    throw new Error('Invalid plan status');
+  }
+
+  const { id } = await subscription.createSubscription(
+    plan.serviceId,
+    subscriber,
+  );
+  await prisma.createPlanSubscription({
+    subscriber: { connect: { id: user.id } },
+    serviceId: id,
+    service: 'PAYPAL',
+    status: 'CREATED',
+    plan: { connect: { id: plan.id } },
+    endAt: new Date(),
+  });
+
+  return { id, status: 'CREATED' };
 }
 
 export default {
@@ -24,9 +52,9 @@ export default {
     plan: queryPlan,
     listPlans: queryListPlans,
     subscription: querySubscription,
-    listSubscription: queryListSubscription,
+    listSubscriptions: queryListSubscription,
   },
   Mutation: {
-    subscribe: 
+    subscribe,
   },
 };

@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// import { prisma } from '../../src/generated/prisma-client';
 import paypal from '../../src/serverless/paypal';
 import { createOrFindPlan as localCreateOrFindPlan } from '../../src/graphql/subscription/plan';
 
