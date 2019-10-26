@@ -1,12 +1,9 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-console */
 import axios from 'axios';
-import { headers } from '@shared/common';
 import config from '../../config';
 import prisma from '../../prisma';
-// import { prisma } from '../../generated/prisma-client';
 import paypal from '../../serverless/paypal';
-import { createOrFindPlan as localCreateOrFindPlan } from './plan';
 import { createAuth } from '../auth/util';
 
 const {
@@ -24,7 +21,6 @@ const subscriber = {
 let token;
 
 beforeAll(async () => {
-  console.log('run here >>> 1.0');
   const testGigPost = {
     codename: 'test-gig-post',
     description: 'testing purpose only',
@@ -50,7 +46,6 @@ beforeAll(async () => {
     cyclePrice: planInput.monthlyCharge,
     description: 'Basic test plan for all gig post',
   };
-  console.log('run here >>> 1.5');
   await _catchError(prisma.createUser(subscriber), 'error on user create')
     .then(user => createAuth(user.id, user.role))
     .then(auth => {
@@ -59,14 +54,12 @@ beforeAll(async () => {
   await _catchError(
     prisma.createPlan(localInputPlan),
     'Error on local plan create',
-  ).then(_ => console.log('run here: >>>> 1.8'));
-  // console.log('created plan/user', user, createdPlan);
+  );
 });
 
 let subscriptionId;
 
 afterAll(async () => {
-  console.log('run here: >>>> 3');
   try {
     if (subscriptionId) {
       await prisma.deletePlanSubscription({ serviceId: subscriptionId });
@@ -84,7 +77,6 @@ afterAll(async () => {
 describe('Subscription', () => {
   it('creates new subscription', async () => {
     const aconfig = { headers: { Authorization: `Bearer ${token}` } };
-    console.log('run here: >>>> 2.0');
     const input = {
       query: `
         mutation {
@@ -123,7 +115,7 @@ async function _post(input, aconfig) {
     }
   } catch (e) {
     if (!e) {
-      throw new Error('UNKNOW ERR');
+      throw new Error('Unknown error');
     }
 
     if (e.toJSON) {
@@ -138,3 +130,5 @@ async function _post(input, aconfig) {
     throw new Error('err');
   }
 }
+
+// [more testing simulation] => https://developer.paypal.com/docs/subscriptions/testing/

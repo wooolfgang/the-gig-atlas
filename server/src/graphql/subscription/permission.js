@@ -5,11 +5,13 @@ export default {
   Query: {
     plan: allow,
     listPlans: allow,
+    activePlans: allow,
     subscription: allow,
     listSubscriptions: allow,
   },
   Mutation: {
     subscribe: isAuthenticated,
+    approveSubscription: isAuthenticated,
     // approve: isAuthenticated,
     // cancel: isAuthenticated,
   },

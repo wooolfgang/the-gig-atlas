@@ -18,6 +18,7 @@ import {
 
 import {
   createSubscription,
+  showSubscription,
 } from './subscription';
 
 import { toMoney } from './util';
@@ -130,5 +131,12 @@ describe.skip('Paypal API', () => {
     subsId = res.id;
 
     expect(res.status).toBe('APPROVAL_PENDING');
+  });
+});
+
+describe('Quick test only', () => {
+  it('shows approve subscription: ', async () => {
+    const res = await showSubscription('I-VDEU4K0GU91C');
+    console.log(res);
   });
 });

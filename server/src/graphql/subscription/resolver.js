@@ -8,6 +8,10 @@ function queryListPlans(_, { paging = {} }, { prisma }) {
   return prisma.plans(paging);
 }
 
+function queryAllActivePlans(_, _a, { prisma }) {
+  return prisma.plans({ where: { status: 'ACTIVE' } });
+}
+
 function querySubscription(_, { id }, { prisma }) {
   return prisma.planSubscription({ id });
 }
@@ -47,14 +51,21 @@ async function subscribe(_, { planCode }, { prisma, user }) {
   return { id, status: 'CREATED' };
 }
 
+export async function approveSubscription(_, { serviceId }, { prisma }) {
+  // unimplemented!
+  return false;
+}
+
 export default {
   Query: {
     plan: queryPlan,
     listPlans: queryListPlans,
+    activePlans: queryAllActivePlans,
     subscription: querySubscription,
     listSubscriptions: queryListSubscription,
   },
   Mutation: {
     subscribe,
+    approveSubscription,
   },
 };
