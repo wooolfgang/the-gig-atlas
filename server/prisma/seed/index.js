@@ -8,9 +8,12 @@ require('@babel/register')({
   rootMode: 'upward',
 });
 
+const planModule = require('./plan');
+
 const seeds = {
   admin: require('./admin').default,
-  plan: require('./plan').default,
+  plan: planModule.default,
+  'test-plan': planModule.dailyTestPlan,
 };
 
 const toSeeds = [];
