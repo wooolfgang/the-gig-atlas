@@ -2,11 +2,8 @@ import { createFragment } from '../utils/fragment';
 
 export default {
   Query: {
-    user: (_, _args, { prisma, user: { id } }, info) => {
-      const fragment = createFragment(info, 'ToUser', 'User');
-
-      return prisma.user({ id }).$fragment(fragment);
-    },
+    user: (_, _args, { prisma, user: { id } }, info) =>
+      prisma.user({ id }, info),
   },
   Mutation: {
     deleteUser: async (_, { id }, { prisma }) => {
