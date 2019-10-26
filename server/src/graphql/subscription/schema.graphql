@@ -1,14 +1,14 @@
 type Query {
   plan(id: ID!): Plan
-  listPlans: [Plan]!
+  listPlans(pagination: Pagination): [Plan]!
+  activePlans: [Plan]!
   subscription(id: ID!): PlanSubscription
   listSubscriptions: [PlanSubscription]!
 }
 
 type Mutation {
   subscribe(planCode: String!): SubscribeResult!
-  # approve(id: ID!): Boolean!
-  # cancel(id: ID!): Boolean!
+  approveSubscription(serviceId: String!): Boolean!
 }
 
 type PlanSubscription {
@@ -32,6 +32,14 @@ type Plan {
 type SubscribeResult {
   id: String!
   status: String
+}
+
+input Pagination {
+  skip: Int
+  after: ID
+  before: ID
+  first: Int
+  last: Int
 }
 
 # To create a new plan:
