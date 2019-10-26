@@ -77,6 +77,57 @@ export function createStdPlan(input) {
   return createPlan(create);
 }
 
+/**
+ * Type PlanCustomInput
+ * @typedef {Object} PlanCustomInput
+ * @property {string} prodId - product id from paypal db
+ * @property {string} codename - plan unique codename
+ * @property {string} description - plan detail description
+ * @property {number} totalCycles - charge frequency cycles
+ * @property {string} intervalUnit - [DAY|WEEK|MONTH|YEAR]
+ * @property {number} intervlCount - interval count after subscription billed
+ * @property {number} charge - charge amount per subscription
+ */
+
+/**
+ * Encapsulated Create plan with custom value
+ * Plan is automatically set to ACTIVATED
+ * @param {PlanCustomInput} input - plan pbject
+ */
+export function createCustomPlan(input) {
+  const {
+    prodId,
+    codename,
+    description,
+    charge,
+    totalCycles,
+    intervalUnit,
+    intervlCount,
+  } = input;
+  const cycle = {
+    tenure_type: 'REGULAR',
+    sequence: 1,
+    total_cycles: totalCycles,
+    frequency: {
+      interval_unit: intervalUnit,
+      interval_count: intervlCount,
+    },
+    pricing_scheme: {
+      version: 1,
+      fixed_price: util.toMoney(charge),
+    },
+  };
+  const create = {
+    description,
+    name: codename,
+    product_id: prodId,
+    status: 'ACTIVE',
+    billing_cycles: [cycle],
+  };
+
+  return createPlan(create);
+}
+
 function _setListQueryURL({ prodId, planIds, counts, page }) {
   let qurl = `${url}?total_required=true`;
   qurl = prodId ? qurl.concat(`&product_id=${prodId}`) : qurl;
@@ -156,10 +207,11 @@ export { listPlans };
 /**
  * Create new standard plan if there is no dupblicate
  * returns the duplicate plan if exist
- * @param {PlanStdInput} input - plan pbject
+ * @param {PlanStdInput | PlanCustomInput} input - plan pbject
+ * @param {boolean} isStd - [isStd=true] use standard creation, false for custom
  * @returns {Promise<DuplicatePlan>}
  */
-export async function createOrFindPlan(input) {
+export async function createOrFindPlan(input, isStd = true) {
   const plansIter = _listPlansIter(10);
   const { codename } = input;
 
@@ -170,7 +222,9 @@ export async function createOrFindPlan(input) {
     }
   }
 
-  return createStdPlan(input).then(p => ({ plan: p, isDuplicate: false }));
+  const createPromise = isStd ? createStdPlan(input) : createCustomPlan(input);
+
+  return createPromise.then(p => ({ plan: p, isDuplicate: false }));
 }
 
 export async function showPlanDetail(id) {
