@@ -19,6 +19,8 @@ import {
 import {
   createSubscription,
   showSubscription,
+  listTransactions,
+  showOrder,
 } from './subscription';
 
 import { toMoney } from './util';
@@ -134,9 +136,23 @@ describe.skip('Paypal API', () => {
   });
 });
 
-describe('Quick test only', () => {
+describe.skip('Quick test only', () => {
   it('shows approve subscription: ', async () => {
     const res = await showSubscription('I-VDEU4K0GU91C');
     console.log(res);
   });
+
+  it('shows transactions on subscription', async () => {
+    const start = '2019-10-01T07:01:40Z';
+    const end = '2019-11-10T10:00:00Z';
+    const res = await listTransactions('I-VDEU4K0GU91C', start, end);
+    // console.log('transactions');
+    // console.log(res);
+  });
+
+  // it('shows order ', async () => {
+  //   const order = await showOrder('7P2800002S211605P');
+  //   console.log('order');
+  //   console.log(order);
+  // });
 });
