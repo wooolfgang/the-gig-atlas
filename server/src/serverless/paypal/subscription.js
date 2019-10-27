@@ -8,16 +8,9 @@ const url = '/v1/billing/subscriptions';
  * @param {string} planId - corresponding plan id to subscribe
  * @param {Object} user - the user containing firstName, lastName and email
  */
-export async function createSubscription(planId, user) {
+export async function createSubscription(planId) {
   const dataBody = {
     plan_id: planId,
-    subscriber: {
-      name: {
-        given_name: user.firstName,
-        surname: user.lastName,
-      },
-      email_address: user.email,
-    },
     application_context: {
       brand_name: 'The Gig Atlas',
       locale: 'en-US',
@@ -154,6 +147,22 @@ export async function listTransactions(id, startTime, endTime) {
     util.debugError(e);
     throw e;
   }
+}
+
+export async function showOrder(id) {
+  // const config = {
+  //   url: `${url}/${id}/transactions`,
+  //   method: 'get',
+  // };
+
+  // try {
+  //   const { data } = await request(config);
+
+  //   return data;
+  // } catch (e) {
+  //   util.debugError(e);
+  //   throw e;
+  // }
 }
 
 export default {

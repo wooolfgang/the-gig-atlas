@@ -1,4 +1,4 @@
-import subscription from '../../serverless/paypal/subscription';
+import subsapi from '../../serverless/paypal/subscription';
 
 function queryPlan(_, { id }, { prisma }) {
   return prisma.plan({ id });
@@ -25,20 +25,14 @@ function queryListSubscription(_, { paging = {} }, { prisma }) {
  * @todo connect to gig
  */
 async function subscribe(_, { planCode }, { prisma, user }) {
-  const [plan, subscriber] = await Promise.all([
-    prisma.plan({ codename: planCode }),
-    prisma.user({ id: user.id }),
-  ]);
+  const plan = await prisma.plan({ codename: planCode });
   if (!plan) {
     throw new Error(`Plan '${planCode}' not found.`);
   } else if (plan.status !== 'ACTIVE') {
     throw new Error('Invalid plan status');
   }
 
-  const { id } = await subscription.createSubscription(
-    plan.serviceId,
-    subscriber,
-  );
+  const { id } = await subsapi.createSubscription(plan.serviceId);
   await prisma.createPlanSubscription({
     subscriber: { connect: { id: user.id } },
     serviceId: id,
@@ -52,8 +46,17 @@ async function subscribe(_, { planCode }, { prisma, user }) {
 }
 
 export async function approveSubscription(_, { serviceId }, { prisma }) {
-  // unimplemented!
-  return false;
+  const serviceSub = await subsapi.showSubscription(serviceId);
+  if (!serviceSub || serviceSub.status !== 'ACTIVE') {
+    throw new Error('Invalid subscription to approve');
+  }
+
+  await prisma.updatePlanSubscription({
+    where: { serviceId },
+    data: { status: 'ACTIVE' },
+  });
+
+  return true;
 }
 
 export default {
