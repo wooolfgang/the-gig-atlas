@@ -118,6 +118,7 @@ describe('Employer crud operation', () => {
         query: `
           query {
             user {
+              id
               firstName
               lastName
               email
