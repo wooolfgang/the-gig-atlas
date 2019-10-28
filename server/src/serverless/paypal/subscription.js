@@ -150,19 +150,19 @@ export async function listTransactions(id, startTime, endTime) {
 }
 
 export async function showOrder(id) {
-  // const config = {
-  //   url: `${url}/${id}/transactions`,
-  //   method: 'get',
-  // };
+  const config = {
+    url: `${url}/${id}/transactions`,
+    method: 'get',
+  };
 
-  // try {
-  //   const { data } = await request(config);
+  try {
+    const { data } = await request(config);
 
-  //   return data;
-  // } catch (e) {
-  //   util.debugError(e);
-  //   throw e;
-  // }
+    return data;
+  } catch (e) {
+    util.debugError(e);
+    throw e;
+  }
 }
 
 export default {

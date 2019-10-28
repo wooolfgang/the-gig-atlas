@@ -223,4 +223,46 @@ describe('Testing gig resolvers', () => {
     expect(user.password).toBeTruthy();
     expect(res).toEqual(false);
   });
+
+  it('Should properly sanitize all the html strings to avoid xss attacks', async () => {
+    const gigTestXss = {
+      title: 'Testing App',
+      description: '<math><mi//xlink:href="data:x,<script>alert(4)</script>">',
+      technologies: ['js', 'jest'],
+      projectType: 'TESTING',
+      paymentType: 'FIXED',
+      minFee: 100.0,
+      maxFee: 200.0,
+      jobType: 'CONTRACT',
+      communicationType: 'EMAIL',
+      communicationEmail: 'casd@gmail.com',
+    };
+    const employerTestXss = {
+      displayName: 'ASdkaldajsdkljskl',
+      website: 'https://gweeasdsad.com',
+      introduction: '<TABLE><tr><td>HELLO</tr></TABL>',
+      email: existingUser.email,
+      employerType: 'COMPANY',
+      avatarFileId: testFile2,
+    };
+    const res = await axios.post(testUrl, {
+      query: `
+        mutation($gig: GigInput!, $employer: EmployerInput!) {
+          createGig(gig: $gig, employer: $employer) {
+            description
+            employer {
+              id
+              introduction
+            }
+          }
+        }
+      `,
+      variables: { employer: employerTestXss, gig: gigTestXss },
+    });
+    const { employer: employerResult, ...gigResult } = res.data.data.createGig;
+    expect(employerResult.introduction).toBe(
+      '<table><tbody><tr><td>HELLO</td></tr></tbody></table>',
+    );
+    expect(gigResult.description).toBe('<math><mi></mi></math>');
+  });
 });

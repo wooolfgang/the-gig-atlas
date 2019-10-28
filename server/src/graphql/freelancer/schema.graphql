@@ -36,21 +36,6 @@ type Social {
   url: String
 }
 
-enum SocialType {
-  UPWORK
-  GITHUB
-  LINKEDIN
-  TWITTER
-}
-
-enum FreelancerOnboardingStep {
-  NOT_STARTED
-  PERSONAL
-  PORTFOLIO
-  FINISHED
-}
-
-
 input FreelancerOnboardingPersonal {
   firstName: String
   lastName: String
