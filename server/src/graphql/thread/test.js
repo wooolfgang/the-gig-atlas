@@ -34,9 +34,13 @@ beforeAll(async () => {
 
 afterAll(async () => {
   // No need to delete threads, as it cascade deletes on user delete
-  await prisma.deleteUser({
-    id: normalUser.id,
-  });
+  try {
+    await prisma.deleteUser({
+      id: normalUser.id,
+    });
+  } catch (e) {
+    console.log('fail gracefully');
+  }
 });
 
 describe('Test thread resolvers', () => {
