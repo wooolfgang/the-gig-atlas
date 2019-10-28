@@ -35,30 +35,6 @@ type Gig {
   communicationWebsite: String
 }
 
-enum JobType {
-  FULL_TIME
-  PART_TIME
-  CONTRACT
-}
-
-enum PaymentType {
-  HOURLY
-  FIXED
-}
-
-enum ProjectType {
-  GREENFIELD
-  MAINTENANCE
-  CONSULTING
-  TESTING
-}
-
-enum GigCommunicationType {
-  EMAIL
-  WEBSITE
-  IN_APP
-}
-
 input GigInput {
   title: String!
   description: String!

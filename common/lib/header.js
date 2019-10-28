@@ -2,15 +2,20 @@ export function setAuthorization(token) {
   return `Bearer ${token}`;
 }
 
+/**
+ * Get the token from Authorization
+ * @param {string} authorization Authorization header value
+ * @returns {string | undefined} returns token if exist
+ */
 export function getToken(authorization) {
   if (!authorization) {
-    throw new Error('No Authorization Header');
+    return undefined;
   }
 
   const token = authorization.substr(7);
 
   if (!token || token === '') {
-    throw new Error(`Invalid authorization. Input: ${authorization}`);
+    return undefined;
   }
 
   return token;

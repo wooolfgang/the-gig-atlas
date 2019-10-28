@@ -1,6 +1,7 @@
 import axios from 'axios';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
+import debugReq from '../utils/req_debug';
 
 const { testUrl } = config;
 
@@ -33,6 +34,7 @@ const input = {
   gig: inputGig,
 };
 let token;
+let debugPost;
 
 beforeAll(async () => {
   const res = await axios.post(testUrl, {
@@ -62,6 +64,10 @@ beforeAll(async () => {
   });
   input.employer.avatarFileId = file.data.data.createFile.id;
   token = res.data.data.signup.token;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  debugPost = debugReq.createDebugPost(testUrl, { headers });
 });
 
 afterAll(async () => {
@@ -75,10 +81,8 @@ afterAll(async () => {
 
 describe('Employer crud operation', () => {
   it('sets logged member as employer together with posted gig', async () => {
-    const res = await axios.post(
-      testUrl,
-      {
-        query: `
+    const res = await debugPost({
+      query: `
           mutation Test($employer: EmployerInput!, $gig: GigInput!) {
             setEmployer(employer: $employer, gig: $gig) {
               id
@@ -98,12 +102,10 @@ describe('Employer crud operation', () => {
             }
           }
         `,
-        variables: { ...input },
-      },
-      { headers: { Authorization: token } },
-    );
+      variables: { ...input },
+    });
 
-    const { employerType, gigs } = res.data.data.setEmployer;
+    const { employerType, gigs } = res.setEmployer;
     // eslint-disable-next-line no-unused-vars
     const { id, ...insertedGig } = gigs[0];
 
@@ -112,12 +114,11 @@ describe('Employer crud operation', () => {
   });
 
   it('queries user as employer with gig', async () => {
-    const res = await axios.post(
-      testUrl,
-      {
-        query: `
+    const res = await debugPost({
+      query: `
           query {
             user {
+              id
               firstName
               lastName
               email
@@ -133,11 +134,9 @@ describe('Employer crud operation', () => {
             }
           }
         `,
-      },
-      { headers: { Authorization: token } },
-    );
+    });
 
-    const user = res.data.data.user;
+    const user = res.user;
     const employer = user.asEmployer;
     const gig = employer.gigs[0];
 
@@ -147,10 +146,8 @@ describe('Employer crud operation', () => {
   });
 
   it('disallow re-setting of employer', async () => {
-    const res = await axios.post(
-      testUrl,
-      {
-        query: `
+    const reqData = {
+      query: `
           mutation Test($employer: EmployerInput!, $gig: GigInput!) {
             setEmployer(employer: $employer, gig: $gig) {
               id
@@ -170,10 +167,15 @@ describe('Employer crud operation', () => {
             }
           }
         `,
-        variables: { ...input },
-      },
-      { headers: { Authorization: token } },
-    );
-    expect(res.data.errors[0].message).toBe('Already an Employer');
+      variables: { ...input },
+    };
+
+    try {
+      await debugPost(reqData, {}, false);
+      // eslint-disable-next-line no-undef
+      fail('NO BUG RESULT!: Something went wrong with employer re-setting');
+    } catch (e) {
+      expect(e.message).toBe('Already an Employer');
+    }
   });
 });

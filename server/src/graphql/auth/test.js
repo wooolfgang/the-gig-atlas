@@ -1,6 +1,7 @@
 import axios from 'axios';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
+import debugReq from '../utils/req_debug';
 
 const { testUrl, admin } = config;
 const input = {
@@ -35,7 +36,7 @@ afterAll(async () => {
 describe('basic signup', () => {
   let newId;
 
-  it('creates a new user of role=MEMBER', async () => {
+  it('Creates a new user of role=MEMBER', async () => {
     const res = await axios.post(testUrl, {
       query: `
         mutation Test($input: SignupInput!) {
@@ -54,7 +55,7 @@ describe('basic signup', () => {
     expect(signup.token).toBeTruthy();
   });
 
-  it('fails on duplicate email', async () => {
+  it('Fails on duplicate email', async () => {
     const res = await axios.post(testUrl, {
       query: `
         mutation Test($input: SignupInput!) {
@@ -71,7 +72,7 @@ describe('basic signup', () => {
     // const signup = res.data.data.signup;
   });
 
-  it('logins to the created user', async () => {
+  it('Logins to the created user', async () => {
     const res = await axios.post(testUrl, {
       query: `
         mutation {
@@ -88,7 +89,7 @@ describe('basic signup', () => {
     expect(token).toBeTruthy();
   });
 
-  it('removes user by admin credentials', async () => {
+  it('Removes user by admin credentials', async () => {
     const res = await axios.post(testUrl, {
       query: `
         mutation {
@@ -111,7 +112,7 @@ describe('basic signup', () => {
           }
         `,
       },
-      { headers: { Authorization: adminToken } },
+      { headers: { Authorization: `Bearer ${adminToken}` } },
     );
 
     expect(delRes.data.data.deleteUser).toBe(true);
