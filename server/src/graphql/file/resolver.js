@@ -1,6 +1,6 @@
 import cloudinary from '../../cloudinary';
 
-const promisifiedCloudinaryUpload = file =>
+const cloudinaryUpload = file =>
   new Promise((res, rej) => {
     const { createReadStream, filename } = file;
     const uploadStream = cloudinary.uploader.upload_stream(
@@ -22,16 +22,10 @@ export default {
     uploadImage: async (root, args, { prisma }, info) => {
       const file = await args.file;
       const { filename, type } = file;
-      const res = await promisifiedCloudinaryUpload(file);
-      const { url } = res;
-      return prisma.createFile(
-        {
-          url,
-          name: filename,
-          type,
-        },
-        info,
-      );
+      const { url } = await cloudinaryUpload(file);
+      const createFile = { url, type, name: filename };
+
+      return prisma.createFile(createFile, info);
     },
     createFile: async (root, { file }, { prisma }, info) =>
       prisma.createFile(file, info),

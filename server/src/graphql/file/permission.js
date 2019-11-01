@@ -1,9 +1,10 @@
 import { allow } from 'graphql-shield';
+import { isAuthenticated } from '../utils/rules';
 
 export default {
   Mutation: {
-    uploadImage: allow,
-    createFile: allow,
+    uploadImage: isAuthenticated,
+    createFile: isAuthenticated,
   },
   Query: {
     file: allow,

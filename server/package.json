@@ -21,7 +21,8 @@
     "seed": "NODE_ENV=dev node ./prisma/seed/index.js",
     "seed:default": "yarn run seed admin plan",
     "seed:test": "NODE_ENV=test node ./prisma/seed/index.js admin",
-    "nodemon:clear": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"
+    "nodemon:clear": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p",
+    "purge": "NODE_ENV=dev node ./prisma/_purge.js"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
