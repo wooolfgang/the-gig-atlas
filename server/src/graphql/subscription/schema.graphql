@@ -7,8 +7,8 @@ type Query {
 }
 
 type Mutation {
-  subscribe(planCode: String!): SubscribeResult!
-  approveSubscription(serviceId: String!): Boolean!
+  subscribe(gigId: ID!, planCode: String!): SubscribeResult!
+  approveSubscription(serviceId: String!): String! # returns the id string of gig
 }
 
 type PlanSubscription {

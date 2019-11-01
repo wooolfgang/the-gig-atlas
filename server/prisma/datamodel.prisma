@@ -7,7 +7,7 @@ type User {
   role: UserRole! @default(value: MEMBER)
   createdAt: DateTime! @createdAt
   
-  asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE)
+  asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE) #// cascade deltes also related employer
   asFreelancer: Freelancer @unique @relation(name: "AsFreelancer", link: INLINE, onDelete: CASCADE)
   
   isEmailVerified: Boolean @default(value: false)
@@ -90,6 +90,12 @@ enum GigCommunicationType {
   IN_APP
 }
 
+enum GigStatus {
+  SAVED #// status is saved but not posted
+  POSTED #// status currently posted
+  REMOVED #// soft-delete (temporary option)
+}
+
 type Gig {
   id: ID! @id
   title: String!
@@ -103,6 +109,7 @@ type Gig {
   locationRestriction: String
   employer: Employer! @relation(name: "GigsOfEmployer")
   createdAt: DateTime! @createdAt
+  status: GigStatus! @default(value: SAVED)
   communicationType: GigCommunicationType! @default(value: EMAIL)
   communicationEmail: String
   communicationWebsite: String
@@ -193,13 +200,14 @@ enum SubscriptionStatus {
 
 type PlanSubscription {
   id: ID! @id
-  subscriber: User!
+  subscriber: User! @relation(link: INLINE)
   serviceId: String! @unique
   service: PaymentService!
   status: SubscriptionStatus!
+  gig: Gig! @relation(link: INLINE)
   #// time reference when subscription is still active
   #// shows the remaining time of use after cancelled subscription
-  endAt: DateTime!
+  #// endAt: DateTime!
   plan: Plan! @relation(link: INLINE)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt

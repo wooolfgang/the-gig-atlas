@@ -146,8 +146,8 @@ describe.skip('Quick test only', () => {
     const start = '2019-10-01T07:01:40Z';
     const end = '2019-11-10T10:00:00Z';
     const res = await listTransactions('I-VDEU4K0GU91C', start, end);
-    // console.log('transactions');
-    // console.log(res);
+    console.log('transactions');
+    console.log(res);
   });
 
   // it('shows order ', async () => {

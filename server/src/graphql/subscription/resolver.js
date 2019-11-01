@@ -1,22 +1,23 @@
-import subsapi from '../../serverless/paypal/subscription';
+import prisma from '../../prisma';
+import paypalSubscription from '../../serverless/paypal/subscription';
 
-function queryPlan(_, { id }, { prisma }) {
+function queryPlan(_, { id }) {
   return prisma.plan({ id });
 }
 
-function queryListPlans(_, { paging = {} }, { prisma }) {
+function queryListPlans(_, { paging = {} }) {
   return prisma.plans(paging);
 }
 
-function queryAllActivePlans(_, _a, { prisma }) {
+function queryAllActivePlans(_, _a) {
   return prisma.plans({ where: { status: 'ACTIVE' } });
 }
 
-function querySubscription(_, { id }, { prisma }) {
+function querySubscription(_, { id }) {
   return prisma.planSubscription({ id });
 }
 
-function queryListSubscription(_, { paging = {} }, { prisma }) {
+function queryListSubscription(_, { paging = {} }) {
   return prisma.planSubscription(paging);
 }
 
@@ -24,7 +25,7 @@ function queryListSubscription(_, { paging = {} }, { prisma }) {
  * Subscribe gig after creation
  * @todo connect to gig
  */
-async function subscribe(_, { planCode }, { prisma, user }) {
+async function subscribe(_, { planCode, gigId }, { user }) {
   const plan = await prisma.plan({ codename: planCode });
   if (!plan) {
     throw new Error(`Plan '${planCode}' not found.`);
@@ -32,7 +33,7 @@ async function subscribe(_, { planCode }, { prisma, user }) {
     throw new Error('Invalid plan status');
   }
 
-  const { id } = await subsapi.createSubscription(plan.serviceId);
+  const { id } = await paypalSubscription.createSubscription(plan.serviceId);
   await prisma.createPlanSubscription({
     subscriber: { connect: { id: user.id } },
     serviceId: id,
@@ -40,23 +41,31 @@ async function subscribe(_, { planCode }, { prisma, user }) {
     status: 'CREATED',
     plan: { connect: { id: plan.id } },
     endAt: new Date(),
+    gig: { connect: { id: gigId } },
   });
 
   return { id, status: 'CREATED' };
 }
 
-export async function approveSubscription(_, { serviceId }, { prisma }) {
-  const serviceSub = await subsapi.showSubscription(serviceId);
-  if (!serviceSub || serviceSub.status !== 'ACTIVE') {
+export async function approveSubscription(_, { serviceId }) {
+  const serviceSub = await paypalSubscription.showSubscription(serviceId);
+  if (!serviceSub) {
+    // => check if subscription is valid from service provider
     throw new Error('Invalid subscription to approve');
+  } else if (serviceSub.status !== 'ACTIVE') {
+    throw new Error('Subscription already active from service provider');
   }
 
-  await prisma.updatePlanSubscription({
-    where: { serviceId },
-    data: { status: 'ACTIVE' },
-  });
+  // => update subscription and get gig id
+  const gigId = await prisma
+    // eslint-disable-next-line prettier/prettier
+    .updatePlanSubscription({ where: { serviceId }, data: { status: 'ACTIVE' } })
+    .gig()
+    .id();
+  // => update gig status
+  await prisma.updateGig({ where: { id: gigId }, data: { status: 'POSTED' } });
 
-  return true;
+  return gigId;
 }
 
 export default {
