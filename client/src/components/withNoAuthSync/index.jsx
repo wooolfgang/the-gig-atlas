@@ -16,10 +16,13 @@ const withNoAuthSync = WrappedComponent => {
     const token = auth.getToken(ctx);
 
     if (token) {
+      console.log('has token: ', token);
       // => disallow user with valid token
       const res = await apolloClient.query({
         query: CHECK_VALID_TOKEN,
       });
+
+      console.log('res: ', res);
 
       if (res.data.checkValidToken === true) {
         // => redirect to profile if user is authenticated

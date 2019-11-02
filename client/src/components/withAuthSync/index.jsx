@@ -40,7 +40,7 @@ const withAuthSync = (WrappedComponent, type) => {
   Wrapper.getInitialProps = async ctx => {
     // => Authenticates User Component with valid token
     const token = auth.getToken(ctx);
-    let authenticatedUser;
+    let user;
 
     if ((type === 'ADMIN' || type === 'MEMBER' || type === 'auth') && !token) {
       // => allow "all" type user with no token
@@ -51,31 +51,34 @@ const withAuthSync = (WrappedComponent, type) => {
     }
 
     try {
-      const { data } = await ctx.apolloClient.query({
-        query: GET_AUTHENTICATED_USER,
-        // fetchPolicy: 'network-only', // => Make sure to always fetch network first, as apollo defaults to cache
-      });
+      if (token) {
+        // => if type is 'all' with no token, skip this
+        const res = await ctx.apolloClient.query({
+          query: GET_AUTHENTICATED_USER,
+          // fetchPolicy: 'network-only', // => Make sure to always fetch network first, as apollo defaults to cache
+        });
 
-      authenticatedUser = data.authenticatedUser;
+        user = res.data.authenticatedUser;
+        if (!user) {
+          // => for user dont exist
+          router.toSignin(ctx);
+          // @todo: to handle 'if' error?
+          return {};
+        }
+      }
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.error('AuthenticatedUser', e);
-      if (type !== 'all') {
-        router.toSignin(ctx);
-
-        return {};
-      }
-    }
-
-    if (!authenticatedUser && type !== 'all') {
+      console.error('AuthenticatedUser: WithAuthSync.js');
+      // eslint-disable-next-line no-console
+      console.error(e);
       router.toSignin(ctx);
 
       return {};
     }
 
-    if (authenticatedUser) {
-      // [info]=> refactored Li's code
-      const onboardingStep = authenticatedUser.freelancerOnboardingStep;
+    if (user) {
+      // [info]=> refactored Li's code, doesnt make sense to me
+      const onboardingStep = user.freelancerOnboardingStep;
       if (onboardingStep !== 'FINISHED') {
         if (onboardingStep === 'PORTFOLIO') {
           router.toFreelancerOnboardingPortfolio(ctx);
@@ -93,7 +96,7 @@ const withAuthSync = (WrappedComponent, type) => {
 
     return {
       ...componentProps,
-      authenticatedUser,
+      user,
       token,
     };
   };

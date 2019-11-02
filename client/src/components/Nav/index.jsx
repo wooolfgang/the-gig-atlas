@@ -3,7 +3,7 @@ import { StyledNav, NavLinks, PostGigButton, LogoContainer } from './style';
 import { MediaConsumer } from '../MediaProvider';
 import { NavLink, Logo } from '../../primitives';
 
-const Nav = () => (
+const Nav = ({ user }) => (
   <MediaConsumer>
     {({ size }) => (
       <StyledNav>
@@ -20,9 +20,11 @@ const Nav = () => (
             <NavLink style={{ marginRight: '20px' }} href="/gigs">
               Gigs
             </NavLink>
-            <NavLink style={{ marginRight: '20px' }} href="/login">
-              Login
-            </NavLink>
+            {!user && (
+              <NavLink style={{ marginRight: '20px' }} href="/login">
+                Login
+              </NavLink>
+            )}
             <NavLink href="/gig/tech/create">
               <PostGigButton>Post A Gig</PostGigButton>
             </NavLink>
