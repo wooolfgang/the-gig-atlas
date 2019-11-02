@@ -6,7 +6,7 @@ import Router from 'next/router';
  * @param {*} path
  * todo => Add tests
  */
-export const redirect = path => ctx => {
+export const redirect = path => (ctx, query = {}) => {
   if (!path.includes('/')) {
     throw Error('Invalid path for redirect function');
   }
@@ -16,8 +16,7 @@ export const redirect = path => ctx => {
     if (ctx.req.url === path) {
       return;
     }
-
-    ctx.res.writeHead(302, { Location: path });
+    ctx.res.writeHead(302, { Location: path, query });
     ctx.res.end();
   } else {
     // => Break function early to avoid endless redirect loop
@@ -25,7 +24,10 @@ export const redirect = path => ctx => {
       return;
     }
 
-    Router.push(path);
+    Router.push({
+      query,
+      pathname: path,
+    });
   }
 };
 
@@ -36,6 +38,7 @@ const toFreelancerOnboardingPersonal = redirect('/onboard/freelancer');
 const toFreelancerOnboardingPortfolio = redirect(
   '/onboard/freelancer/portfolio',
 );
+const toError = redirect('/error');
 
 export default {
   toSignin,
@@ -43,4 +46,5 @@ export default {
   toProfile,
   toFreelancerOnboardingPersonal,
   toFreelancerOnboardingPortfolio,
+  toError,
 };
