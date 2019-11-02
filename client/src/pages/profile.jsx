@@ -8,4 +8,4 @@ const Profile = () => (
   </div>
 );
 
-export default withAuthSync(Profile);
+export default withAuthSync(Profile, 'auth');

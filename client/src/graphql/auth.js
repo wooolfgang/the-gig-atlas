@@ -20,12 +20,23 @@ export const OAUTH_URL = gql`
 export const GET_AUTHENTICATED_USER = gql`
   query {
     authenticatedUser {
-      id
       email
       firstName
       lastName
       isEmailVerified
       freelancerOnboardingStep
+      role
+      asEmployer {
+        id
+        employerType
+        displayName
+        email
+      }
+      asFreelancer {
+        avatar
+        isPrivate
+        isForHire
+      }
     }
   }
 `;
