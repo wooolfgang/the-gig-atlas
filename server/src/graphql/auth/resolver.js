@@ -4,6 +4,7 @@ import google from '../../serverless/google';
 import github from '../../serverless/github';
 import { verifyToken } from '../utils/rules';
 import { createAuth } from './util';
+import { header } from '@shared/common';
 
 export async function createUser(input, prisma) {
   const password = input.password || uuidv4();
@@ -47,7 +48,13 @@ const login = async (_, { email, password }, { prisma }) => {
 };
 
 const checkValidToken = async (_, _1, { req }) => {
-  const token = req.get('Authorization');
+  const auth = req.get('Authorization');
+  if (!auth) {
+    return false;
+  }
+
+  const token = header.getToken(auth);
+
   if (!token) {
     return false;
   }

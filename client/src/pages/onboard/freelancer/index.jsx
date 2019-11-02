@@ -51,8 +51,8 @@ export const Header = styled.div`
   padding-right: 0.75rem;
 `;
 
-const Onboarding = ({ authenticatedUser }) => {
-  const { firstName, lastName } = authenticatedUser;
+const Onboarding = ({ user }) => {
+  const { firstName, lastName } = user;
   const [freelancerOnboardingPersonal] = useMutation(
     FREELANCER_ONBOARDING_PERSONAL,
   );
@@ -207,7 +207,7 @@ const Onboarding = ({ authenticatedUser }) => {
 };
 
 Onboarding.propTypes = {
-  authenticatedUser: PropTypes.shape({
+  user: PropTypes.shape({
     id: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
@@ -215,4 +215,4 @@ Onboarding.propTypes = {
   }).isRequired,
 };
 
-export default withAuthSync(Onboarding);
+export default withAuthSync(Onboarding, 'MEMBER');

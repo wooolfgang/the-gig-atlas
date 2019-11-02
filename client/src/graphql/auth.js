@@ -31,9 +31,18 @@ export const GET_AUTHENTICATED_USER = gql`
         employerType
         displayName
         email
+        avatar {
+          name
+          contentType
+          url
+        }
       }
       asFreelancer {
-        avatar
+        avatar {
+          name
+          contentType
+          url
+        }
         isPrivate
         isForHire
       }

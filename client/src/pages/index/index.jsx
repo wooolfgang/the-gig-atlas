@@ -9,6 +9,7 @@ import BannerSvg from './svg/banner';
 import GigsSvg from './svg/gigs';
 import Spinner from '../../primitives/Spinner';
 import media from '../../utils/media';
+import WithAuth from '../../components/withAuthSync';
 
 const BannerContainer = styled.div`
   width: 100vw;
@@ -123,14 +124,14 @@ const Banner = () => (
   </BannerContainer>
 );
 
-const Index = () => {
+const Index = ({ user }) => {
   const { data } = useQuery(GET_GIGS_LIST_FOR_LANDING, {
     fetchPolicy: 'cache-and-network',
   });
   return (
     <>
       <HTMLHead />
-      <Nav />
+      <Nav user={user} />
       <Banner />
       <GigsContainer>
         <GigsGrid>
@@ -152,4 +153,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default WithAuth(Index, 'all');
