@@ -20,6 +20,7 @@ export const OAUTH_URL = gql`
 export const GET_AUTHENTICATED_USER = gql`
   query {
     authenticatedUser {
+      id
       email
       firstName
       lastName
@@ -38,6 +39,7 @@ export const GET_AUTHENTICATED_USER = gql`
         }
       }
       asFreelancer {
+        id
         avatar {
           name
           contentType

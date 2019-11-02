@@ -57,7 +57,6 @@ const withAuthSync = (WrappedComponent, type) => {
           query: GET_AUTHENTICATED_USER,
           // fetchPolicy: 'network-only', // => Make sure to always fetch network first, as apollo defaults to cache
         });
-
         user = res.data.authenticatedUser;
         if (!user) {
           // => for user dont exist
@@ -68,10 +67,13 @@ const withAuthSync = (WrappedComponent, type) => {
       }
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.error('AuthenticatedUser: WithAuthSync.js');
+      console.error('Error WithAuthSync');
       // eslint-disable-next-line no-console
       console.error(e);
-      router.toSignin(ctx);
+      const query = {
+        message: 'WithAuthSync: Something went wrong',
+      };
+      router.toError(ctx, query);
 
       return {};
     }
