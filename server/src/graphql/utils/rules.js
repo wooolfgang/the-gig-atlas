@@ -1,3 +1,4 @@
+/* eslint-disable function-paren-newline */
 import { rule } from 'graphql-shield';
 import jwt from 'jsonwebtoken';
 import { header } from '@shared/common';
@@ -17,13 +18,9 @@ export const MEMBER = 'MEMBER';
  */
 export const verifyToken = token =>
   new Promise((resolve, reject) => {
-    jwt.verify(token, config.secretUser, (err, payload) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(payload);
-      }
-    });
+    jwt.verify(token, config.secretUser, (err, payload) =>
+      err ? reject(err) : resolve(payload),
+    );
   });
 
 /**

@@ -25,7 +25,7 @@ export const GET_AUTHENTICATED_USER = gql`
       firstName
       lastName
       isEmailVerified
-      freelancerOnboardingStep
+      onboardingStep
       role
       asEmployer {
         id
