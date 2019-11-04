@@ -58,6 +58,7 @@ const withAuthSync = (WrappedComponent, type) => {
           // fetchPolicy: 'network-only', // => Make sure to always fetch network first, as apollo defaults to cache
         });
         user = res.data.authenticatedUser;
+        console.log('the user: ', user);
         if (!user) {
           // => for user dont exist
           router.toSignin(ctx);
@@ -73,20 +74,24 @@ const withAuthSync = (WrappedComponent, type) => {
       const query = {
         message: 'WithAuthSync: Something went wrong',
       };
-      router.toError(ctx, query);
+      router.toError(ctx, { query });
 
       return {};
     }
 
     if (user) {
-      // [info]=> refactored Li's code, doesnt make sense to me
-      const onboardingStep = user.freelancerOnboardingStep;
-      if (onboardingStep !== 'FINISHED') {
-        if (onboardingStep === 'PORTFOLIO') {
-          router.toFreelancerOnboardingPortfolio(ctx);
-        } else {
-          router.toFreelancerOnboardingPersonal(ctx);
+      // [info]=> user unifnished onboarding steps
+      const { onboardingStep } = user;
+      if (onboardingStep) {
+        if (onboardingStep === 'PERSONAL') {
+          router.toOnboarding(ctx, { hash: onboardingStep });
         }
+
+        // if (onboardingStep === 'PORTFOLIO') {
+        //   router.toFreelancerOnboardingPortfolio(ctx);
+        // } else {
+        //   router.toFreelancerOnboardingPersonal(ctx);
+        // }
         // => Do not go for early return, as we need to pass user down as props
       }
     }

@@ -7,7 +7,7 @@ const Error = ({ message }) => (
   </div>
 );
 
-Error.getinitialProps = ctx => {
+Error.getInitialProps = ctx => {
   // eslint-disable-next-line prefer-destructuring
   const message = ctx.query.message;
 

@@ -62,7 +62,10 @@ const AuthProvider = ({ oauthURL }) => {
       /**
        * @TODO handle error received upon failed authnetication
        */
-      console.log('received errors: ', errors);
+      console.error('received errors: ');
+      console.error(errors);
+      const query = { message: 'Server Error' };
+      router.toError({}, query);
     }
   };
 

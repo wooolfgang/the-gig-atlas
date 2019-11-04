@@ -16,10 +16,11 @@ const assembleFields = (selectionSet, hasChild) => {
 };
 
 /**
- * @param {*} info the graphql info object
- * @param {*} operation fragment name
- * @param {*} type corresponding schema type
- * @param {*} hasChild allow relationship query default: false
+ * Create fragment for prisma query optimizatoin
+ * @param {object} info the graphql info object
+ * @param {string} operation fragment name
+ * @param {string} type corresponding schema type
+ * @param {boolean} hasChild allow relationship query default: false
  */
 /* eslint-disable import/prefer-default-export */
 export const createFragment = (info, operation, type, hasChild = false) =>

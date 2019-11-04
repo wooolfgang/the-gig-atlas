@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import common from '@shared/common';
-import Stepper from '../../../components/Stepper';
-import CustomField from '../../../components/CustomField';
-import withAuthSync from '../../../components/withAuthSync';
-import NavLogoOnly from '../../../components/NavLogoOnly';
-import { FREELANCER_ONBOARDING_PERSONAL } from '../../../graphql/freelancer';
-import router from '../../../utils/router';
-import Button from '../../../primitives/Button';
+import Stepper from '../../components/Stepper';
+import CustomField from '../../components/CustomField';
+import withAuthSync from '../../components/withAuthSync';
+import NavLogoOnly from '../../components/NavLogoOnly';
+import { FREELANCER_ONBOARDING_PERSONAL } from '../../graphql/freelancer';
+import router from '../../utils/router';
+import Button from '../../primitives/Button';
 // import timezones from '../../../utils/timezones';
 
 export const Container = styled.div`
@@ -91,10 +91,8 @@ const Onboarding = ({ user }) => {
             <Formik
               validationSchema={common.validation.freelancerPersonalInput}
               initialValues={{
-                avatarFileId: '',
                 firstName: firstName || '',
                 lastName: lastName || '',
-                bio: '',
               }}
               onSubmit={async values => {
                 try {
@@ -124,34 +122,6 @@ const Onboarding = ({ user }) => {
                     component={CustomField}
                     help="This is your surname"
                   />
-                  <Field
-                    name="website"
-                    label="Website"
-                    placeholder="https://epicjohn.com"
-                    component={CustomField}
-                    required={false}
-                  />
-                  {/*
-                    Temporarily not use this for now to make the onboarding as simple as possible
-                    for the freelancer
-                  */}
-                  {/*
-                  <Field
-                    name="location"
-                    label="Location"
-                    placeholder="Machu Pichu, Peru"
-                    component={CustomField}
-                    required={false}
-                  />
-                  <Field
-                    name="timezone"
-                    type="select"
-                    label="Timezone"
-                    placeholder="Select Timezone"
-                    component={CustomField}
-                    options={timezones}
-                    required={false}
-                  /> */}
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Button
                       style={{
