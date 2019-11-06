@@ -12,6 +12,7 @@ import { FREELANCER_ONBOARDING_PERSONAL } from '../../graphql/freelancer';
 import router from '../../utils/router';
 import Button from '../../primitives/Button';
 // import timezones from '../../../utils/timezones';
+import PersonalOnboard from '../../components/Onboard/Personal';
 
 export const Container = styled.div`
   width: 100vw;
@@ -51,7 +52,7 @@ export const Header = styled.div`
   padding-right: 0.75rem;
 `;
 
-const Onboarding = ({ user }) => {
+const Onboarding = ({ user, step }) => {
   const { firstName, lastName } = user;
   const [freelancerOnboardingPersonal] = useMutation(
     FREELANCER_ONBOARDING_PERSONAL,
@@ -88,70 +89,7 @@ const Onboarding = ({ user }) => {
             </span>
           </Header>
           <FormContainer>
-            <Formik
-              validationSchema={common.validation.freelancerPersonalInput}
-              initialValues={{
-                firstName: firstName || '',
-                lastName: lastName || '',
-              }}
-              onSubmit={async values => {
-                try {
-                  await freelancerOnboardingPersonal({
-                    variables: {
-                      input: values,
-                    },
-                  });
-                  router.toFreelancerOnboardingPortfolio();
-                } catch (e) {
-                  /**
-                   * Handle error
-                   */
-                }
-              }}
-              render={({ isSubmitting }) => (
-                <Form>
-                  <Field
-                    name="firstName"
-                    label="First Name"
-                    component={CustomField}
-                    help="This is your given name"
-                  />
-                  <Field
-                    name="lastName"
-                    label="Last Name"
-                    component={CustomField}
-                    help="This is your surname"
-                  />
-                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button
-                      style={{
-                        marginTop: '.8rem',
-                        maxWidth: '150px',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                      type="submit"
-                      styleType="primary"
-                      disabled={isSubmitting}
-                      loading={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        'Submitting... '
-                      ) : (
-                        <>
-                          <span>Continue </span>
-                          <img
-                            src="/static/arrow-right.svg"
-                            alt="arrow-right-icon"
-                            style={{ width: '1rem' }}
-                          />
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </Form>
-              )}
-            />
+            <PersonalOnboard user={user} />
           </FormContainer>
         </BodyContainer>
       </Container>
@@ -166,6 +104,12 @@ Onboarding.propTypes = {
     lastName: PropTypes.string,
     email: PropTypes.string,
   }).isRequired,
+};
+
+Onboarding.getInitialProps = ctx => {
+  const { step } = ctx.query;
+
+  return { step };
 };
 
 export default withAuthSync(Onboarding, 'MEMBER');
