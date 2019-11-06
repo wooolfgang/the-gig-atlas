@@ -112,17 +112,34 @@ const Onboarding = ({ user }) => {
               }}
               render={({ isSubmitting }) => (
                 <Form>
+                  {!firstName && !lastName && (
+                    <>
+                      <Field
+                        name="firstName"
+                        label="First Name"
+                        component={CustomField}
+                        help="This is your given name"
+                      />
+                      <Field
+                        name="lastName"
+                        label="Last Name"
+                        component={CustomField}
+                        help="This is your surname"
+                      />
+                    </>
+                  )}
                   <Field
-                    name="firstName"
-                    label="First Name"
+                    name="avatarFileId"
+                    type="avatarupload"
+                    label="Avatar"
                     component={CustomField}
-                    help="This is your given name"
                   />
                   <Field
-                    name="lastName"
-                    label="Last Name"
+                    name="bio"
+                    type="texteditor"
+                    label="About You"
+                    placeholder="I am a React developer specialized in building awesome single page applications."
                     component={CustomField}
-                    help="This is your surname"
                   />
                   <Field
                     name="website"
