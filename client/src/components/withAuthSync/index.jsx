@@ -79,19 +79,22 @@ const withAuthSync = (WrappedComponent, type) => {
       return {};
     }
 
-    if (user) {
-      // [info]=> user unifnished onboarding steps
+    /**
+     * @hook user onboarding
+     */
+    if (user && user.onboardingStep) {
+      const currentStep = ctx.query.step;
+      const currentPath = ctx.pathname;
       const { onboardingStep } = user;
-      if (onboardingStep) {
-        if (onboardingStep === 'PERSONAL') {
-          router.toOnboarding(ctx, { hash: onboardingStep });
-        }
 
-        // if (onboardingStep === 'PORTFOLIO') {
-        //   router.toFreelancerOnboardingPortfolio(ctx);
-        // } else {
-        //   router.toFreelancerOnboardingPersonal(ctx);
-        // }
+      if (
+        currentPath !== router.toOnboarding.pathname &&
+        currentStep !== onboardingStep
+      ) {
+        if (onboardingStep === 'PERSONAL') {
+          const query = { step: onboardingStep };
+          router.toOnboarding(ctx, { query });
+        }
         // => Do not go for early return, as we need to pass user down as props
       }
     }
