@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { chain } from 'graphql-shield';
+import { chain, allow } from 'graphql-shield';
 import common from '@shared/common';
 import { isAuthenticated, validate, dompurify } from '../utils/rules';
 
@@ -24,4 +24,9 @@ export default {
     ),
     skipFreelancerOnboarding: isAuthenticated,
   },
+
+  Query: {
+    freelancers: isAuthenticated,
+  },
+  Freelancer: allow,
 };
