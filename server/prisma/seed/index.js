@@ -11,6 +11,7 @@ require('@babel/register')({
 const seeds = {
   admin: require('./admin').default,
   product: require('./product').default,
+  thread: require('./thread').default,
 };
 
 const toSeeds = [];
