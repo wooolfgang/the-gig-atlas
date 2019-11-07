@@ -1,3 +1,15 @@
+type Query {
+  freelancers(
+    where: FreelancerWhereInput
+    orderBy: FreelancerOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Freelancer]!
+}
+
 type Mutation {
   freelancerOnboardingPersonal(input: FreelancerOnboardingPersonal!): Boolean!
   freelancerOnboardingPortfolio(input: FreelancerOnboardingPortfolio!): Boolean!
