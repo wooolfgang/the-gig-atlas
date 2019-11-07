@@ -1,51 +1,15 @@
-import argon2 from 'argon2';
-import uuidv4 from 'uuid/v4';
+import { header } from '@shared/common';
 import google from '../../serverless/google';
 import github from '../../serverless/github';
 import { verifyToken } from '../utils/rules';
-import { createAuth } from './util';
-import { header } from '@shared/common';
-
-export async function createUser(input, prisma) {
-  const password = input.password || uuidv4();
-  const hash = await argon2.hash(password);
-
-  const create = {
-    ...input,
-    password: hash,
-    role: 'MEMBER',
-  };
-
-  const { id, role } = await prisma
-    .createUser(create)
-    .$fragment('fragment Payload on User { id role password }');
-
-  return createAuth(id, role);
-}
+import { createAuth, createUser, loginUser } from './util';
 
 /**
  * Resolver for handling user password
  */
-function signup(_, { input }, { prisma }) {
-  return createUser(input, prisma);
-}
+const signup = (_, { input }) => createUser(input);
 
-const login = async (_, { email, password }, { prisma }) => {
-  const user = await prisma
-    .user({ email })
-    .$fragment('fragment Payload on User { id role password }');
-
-  if (!user) {
-    throw new Error('Invalid credentials');
-  }
-
-  const isVerified = await argon2.verify(user.password, password);
-  if (!isVerified) {
-    throw new Error('Invalid credentials');
-  }
-
-  return createAuth(user.id, user.role);
-};
+const login = (_, { email, password }) => loginUser(email, password);
 
 const checkValidToken = async (_, _1, { req }) => {
   const auth = req.get('Authorization');
