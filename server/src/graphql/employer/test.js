@@ -35,6 +35,7 @@ const input = {
 };
 let token;
 let debugPost;
+let fileId;
 
 beforeAll(async () => {
   const res = await axios.post(testUrl, {
@@ -48,31 +49,25 @@ beforeAll(async () => {
     `,
     variables: { input: userInput },
   });
-  const file = await axios.post(testUrl, {
-    query: `
-      mutation ($file: FileInput!) {
-        createFile(file: $file) {
-          id
-        }
-      }
-    `,
-    variables: {
-      file: {
-        name: 'this is a file',
-      },
-    },
-  });
-  input.employer.avatarFileId = file.data.data.createFile.id;
+
   token = res.data.data.signup.token;
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  const headers = { Authorization: `Bearer ${token}` };
   debugPost = debugReq.createDebugPost(testUrl, { headers });
+  const file = await prisma.createFile({ name: 'this is a file' });
+
+  fileId = file.id;
+  input.employer.avatarFileId = file.id;
 });
 
 afterAll(async () => {
   try {
     await prisma.deleteUser({ email: userInput.email });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
+  try {
+    await prisma.deleteFile({ id: fileId });
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);

@@ -2,6 +2,7 @@ import axios from 'axios';
 import argon2 from 'argon2';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
+import { createAuth } from '../../graphql/auth/util';
 
 const { testUrl } = config;
 
@@ -36,36 +37,13 @@ const existingUser = {
 let testFile2;
 
 beforeAll(async () => {
-  const file = await axios.post(testUrl, {
-    query: `
-      mutation ($file: FileInput!) {
-        createFile(file: $file) {
-          id
-        }
-      }
-    `,
-    variables: {
-      file: {
-        name: 'Test FIle',
-      },
-    },
-  });
-  const file2 = await axios.post(testUrl, {
-    query: `
-      mutation ($file: FileInput!) {
-        createFile(file: $file) {
-          id
-        }
-      }
-    `,
-    variables: {
-      file: {
-        name: 'Test FIle 2',
-      },
-    },
-  });
-  employer.avatarFileId = file.data.data.createFile.id;
-  testFile2 = file2.data.data.createFile.id;
+  const [file1, file2] = await Promise.all([
+    prisma.createFile({ name: 'Test File 1' }),
+    prisma.createFile({ name: 'Test File 2' }),
+  ]);
+
+  employer.avatarFileId = file1.id;
+  testFile2 = file2.id;
 
   await prisma.createUser(existingUser);
 });
@@ -75,6 +53,7 @@ afterAll(async () => {
     await Promise.all([
       prisma.deleteUser({ email: employer.email }),
       prisma.deleteUser({ email: existingUser.email }),
+      prisma.deleteManyFiles({ id_in: [employer.avatarFileId, testFile2.id] }),
     ]);
   } catch (e) {
     // fail gracefully
@@ -82,7 +61,7 @@ afterAll(async () => {
 });
 
 describe('Testing gig resolvers', () => {
-  it('Creates a new gig with populated employer, avatar and user', async () => {
+  it.only('Creates a new gig with populated employer, avatar and user', async () => {
     const res = await axios.post(testUrl, {
       query: `
         mutation($gig: GigInput!, $employer: EmployerInput!) {
