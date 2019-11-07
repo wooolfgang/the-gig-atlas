@@ -12,7 +12,9 @@ type Query {
     before: String
     first: Int
     last: Int
-  ): [Thread]!
+  ): [Thread!]!
+  threadTags: [ThreadTag!]!
+  thread(where: ThreadWhereUniqueInput!): Thread
 }
 
 type Thread {
@@ -29,6 +31,8 @@ type Thread {
   tags: [ThreadTag!]!
   postedBy: User
   comments: [Comment]!
+  commentTree: [Comment]!
+  posters: [User!]!
 }
 
 type Comment {
