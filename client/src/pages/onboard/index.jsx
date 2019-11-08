@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -53,10 +56,10 @@ export const Header = styled.div`
 `;
 
 const Onboarding = ({ user, step }) => {
-  const { firstName, lastName } = user;
-  const [freelancerOnboardingPersonal] = useMutation(
-    FREELANCER_ONBOARDING_PERSONAL,
-  );
+  const { firstName } = user;
+  // const [freelancerOnboardingPersonal] = useMutation(
+  //   FREELANCER_ONBOARDING_PERSONAL,
+  // );
   return (
     <div>
       <NavLogoOnly />
@@ -69,10 +72,7 @@ const Onboarding = ({ user, step }) => {
                 title: 'Personal Profile',
                 description: 'Be unique, stand out.',
               },
-              {
-                title: 'Freelancer Portfolio',
-                description: 'Show your best work to the world.',
-              },
+              _profileType(step),
             ]}
           />
         </StepperContainer>
@@ -113,3 +113,25 @@ Onboarding.getInitialProps = ctx => {
 };
 
 export default withAuthSync(Onboarding, 'MEMBER');
+
+// eslint-disable-next-line consistent-return
+function _profileType(step) {
+  if (step === 'PERSONAL') {
+    return {
+      title: 'Account Profile',
+      description: 'Input account info',
+    };
+  }
+  if (step === 'E_INFO') {
+    return {
+      title: 'Employer Info',
+      description: 'Write about your emloyment',
+    };
+  }
+  if (step === 'F_PORTFOLIO') {
+    return {
+      title: 'Freelancer info',
+      description: 'Tell us more about you',
+    };
+  }
+}

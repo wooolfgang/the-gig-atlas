@@ -1,12 +1,16 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import common from '@shared/common';
+import { useMutation } from '@apollo/react-hooks';
 import Button from '../../primitives/Button';
 import CustomField from '../CustomField';
+import { ONBOARDING_PERSONAL } from '../../graphql/user';
+import router from '../../utils/router';
 
 const Personal = ({ user }) => {
-  const { firstName, lastName } = user;
+  const { firstName, lastName, id } = user;
+  const [onboardingPersonal] = useMutation(ONBOARDING_PERSONAL);
 
   return (
     <Formik
@@ -18,22 +22,20 @@ const Personal = ({ user }) => {
       }}
       onSubmit={async (values, action) => {
         console.log('submit values: ', values);
+        try {
+          const { data, errors } = await onboardingPersonal({
+            variables: { input: { ...values, id } },
+          });
+
+          if (errors) {
+            throw errors;
+          }
+          console.log(data);
+          router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
+        } catch (e) {
+          console.log(e);
+        }
         action.setSubmitting(false);
-        /**
-         * @todo: update change here
-         */
-        // try {
-        //   await freelancerOnboardingPersonal({
-        //     variables: {
-        //       input: values,
-        //     },
-        //   });
-        //   router.toFreelancerOnboardingPortfolio();
-        // } catch (e) {
-        //   /**
-        //    * Handle error
-        //    */
-        // }
       }}
       render={({ isSubmitting }) => (
         <Form>

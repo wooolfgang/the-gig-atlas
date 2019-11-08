@@ -7,6 +7,7 @@ export default {
   },
   Mutation: {
     deleteUser: isAdminOnly,
+    onboardingPersonal: isAuthenticated,
   },
   User: allow,
 };
