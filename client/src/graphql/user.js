@@ -30,7 +30,10 @@ export const USER_AUTH = gql`
 
 export const ONBOARDING_PERSONAL = gql`
   mutation ONBOARDING_PERSONAL($input: PersonalInput!) {
-    onboardingPersonal(input: $input)
+    onboardingPersonal(input: $input) {
+      id
+      onboardingStep
+    }
   }
 `;
 

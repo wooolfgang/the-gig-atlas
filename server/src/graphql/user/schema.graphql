@@ -4,7 +4,7 @@ type Query {
 
 type Mutation {
   deleteUser(id: ID!): Boolean!
-  onboardingPersonal(input: PersonalInput!): OnboardingStep!
+  onboardingPersonal(input: PersonalInput!): User!
 }
 
 type User {
