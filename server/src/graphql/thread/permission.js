@@ -17,7 +17,7 @@ export default {
     createComment: chain(
       validate(
         yup.object().shape({
-          input: common.validation.commentInptu,
+          input: common.validation.commentInput,
         }),
       ),
       dompurify('input.text'),
