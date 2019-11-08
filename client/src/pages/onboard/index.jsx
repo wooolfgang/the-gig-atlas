@@ -16,6 +16,7 @@ import router from '../../utils/router';
 import Button from '../../primitives/Button';
 // import timezones from '../../../utils/timezones';
 import PersonalOnboard from '../../components/Onboard/Personal';
+import EmployerOnboard from '../../components/Onboard/Employer';
 
 export const Container = styled.div`
   width: 100vw;
@@ -89,7 +90,8 @@ const Onboarding = ({ user, step }) => {
             </span>
           </Header>
           <FormContainer>
-            <PersonalOnboard user={user} />
+            {step === 'PERSONAL' && <PersonalOnboard user={user} />}
+            {step === 'E_INFO' && <EmployerOnboard user={user} />}
           </FormContainer>
         </BodyContainer>
       </Container>
