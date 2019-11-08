@@ -7,11 +7,10 @@ import common from '@shared/common';
 import Stepper from '../../../components/Stepper';
 import CustomField from '../../../components/CustomField';
 import withAuthSync from '../../../components/withAuthSync';
-import NavLogoOnly from '../../../components/NavLogoOnly';
+import Nav from '../../../components/Nav';
 import { FREELANCER_ONBOARDING_PERSONAL } from '../../../graphql/freelancer';
 import router from '../../../utils/router';
 import Button from '../../../primitives/Button';
-// import timezones from '../../../utils/timezones';
 
 export const Container = styled.div`
   width: 100vw;
@@ -58,7 +57,7 @@ const Onboarding = ({ authenticatedUser }) => {
   );
   return (
     <div>
-      <NavLogoOnly />
+      <Nav type="LOGO_ONLY" />
       <Container>
         <StepperContainer>
           <Stepper

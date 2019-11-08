@@ -29,6 +29,7 @@ export const redirect = path => ctx => {
   }
 };
 
+const toIndex = redirect('/');
 const toSignin = redirect('/login');
 const toSignup = redirect('/signup');
 const toProfile = redirect('/profile');
@@ -38,6 +39,7 @@ const toFreelancerOnboardingPortfolio = redirect(
 );
 
 export default {
+  toIndex,
   toSignin,
   toSignup,
   toProfile,

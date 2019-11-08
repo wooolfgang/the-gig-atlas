@@ -40,3 +40,17 @@ export const PostGigButton = styled.button`
     background-color: ${props => props.theme.color.p1d};
   }
 `;
+
+export const SearchContainer = styled.div`
+  position: relative;
+`;
+
+export const Search = styled.input`
+  width: 300px;
+  height: 32.5px;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  box-sizing: border-box;
+  font-size: 0.85rem;
+  background: ${props => props.theme.color.d5};
+`;
