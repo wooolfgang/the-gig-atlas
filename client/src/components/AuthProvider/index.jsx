@@ -57,7 +57,7 @@ const AuthProvider = ({ oauthURL }) => {
     const { oauth, errors } = event.data;
     if (oauth) {
       auth.setTokenCookie(oauth.token);
-      router.toProfile();
+      router.toIndex();
     } else {
       /**
        * @TODO handle error received upon failed authnetication

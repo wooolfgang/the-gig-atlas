@@ -3,7 +3,7 @@ import Nav from '../components/Nav';
 
 const Community = () => (
   <div>
-    <Nav />
+    <Nav type="NOT_AUTHENTICATED" />
   </div>
 );
 
