@@ -23,6 +23,8 @@ const Personal = ({ user }) => {
       onSubmit={async (values, action) => {
         console.log('submit values: ', values);
         try {
+          // [info] => __typedata of User allows modification of current user in chache
+          // [ref] => https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-after-a-mutation
           const { data, errors } = await onboardingPersonal({
             variables: { input: { ...values, id } },
           });
@@ -30,8 +32,12 @@ const Personal = ({ user }) => {
           if (errors) {
             throw errors;
           }
-          console.log(data);
-          router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
+          const step = data.onboardingPersonal.onboardingStep;
+          if (step === 'EMPLOYER') {
+            router.toEmployerOnboarding();
+          } else if (step === 'FREELANCER') {
+            router.toFreelancerOnboarding();
+          }
         } catch (e) {
           console.log(e);
         }

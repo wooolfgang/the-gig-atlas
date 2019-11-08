@@ -58,7 +58,7 @@ const withAuthSync = (WrappedComponent, type) => {
           // fetchPolicy: 'network-only', // => Make sure to always fetch network first, as apollo defaults to cache
         });
         user = res.data.authenticatedUser;
-        console.log('the user: ', user);
+        console.log('withAuthSync.js: \n', user);
         if (!user) {
           // => for user dont exist
           router.toSignin(ctx);
@@ -79,25 +79,8 @@ const withAuthSync = (WrappedComponent, type) => {
       return {};
     }
 
-    /**
-     * @hook user onboarding
-     */
-    if (user && user.onboardingStep) {
-      const currentStep = ctx.query.step;
-      const currentPath = ctx.pathname;
-      const { onboardingStep } = user;
-
-      if (
-        currentPath !== router.toOnboarding.pathname &&
-        currentStep !== onboardingStep
-      ) {
-        if (onboardingStep === 'PERSONAL') {
-          const query = { step: onboardingStep };
-          router.toOnboarding(ctx, { query });
-        }
-        // => Do not go for early return, as we need to pass user down as props
-      }
-    }
+    // => user onboarding hook
+    _hancleOnboarding(ctx, user);
 
     let componentProps = {};
     if (WrappedComponent.getInitialProps) {
@@ -115,3 +98,31 @@ const withAuthSync = (WrappedComponent, type) => {
 };
 
 export default withAuthSync;
+
+// utils
+
+function _hancleOnboarding(ctx, user) {
+  if (user && user.onboardingStep) {
+    // const currentStep = ctx.query.step;
+    const { onboardingStep } = user;
+    const currentPath = ctx.pathname;
+
+    if (
+      onboardingStep === 'PERSONAL' &&
+      currentPath !== router.toPersonalOnboarding.pathname // => to avoid redirection on current same path
+    ) {
+      router.toPersonalOnboarding(ctx);
+    } else if (
+      onboardingStep === 'EMPLOYER' &&
+      currentPath !== router.toEmployerOnboarding.pathname
+    ) {
+      router.toEmployerOnboarding(ctx);
+    } else if (
+      onboardingStep === 'FREELANCER' &&
+      currentPath !== router.toFreelancerOnboarding.pathname
+    ) {
+      router.toFreelancerOnboarding(ctx);
+    }
+    // => Do not go for early return, as we need to pass user down as props
+  }
+}

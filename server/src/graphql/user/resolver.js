@@ -18,21 +18,20 @@ async function onboardingPersonal(_, { input }) {
   let onboardingStep;
 
   // eslint-disable-next-line prettier/prettier
-  if (user.onboardingStep !== 'PERSONAL' && user.onboardingStep !== 'E_INFO'
-  && user.onboardingStep !== 'F_PORTFOLIO') {
-    throw new Error('Invalid access');
+  if (!user.onboardingStep) {
+    throw new Error('Invalid onboarding access');
   }
 
   if (accountType === 'EMPLOYER') {
     if (user.asEmployer) {
       throw new Error('Already an employer');
     }
-    onboardingStep = 'E_INFO';
+    onboardingStep = 'EMPLOYER';
   } else if (accountType === 'FREELANCER') {
     if (user.asFreelancer) {
       throw new Error('Already an freelancer');
     }
-    onboardingStep = 'F_PORTFOLIO';
+    onboardingStep = 'FREELANCER';
   } else {
     throw new Error('Invalid account type');
   }
@@ -46,7 +45,10 @@ async function onboardingPersonal(_, { input }) {
     },
   });
 
-  return onboardingStep;
+  return {
+    id,
+    onboardingStep,
+  };
 }
 
 export default {

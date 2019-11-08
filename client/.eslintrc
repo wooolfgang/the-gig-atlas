@@ -11,6 +11,7 @@
     "implicit-arrow-linebreak": 0,
     "comma-dangle": 0,
     "indent": 0,
-    "operator-linebreak": 0
+    "operator-linebreak": 0,
+    "no-underscore-dangle": 0
   }
 }

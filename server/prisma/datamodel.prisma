@@ -19,10 +19,8 @@ type User {
 
 enum OnboardingStep {
   PERSONAL
-  E_INFO #// Employer Info
-  E_FINISHED #// Employer Finished
-  F_PORTFOLIO #// Freelancer Portfolio
-  F_FINISHED #// Freelancer Finished
+  EMPLOYER
+  FREELANCER
 }
 
 enum UserRole {
