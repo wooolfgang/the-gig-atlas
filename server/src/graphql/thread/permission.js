@@ -1,7 +1,7 @@
 import { allow, chain } from 'graphql-shield';
 import * as yup from 'yup';
 import common from '@shared/common';
-import { isAuthenticated, validate } from '../utils/rules';
+import { isAuthenticated, validate, dompurify } from '../utils/rules';
 
 export default {
   Mutation: {
@@ -11,19 +11,23 @@ export default {
           input: common.validation.threadInput,
         }),
       ),
+      dompurify('input.body'),
       isAuthenticated,
     ),
     createComment: chain(
       validate(
         yup.object().shape({
-          input: common.validation.commentInptu,
+          input: common.validation.commentInput,
         }),
       ),
+      dompurify('input.text'),
       isAuthenticated,
     ),
   },
   Query: {
+    thread: allow,
     threads: allow,
+    threadTags: allow,
   },
   Thread: allow,
   Comment: allow,

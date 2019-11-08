@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import TextArea from './TextArea';
@@ -31,12 +31,13 @@ const TextEditor = ({
   placeholder,
   hasError,
 }) => {
-  const random = Math.random().toString(36);
-  const trixId = useRef(random);
+  const trixId = useRef(Math.random().toString(36));
   const mounted = useRef(false);
 
   useEffect(() => {
     const handleChange = event => {
+      // Set mounted current to true, which stops trix-editor from loadingHTML
+      mounted.current = true;
       onChange({
         target: {
           name,
@@ -60,6 +61,7 @@ const TextEditor = ({
         trix.editor.loadHTML(value);
         mounted.current = true;
       }
+
       trix.addEventListener('trix-blur', handleBlur);
       trix.addEventListener('trix-change', handleChange);
     }

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import withNoAuth from '../components/withNoAuthSync';
 import FormSignup from '../components/FormSignup';
-import NavLoginSignup from '../components/NavLoginSignup';
+import Nav from '../components/Nav';
 import HTMLHead from '../components/HTMLHead';
 import AuthProvider from '../components/AuthProvider';
 import { OAUTH_URL } from '../graphql/auth';
@@ -31,7 +31,7 @@ const Body = styled.div`
 const Signup = ({ oauthURL }) => (
   <>
     <HTMLHead />
-    <NavLoginSignup />
+    <Nav type="LOGIN_SIGNUP" />
     <Body>
       <h1 style={{ margin: '1.875rem 0 0px 0' }}> Sign Up</h1>
       <p>

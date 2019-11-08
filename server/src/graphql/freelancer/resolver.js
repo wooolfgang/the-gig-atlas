@@ -1,3 +1,5 @@
+import { createFragment } from '../utils/fragment';
+
 export default {
   Mutation: {
     freelancerOnboardingPersonal: async (_, { input }, { prisma, user }) => {
@@ -67,6 +69,32 @@ export default {
         },
       });
       return !!res;
+    },
+  },
+
+  Query: {
+    freelancers: async (_, args, { prisma }, info) =>
+      prisma.freelancers(args, info),
+  },
+
+  Freelancer: {
+    asUser: async (root, args, { prisma }, info) => {
+      const fragment = createFragment(info, 'UserFromFreelancer', 'Freelancer');
+      return prisma
+        .freelancer({ id: root.id })
+        .asUser()
+        .$fragment(fragment);
+    },
+    avatar: async (root, args, { prisma }, info) => {
+      const fragment = createFragment(
+        info,
+        'AvatarFromFreelancer',
+        'Freelancer',
+      );
+      return prisma
+        .freelancer({ id: root.id })
+        .avatar()
+        .$fragment(fragment);
     },
   },
 };
