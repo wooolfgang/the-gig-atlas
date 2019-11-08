@@ -6,7 +6,7 @@ import AuthProvider from '../components/AuthProvider';
 import { OAUTH_URL } from '../graphql/auth';
 import HTMLHead from '../components/HTMLHead';
 import { color } from '../utils/theme';
-import NavLoginSignup from '../components/NavLoginSignup';
+import Nav from '../components/Nav';
 import FormSignin from '../components/FormSignin';
 
 const Container = styled.div`
@@ -38,7 +38,7 @@ const Signin = ({ oauthURL }) => (
   <>
     <Container>
       <HTMLHead />
-      <NavLoginSignup />
+      <Nav type="LOGIN_SIGNUP" />
       <Body>
         <h1 style={{ margin: '1.875rem 0 0px 0' }}> Login to The Gig Atlas</h1>
         <p>

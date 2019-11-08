@@ -3,7 +3,7 @@ import { Formik, Form, Field, FieldArray } from 'formik';
 import { useMutation } from '@apollo/react-hooks';
 import common from '@shared/common';
 import styled from 'styled-components';
-import NavLogoOnly from '../../../components/NavLogoOnly';
+import Nav from '../../../components/Nav';
 import Stepper from '../../../components/Stepper';
 import CustomField from '../../../components/CustomField';
 import { Button, FieldError, Spinner } from '../../../primitives';
@@ -63,7 +63,7 @@ const OnboardingPortfolio = () => {
 
   return (
     <div>
-      <NavLogoOnly />
+      <Nav type="LOGO_ONLY" />
       <Container>
         <StepperContainer>
           <Stepper
@@ -110,7 +110,7 @@ const OnboardingPortfolio = () => {
                   try {
                     await skipFreelancerOnboarding();
                     setRedirecting(true);
-                    router.toProfile();
+                    router.toIndex();
                   } catch (e) {
                     setRedirecting(false);
                   }
@@ -134,7 +134,7 @@ const OnboardingPortfolio = () => {
                     input: values,
                   },
                 });
-                router.toProfile();
+                router.toIndex();
               }}
               initialValues={{
                 socials: Object.keys(socialMap).map(key => ({

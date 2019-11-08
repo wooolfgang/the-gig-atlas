@@ -11,6 +11,7 @@ import RadioCards from './RadioCards';
 import RadioButtons from './RadioButtons';
 import Select from './Select';
 import Spinner from './Spinner';
+import Avatar from './Avatar';
 
 export {
   FieldError,
@@ -26,4 +27,5 @@ export {
   RadioButtons,
   Select,
   Spinner,
+  Avatar,
 };

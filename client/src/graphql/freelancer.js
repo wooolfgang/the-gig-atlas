@@ -21,3 +21,25 @@ export const SKIP_FREELANCER_ONBOARDING = gql`
     skipFreelancerOnboarding
   }
 `;
+
+// Queries
+export const GET_NEWEST_FREELANCERS = gql`
+  query GET_NEWEST_FREELANCERS {
+    freelancers(
+      where: { asUser: { freelancerOnboardingStep: FINISHED } }
+      orderBy: createdAt_DESC
+      first: 4
+    ) {
+      id
+      asUser {
+        firstName
+        lastName
+      }
+      avatar {
+        id
+        url
+      }
+      skills
+    }
+  }
+`;
