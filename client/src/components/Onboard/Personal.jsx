@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import common from '@shared/common';
 import Button from '../../primitives/Button';
 import CustomField from '../CustomField';
@@ -10,13 +10,15 @@ const Personal = ({ user }) => {
 
   return (
     <Formik
-      validationSchema={common.validation.freelancerPersonalInput}
+      validationSchema={common.validation.onboardingPersonal}
       initialValues={{
         firstName: firstName || '',
         lastName: lastName || '',
         accountType: '',
       }}
-      onSubmit={async values => {
+      onSubmit={async (values, action) => {
+        console.log('submit values: ', values);
+        action.setSubmitting(false);
         /**
          * @todo: update change here
          */
@@ -40,14 +42,13 @@ const Personal = ({ user }) => {
             type="select"
             label="Account type"
             component={CustomField}
-            value=""
+            value={null}
             options={[
               { label: 'Freelancer', value: 'FREELANCER' },
               { label: 'Employer', value: 'EMPLOYER' },
             ]}
             help="Select which account you would like to use"
           />
-
           <Field
             name="firstName"
             label="First Name"
