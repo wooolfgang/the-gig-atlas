@@ -4,6 +4,7 @@ type Query {
 
 type Mutation {
   deleteUser(id: ID!): Boolean!
+  onboardingPersonal(input: PersonalInput!): OnboardingStep!
 }
 
 type User {
@@ -17,4 +18,16 @@ type User {
   asFreelancer: Freelancer
   isEmailVerified: Boolean
   onboardingStep: OnboardingStep # type taken from generated
+}
+
+enum AccountType {
+  FREELANCER
+  EMPLOYER
+}
+
+input PersonalInput {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  accountType: AccountType!
 }
