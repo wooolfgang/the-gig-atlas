@@ -45,7 +45,7 @@ export default {
     createComment: async (_, { input }, { prisma, user }, info) => {
       const { text, threadId, parentId } = input;
       const isRoot = !parentId;
-      const comment = await prisma.createComment(
+      return prisma.createComment(
         {
           text,
           isRoot,
@@ -69,16 +69,6 @@ export default {
         },
         info,
       );
-      const thread = await prisma.thread({ id: threadId }, 'commentCount');
-      await prisma.updateThread({
-        data: {
-          commentCount: thread.commentCount + 1,
-        },
-        where: {
-          id: threadId,
-        },
-      });
-      return comment;
     },
   },
 
