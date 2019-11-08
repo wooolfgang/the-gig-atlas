@@ -12,6 +12,7 @@ export const jobTypeRegex = /^(FULL_TIME|PART_TIME|CONTRACT)$/;
 export const paymentTypeRegex = /^(HOURLY|FIXED)$/;
 export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
 export const threadTagRegex = /^(FREELANCE|DESIGN|DISCUSS|WEBDEV|PRODUCTIVITY)$/;
+export const accountTypeRegex = /^(FREELANCER|EMPLOYER)$/;
 
 export const id = yup.string();
 
@@ -193,4 +194,14 @@ export const commentInput = yup.object().shape({
   text: yup.string().required('Text is required'),
   threadId: yup.string().required('ThreadId is required'),
   parentId: yup.string(),
+});
+
+// onboarding
+export const onboardingPersonal = yup.object().shape({
+  firstName: name.required('First name is required'),
+  lastName: name.required('Last name is required'),
+  accountType: yup
+    .string()
+    .matches(accountTypeRegex, 'Valid account type is required')
+    .required('Account type is required'),
 });
