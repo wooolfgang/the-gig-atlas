@@ -17,7 +17,9 @@ export const accountTypeRegex = /^(FREELANCER|EMPLOYER)$/;
 export const id = yup.string();
 
 // user
-export const email = yup.string().email('Email must be a valid email');
+export const email = yup
+  .string('Email must be a string')
+  .email('Email must be a valid email');
 export const name = yup.string();
 export const password = yup
   .string('Password must be a string')
@@ -88,13 +90,10 @@ export const communicationWebsite = yup.string().when('communicationType', {
     .required('Website url is required'),
 });
 export const locationRestriction = yup.string();
-export const avatarFileId = yup
-  .string('Avatar is required')
-  .required('Avatar is required');
+export const avatarFileId = yup.string('Avatar is required');
 export const website = yup
   .string('Website must be a string')
-  .url('Website must be a url')
-  .required('Website is required');
+  .url('Website must be a url');
 
 export const gigInput = yup.object().shape({
   title,
@@ -116,17 +115,12 @@ export const employerInput = yup.object().shape({
     .string('Display name must be a string')
     .required('Display name is required'),
   website,
-  introduction: yup
-    .string('Introduction must be a string')
-    .required('Introduction is required'),
-  email: yup
-    .string('Email must be a string')
-    .email('Email must be the correct email format')
-    .required('Email is required'),
+  introduction: yup.string('Introduction must be a string'),
+  email: email.required('Email is required'),
   employerType: yup
     .string('Employer type must be a string')
     .required('Employer type is required')
-    .matches(employerTypeRegex),
+    .matches(employerTypeRegex, 'Invalid employer type'),
   avatarFileId,
 });
 
@@ -205,3 +199,5 @@ export const onboardingPersonal = yup.object().shape({
     .matches(accountTypeRegex, 'Valid account type is required')
     .required('Account type is required'),
 });
+
+export const onboardingEmployer = employerInput;

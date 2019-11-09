@@ -14,30 +14,30 @@ const Employer = ({ user }) => {
 
   return (
     <Formik
-      validationSchema={common.validation.onboardingPersonal}
+      validationSchema={common.validation.onboardingEmployer}
       initialValues={{
-        employerType: null,
+        employerType: '',
         displayName: '',
         introduction: '',
         email: '',
         website: '',
-        avatar: null,
+        avatarFileId: '',
       }}
       onSubmit={async (values, action) => {
         console.log('submit values: ', values);
-        try {
-          const { data, errors } = await onboardingEmployer({
-            variables: { input: { ...values, id } },
-          });
+        // try {
+        //   const { data, errors } = await onboardingEmployer({
+        //     variables: { input: { ...values, id } },
+        //   });
 
-          if (errors) {
-            throw errors;
-          }
-          console.log(data);
-          router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
-        } catch (e) {
-          console.log(e);
-        }
+        //   if (errors) {
+        //     throw errors;
+        //   }
+        //   console.log(data);
+        //   router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
+        // } catch (e) {
+        //   console.log(e);
+        // }
         action.setSubmitting(false);
       }}
       render={({ isSubmitting }) => (
@@ -46,6 +46,7 @@ const Employer = ({ user }) => {
             name="employerType"
             type="select"
             label="Employment"
+            value={null}
             component={CustomField}
             options={[
               { label: 'Company', value: 'COMPANY' },
@@ -55,9 +56,9 @@ const Employer = ({ user }) => {
           />
           <Field
             name="displayName"
-            label="Display name"
+            label="Business name"
             component={CustomField}
-            help="Input your business name"
+            help="To display your business name"
           />
           <Field
             name="email"
@@ -70,7 +71,7 @@ const Employer = ({ user }) => {
             label="Introduction"
             type="textarea"
             component={CustomField}
-            help="Write something about your business"
+            help="Write something about your business (Optional)"
           />
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button
@@ -85,18 +86,7 @@ const Employer = ({ user }) => {
               disabled={isSubmitting}
               loading={isSubmitting}
             >
-              {isSubmitting ? (
-                'Submitting... '
-              ) : (
-                <>
-                  <span>Continue </span>
-                  <img
-                    src="/static/arrow-right.svg"
-                    alt="arrow-right-icon"
-                    style={{ width: '1rem' }}
-                  />
-                </>
-              )}
+              {isSubmitting ? 'Submitting... ' : <span>Finish </span>}
             </Button>
           </div>
         </Form>

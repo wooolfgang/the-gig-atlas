@@ -50,7 +50,7 @@ const OnboardContainer = ({ step, header, form }) => (
     <Container>
       <StepperContainer>
         <Stepper
-          activeIndex={0}
+          activeIndex={step !== 'PERSONAL' ? 1 : 0}
           steps={[
             {
               title: 'Personal Profile',
