@@ -38,7 +38,7 @@ export const ONBOARDING_PERSONAL = gql`
 `;
 
 export const ONBOARDING_EMPLOYER = gql`
-  mutation ONBOARDING_PERSONAL($input: EmployerInput!) {
-    onboardingPersonal(input: $input)
+  mutation ONBOARDING_EMPLOYER($input: EmployerInput!) {
+    onboardingEmployer(input: $input)
   }
 `;
