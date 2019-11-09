@@ -25,19 +25,19 @@ const Employer = ({ user }) => {
       }}
       onSubmit={async (values, action) => {
         console.log('submit values: ', values);
-        // try {
-        //   const { data, errors } = await onboardingEmployer({
-        //     variables: { input: { ...values, id } },
-        //   });
+        try {
+          const { data, errors } = await onboardingEmployer({
+            variables: { input: { ...values, id } },
+          });
 
-        //   if (errors) {
-        //     throw errors;
-        //   }
-        //   console.log(data);
-        //   router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
-        // } catch (e) {
-        //   console.log(e);
-        // }
+          if (errors) {
+            throw errors;
+          }
+          console.log(data);
+          // router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
+        } catch (e) {
+          console.log(e);
+        }
         action.setSubmitting(false);
       }}
       render={({ isSubmitting }) => (
