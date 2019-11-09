@@ -38,7 +38,16 @@ export const ONBOARDING_PERSONAL = gql`
 `;
 
 export const ONBOARDING_EMPLOYER = gql`
-  mutation ONBOARDING_EMPLOYER($input: EmployerInput!) {
-    onboardingEmployer(input: $input)
+  mutation ONBOARDING_EMPLOYER($input: EmployerOnboardbIn!) {
+    onboardingEmployer(input: $input) {
+      id
+      onboardingStep
+      asEmployer {
+        id
+        employerType
+        displayName
+        email
+      }
+    }
   }
 `;
