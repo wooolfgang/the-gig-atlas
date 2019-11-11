@@ -3,16 +3,16 @@ const assembleFields = (selectionSet, hasChild) => {
     if (current.selectionSet) {
       return hasChild
         ? `${collected} ${current.name.value} ${assembleFields(
-          current.selectionSet,
-          hasChild,
-        )}`
+            current.selectionSet,
+            hasChild,
+          )}`
         : collected;
     }
 
     return `${collected} ${current.name.value}`;
   }, '');
 
-  return `{${fields} }`;
+  return `{ ${fields} }`;
 };
 
 /**

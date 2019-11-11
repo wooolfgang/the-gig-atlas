@@ -14,7 +14,7 @@ const SigninLocal = () => {
   const [login] = useMutation(LOGIN_LOCAL, {
     onCompleted: data => {
       auth.setTokenCookie(data.login.token);
-      router.toProfile();
+      router.toIndex();
     },
   });
 

@@ -54,6 +54,7 @@ export const redirect = path => {
   return handler;
 };
 
+const toIndex = redirect('/');
 const toSignin = redirect('/login');
 const toSignup = redirect('/signup');
 const toProfile = redirect('/profile');
@@ -67,6 +68,7 @@ const toEmployerOnboarding = redirect('/onboard/employer');
 const toFreelancerOnboarding = redirect('/onboard/employer');
 
 export default {
+  toIndex,
   toSignin,
   toSignup,
   toProfile,

@@ -22,7 +22,6 @@ const Personal = ({ user }) => {
         lastName: lastName || '',
       }}
       onSubmit={async (values, action) => {
-        console.log('submit values: ', values);
         try {
           // [info] => __typedata of User allows modification of current user in chache
           // [ref] => https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-after-a-mutation
@@ -51,7 +50,6 @@ const Personal = ({ user }) => {
             type="select"
             label="Account type"
             component={CustomField}
-            // value={accountType}
             options={[
               { label: 'Freelancer', value: 'FREELANCER' },
               { label: 'Employer', value: 'EMPLOYER' },

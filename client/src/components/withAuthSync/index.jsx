@@ -79,7 +79,7 @@ const withAuthSync = (WrappedComponent, type) => {
 
       return {};
     }
-
+    // add onboarding hooks
     _hancleOnboarding(ctx, user);
 
     let componentProps = {};
@@ -104,7 +104,7 @@ export default withAuthSync;
 function _hancleOnboarding(ctx, user) {
   const currentPath = ctx.pathname;
   if (user && user.onboardingStep && !currentPath.startsWith('/onboard')) {
-    // const currentStep = ctx.query.step;
+    // => only with onboardingStep prop and path not directed to onboarding
     const { onboardingStep } = user;
 
     if (onboardingStep === 'PERSONAL') {

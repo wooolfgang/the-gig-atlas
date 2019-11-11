@@ -5,6 +5,7 @@ export const color = {
   p1: '#FFE000',
   p1d: '#eed100',
   p2: 'rgb(255,244,0, 20%)',
+  p3: 'rgb(255,244,0, 5%)',
 
   /* secondary colors */
   s1: '#183DBD',
