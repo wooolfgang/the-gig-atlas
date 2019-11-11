@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import EmployerForm from '../../components/Onboard/Employer';
 import Container from '../../components/Onboard/Container';
 import withAuthSync from '../../components/withAuthSync';
 import router from '../../utils/router';
 
-const Employer = ({ user }) => (
+const Freelancer = ({ user }) => (
   <Container
     step="EMPLOYER"
     header={
@@ -22,16 +21,16 @@ const Employer = ({ user }) => (
         </span>
       </div>
     }
-    form={<EmployerForm user={user} />}
+    form={<div />}
   />
 );
 
-Employer.gerInitialProps = async ctx => {
+Freelancer.gerInitialProps = async ctx => {
   const { user } = ctx;
 
   if (user.onboardingStep === 'FREELANCER') {
-    router.toError(ctx, { query: { message: 'Already an employer' } });
+    router.toError(ctx, { query: { message: 'Already a freelancer' } });
   }
 };
 
-export default withAuthSync(Employer, 'MEMBER');
+export default withAuthSync(Freelancer, 'MEMBER');
