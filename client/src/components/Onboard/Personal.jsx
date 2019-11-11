@@ -9,16 +9,17 @@ import { ONBOARDING_PERSONAL } from '../../graphql/user';
 import router from '../../utils/router';
 
 const Personal = ({ user }) => {
-  const { firstName, lastName, id } = user;
+  const { firstName, lastName, id, onboardingStep } = user;
   const [onboardingPersonal] = useMutation(ONBOARDING_PERSONAL);
-
+  const accountType = onboardingStep === 'PERSONAL' ? '' : onboardingStep;
+  // console.log(onboardingStep);
   return (
     <Formik
       validationSchema={common.validation.onboardingPersonal}
       initialValues={{
+        accountType,
         firstName: firstName || '',
         lastName: lastName || '',
-        accountType: '',
       }}
       onSubmit={async (values, action) => {
         console.log('submit values: ', values);
@@ -50,7 +51,7 @@ const Personal = ({ user }) => {
             type="select"
             label="Account type"
             component={CustomField}
-            value={null}
+            // value={accountType}
             options={[
               { label: 'Freelancer', value: 'FREELANCER' },
               { label: 'Employer', value: 'EMPLOYER' },

@@ -12,6 +12,7 @@
     "comma-dangle": 0,
     "indent": 0,
     "operator-linebreak": 0,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "no-use-before-define": 0,
   }
 }

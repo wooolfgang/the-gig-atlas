@@ -58,6 +58,7 @@ const withAuthSync = (WrappedComponent, type) => {
           // fetchPolicy: 'network-only', // => Make sure to always fetch network first, as apollo defaults to cache
         });
         user = res.data.authenticatedUser;
+        ctx.user = user;
         console.log('withAuthSync.js: \n', user);
         if (!user) {
           // => for user dont exist
@@ -79,7 +80,6 @@ const withAuthSync = (WrappedComponent, type) => {
       return {};
     }
 
-    // => user onboarding hook
     _hancleOnboarding(ctx, user);
 
     let componentProps = {};
@@ -102,25 +102,16 @@ export default withAuthSync;
 // utils
 
 function _hancleOnboarding(ctx, user) {
-  if (user && user.onboardingStep) {
+  const currentPath = ctx.pathname;
+  if (user && user.onboardingStep && !currentPath.startsWith('/onboard')) {
     // const currentStep = ctx.query.step;
     const { onboardingStep } = user;
-    const currentPath = ctx.pathname;
 
-    if (
-      onboardingStep === 'PERSONAL' &&
-      currentPath !== router.toPersonalOnboarding.pathname // => to avoid redirection on current same path
-    ) {
+    if (onboardingStep === 'PERSONAL') {
       router.toPersonalOnboarding(ctx);
-    } else if (
-      onboardingStep === 'EMPLOYER' &&
-      currentPath !== router.toEmployerOnboarding.pathname
-    ) {
+    } else if (onboardingStep === 'EMPLOYER') {
       router.toEmployerOnboarding(ctx);
-    } else if (
-      onboardingStep === 'FREELANCER' &&
-      currentPath !== router.toFreelancerOnboarding.pathname
-    ) {
+    } else if (onboardingStep === 'FREELANCER') {
       router.toFreelancerOnboarding(ctx);
     }
     // => Do not go for early return, as we need to pass user down as props

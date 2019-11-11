@@ -24,7 +24,6 @@ const Employer = ({ user }) => {
         avatarFileId: '',
       }}
       onSubmit={async (values, action) => {
-        console.log('submit values: ', values);
         try {
           const { data, errors } = await onboardingEmployer({
             variables: { input: { ...values, id } },
@@ -33,10 +32,10 @@ const Employer = ({ user }) => {
           if (errors) {
             throw errors;
           }
-          console.log(data);
+          router.toProfile({});
           // router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
         } catch (e) {
-          console.log(e);
+          console.error('on employer submit', e);
         }
         action.setSubmitting(false);
       }}

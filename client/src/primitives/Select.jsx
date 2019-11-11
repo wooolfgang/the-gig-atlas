@@ -26,7 +26,7 @@ const Select = ({
   ...props
 }) => (
   <ReactSelect
-    value={options.filter(o => o.value === defaultValue)[0]}
+    value={_debugProp(options.filter(o => o.value === defaultValue)[0])}
     styles={customStyles}
     options={options}
     isClearable={isClearable}
@@ -64,3 +64,8 @@ Select.defaultProps = {
 };
 
 export default Select;
+
+function _debugProp(prop) {
+  console.log(prop);
+  return prop;
+}
