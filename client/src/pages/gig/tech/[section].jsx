@@ -92,7 +92,7 @@ const Post = () => {
   return (
     <div>
       <HTMLHead title={`The Gig Atlas - ${steps[activeIndex].title}`} />
-      <Nav />
+      <Nav type="NOT_AUTHENTICATED" />
       <div style={{ padding: '0 8.3%' }}>
         <h1>Create a software gig</h1>
       </div>

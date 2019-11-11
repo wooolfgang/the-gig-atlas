@@ -5,38 +5,51 @@ import ReactSelect from 'react-select';
 import { color } from '../utils/theme';
 
 const customStyles = {
-  control: styles => ({
+  control: (styles, state) => ({
     ...styles,
     borderRadius: '0px',
     boxShadow: 'inset 0px 4px 20px rgba(0, 0, 0, 0.05)',
     background: color.d6,
-    border: `1px solid ${color.d4}`,
+    border: `1px solid ${
+      // eslint-disable-next-line no-nested-ternary
+      state.isFocused
+        ? color.s3
+        : state.selectProps.hasError
+        ? color.e1
+        : color.d4
+    }`,
+    '&:hover': {
+      border: '1px solid none',
+    },
   }),
   placeholder: defaultStyles => ({
     ...defaultStyles,
     color: 'rgba(0, 0, 0, 0.247)',
   }),
 };
+
 const Select = ({
   value: defaultValue,
   options,
   name,
   onChange,
   isClearable,
+  hasError,
   ...props
 }) => (
   <ReactSelect
-    value={_debugProp(options.filter(o => o.value === defaultValue)[0])}
+    value={options.find(o => o.value === defaultValue)}
     styles={customStyles}
     options={options}
     isClearable={isClearable}
+    hasError={hasError}
     onChange={val => {
-      onChange({
-        target: {
-          name,
-          value: val.value,
-        },
-      });
+      if (val instanceof Array) {
+        const newValue = val ? val.map(v => v.value) : [];
+        onChange({ target: { name, value: newValue } });
+      } else {
+        onChange({ target: { name, value: val.value } });
+      }
     }}
     {...props}
   />
@@ -54,6 +67,7 @@ Select.propTypes = {
   multiple: PropTypes.bool,
   isClearable: PropTypes.bool,
   value: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  hasError: PropTypes.bool,
 };
 
 Select.defaultProps = {
@@ -61,11 +75,12 @@ Select.defaultProps = {
   multiple: false,
   value: null,
   isClearable: true,
+  hasError: false,
 };
 
 export default Select;
 
-function _debugProp(prop) {
-  console.log(prop);
-  return prop;
-}
+// function _debugProp(prop) {
+//   console.log(prop);
+//   return prop;
+// }

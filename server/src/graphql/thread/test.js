@@ -45,30 +45,36 @@ describe('Test thread resolvers', () => {
       tags: ['WEBDEV', 'DISCUSS'],
     };
 
-    const res = await axios.post(
-      testUrl,
-      {
-        query: `mutation ($input: ThreadInput!) {
-            createThread(input: $input) {
-              id
-              title
-              postedBy {
+    let res;
+
+    try {
+      res = await axios.post(
+        testUrl,
+        {
+          query: `mutation ($input: ThreadInput!) {
+              createThread(input: $input) {
                 id
-                email
+                title
+                postedBy {
+                  id
+                  email
+                }
+                comments {
+                  id
+                }
+                tags
               }
-              comments {
-                id
-              }
-              tags
             }
-          }
-        `,
-        variables: {
-          input: thread,
+          `,
+          variables: {
+            input: thread,
+          },
         },
-      },
-      reqConfig,
-    );
+        reqConfig,
+      );
+    } catch (e) {
+      console.log(JSON.stringify(e));
+    }
 
     const createThread = res.data.data.createThread;
     createdThreadIds.push(createThread.id);
@@ -82,39 +88,44 @@ describe('Test thread resolvers', () => {
   it('Creates a parent comment, and connects to children comment properly', async () => {
     const [threadId] = createdThreadIds;
     const parentComment = {
-      text: 'This is a comment about love and bees',
+      text: '<div>This is a comment about love and bees </div>',
       threadId,
       parentId: null,
     };
 
     // Create root comment
-    const parentRes = await axios.post(
-      testUrl,
-      {
-        query: `mutation ($input: CommentInput!) {
-            createComment(input: $input) {
-              id
-              text
-              isRoot
-              postedBy {
+    let parentRes;
+
+    try {
+      parentRes = await axios.post(
+        testUrl,
+        {
+          query: `mutation ($input: CommentInput!) {
+              createComment(input: $input) {
                 id
-                email
-              }
-              parent {
-                id
-              }
-              children {
-                id
+                isRoot
+                postedBy {
+                  id
+                  email
+                }
+                parent {
+                  id
+                }
+                children {
+                  id
+                }
               }
             }
-          }
-        `,
-        variables: {
-          input: parentComment,
+          `,
+          variables: {
+            input: parentComment,
+          },
         },
-      },
-      reqConfig,
-    );
+        reqConfig,
+      );
+    } catch (e) {
+      console.log(JSON.stringify(e));
+    }
 
     const parentCommentRes = parentRes.data.data.createComment;
 
@@ -131,28 +142,35 @@ describe('Test thread resolvers', () => {
     };
 
     // Create child comment from root comment
-    const childrenRes = await axios.post(
-      testUrl,
-      {
-        query: `mutation ($input: CommentInput!) {
-            createComment(input: $input) {
-              id
-              text
-              parent {
+    let childrenRes;
+
+    try {
+      childrenRes = await axios.post(
+        testUrl,
+        {
+          query: `mutation ($input: CommentInput!) {
+              createComment(input: $input) {
                 id
-              }
-              children {
-                id
+                text
+                parent {
+                  id
+                }
+                children {
+                  id
+                }
               }
             }
-          }
-        `,
-        variables: {
-          input: childrenComment,
+          `,
+          variables: {
+            input: childrenComment,
+          },
         },
-      },
-      reqConfig,
-    );
+        reqConfig,
+      );
+    } catch (e) {
+      JSON.stringify(e);
+    }
+
     const childrenCommentRes = childrenRes.data.data.createComment;
     const parentChildren = await prisma
       .comment({ id: parentCommentRes.id })

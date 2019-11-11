@@ -4,7 +4,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Stepper from '../Stepper';
-import NavLogoOnly from '../NavLogoOnly';
 
 export const Container = styled.div`
   width: 100vw;
@@ -46,7 +45,6 @@ export const Header = styled.div`
 
 const OnboardContainer = ({ step, header, form }) => (
   <div>
-    <NavLogoOnly />
     <Container>
       <StepperContainer>
         <Stepper

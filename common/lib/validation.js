@@ -187,7 +187,7 @@ export const threadInput = yup.object().shape({
 export const commentInput = yup.object().shape({
   text: yup.string().required('Text is required'),
   threadId: yup.string().required('ThreadId is required'),
-  parentId: yup.string(),
+  parentId: yup.string().nullable(),
 });
 
 // onboarding

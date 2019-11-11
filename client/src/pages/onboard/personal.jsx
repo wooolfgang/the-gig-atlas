@@ -2,11 +2,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PersonalForm from '../../components/Onboard/Personal';
-import Container from '../../components/Onboard/Container';
+import OnboardContainer from '../../components/Onboard/Container';
 import withAuthSync from '../../components/withAuthSync';
 
 const Personal = ({ user }) => (
-  <Container
+  <OnboardContainer
     step="PERSONAL"
     header={
       <div>

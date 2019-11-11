@@ -3,7 +3,7 @@ import Nav from '../components/Nav';
 
 const Gigs = () => (
   <div>
-    <Nav />
+    <Nav type="NOT_AUTHENTICATED" />
   </div>
 );
 

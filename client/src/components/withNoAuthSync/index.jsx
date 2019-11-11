@@ -1,6 +1,6 @@
 import React from 'react';
 import router from '../../utils/router';
-import { CHECK_VALID_TOKEN } from '../../graphql/auth';
+import { GET_AUTHENTICATED_USER } from '../../graphql/auth';
 import auth from '../../utils/auth';
 
 /**
@@ -18,14 +18,17 @@ const withNoAuthSync = WrappedComponent => {
     if (token) {
       // => disallow user with valid token
       const res = await apolloClient.query({
-        query: CHECK_VALID_TOKEN,
+        query: GET_AUTHENTICATED_USER,
+        // => Make sure to always fetch network first, as apollo defaults to cache
+        fetchPolicy: 'network-only',
       });
 
-      if (res.data.checkValidToken === true) {
+      if (res.data.authenticatedUser) {
         // => redirect to profile if user is authenticated
-        router.toProfile(ctx);
-
-        return {};
+        router.toIndex(ctx);
+        return {
+          authenticatedUser: res.data.authenticatedUser,
+        };
       }
     }
 

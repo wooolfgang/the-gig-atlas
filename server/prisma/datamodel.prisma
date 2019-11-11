@@ -221,7 +221,6 @@ type Thread {
   updatedAt: DateTime! @updatedAt
   title: String! 
   body: String!
-  commentCount: Int! @default(value: 0)
   viewCount: Int! @default(value: 0)
   upvoteCount: Int! @default(value: 1)
   tags: [ThreadTag!]! @scalarList(strategy: RELATION)
@@ -243,7 +242,7 @@ type Comment {
   children: [Comment]! @relation(name: "CommentAsParent")
   parent: Comment @relation(name: "CommentAsParent", link: INLINE)
   thread: Thread! @relation(name: "ThreadComments")
-  postedBy: User! @relation(name: "CommentPoster")
+  postedBy: User! @relation(name: "CommentsByUser")
 }
 
 enum ThreadTag {

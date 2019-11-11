@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useMutation, useLazyQuery } from '@apollo/react-hooks';
-import Spinner from '../../primitives/Spinner';
-import { Avatar, UploadImage } from './style';
+import { Spinner, Avatar } from '../../primitives';
+import { UploadImage } from './style';
 import { GET_IMAGE, IMAGE_UPLOAD } from '../../graphql/file';
 
 const AvatarUpload = ({ onChange, onBlur, name, value, hasError }) => {
