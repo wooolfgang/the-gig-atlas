@@ -1,36 +1,48 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import Container from '../../components/Onboard/Container';
+import OnboardingFreelancer from '../../components/Onboard/Container';
 import withAuthSync from '../../components/withAuthSync';
 import router from '../../utils/router';
+import Portfolio from '../../components/Onboard/Freelancer';
 
 const Freelancer = ({ user }) => (
-  <Container
-    step="EMPLOYER"
+  <OnboardingFreelancer
+    step="FREELANCER"
     header={
-      <div>
-        <h1>
-          {/* Hey, {user.firstName}{' '} */}
-          {/* <span role="img" aria-label="wave" style={{ fontSize: '1em' }}>
-            👋
-          </span> */}
-        </h1>
-        <span>
-          Your profile will help distinguish your brand and personality.
-        </span>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div>
+          <h1>
+            Complete your profile
+            <span role="img" aria-label="wave" style={{ fontSize: '1em' }}>
+              {' '}
+              💻
+            </span>
+          </h1>
+          <span>Add your skills and show your best work to the world.</span>
+        </div>
       </div>
     }
-    form={<div />}
+    form={<Portfolio />}
   />
 );
 
 Freelancer.gerInitialProps = async ctx => {
   const { user } = ctx;
 
-  if (user.onboardingStep === 'FREELANCER') {
+  if (user.asFreelancer) {
     router.toError(ctx, { query: { message: 'Already a freelancer' } });
+  } else if (user.onboardingStep !== 'FREELANCER') {
+    router.toError(ctx, { query: { message: 'Must be a freelancer' } });
   }
+
+  return { user };
 };
 
 export default withAuthSync(Freelancer, 'MEMBER');
