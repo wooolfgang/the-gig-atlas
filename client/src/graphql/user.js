@@ -28,6 +28,9 @@ export const USER_AUTH = gql`
 
 // MUTATIONS
 
+// note => mutation must return user as reference for chaching
+// note => the return user from onboaridng mutation replaces the data to apollo chached user
+
 export const ONBOARDING_PERSONAL = gql`
   mutation ONBOARDING_PERSONAL($input: PersonalInput!) {
     onboardingPersonal(input: $input) {
@@ -47,6 +50,18 @@ export const ONBOARDING_EMPLOYER = gql`
         employerType
         displayName
         email
+      }
+    }
+  }
+`;
+
+export const ONBOARDING_FREELANCER = gql`
+  mutation ONBOARDING_FREELANCER($input: FreelancerOnboardIn!) {
+    onboardingFreelancer(input: $input) {
+      id
+      onboardingStep
+      asEmployer {
+        id
       }
     }
   }

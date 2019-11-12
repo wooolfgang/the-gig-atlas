@@ -26,13 +26,13 @@ const Employer = ({ user }) => {
       onSubmit={async (values, action) => {
         try {
           const { data, errors } = await onboardingEmployer({
-            variables: { input: { ...values, id } },
+            variables: { input: { ...values } },
           });
 
           if (errors) {
             throw errors;
           }
-          router.toProfile({});
+          router.toIndex();
           // router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
         } catch (e) {
           console.error('on employer submit', e);

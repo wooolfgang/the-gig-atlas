@@ -1,8 +1,16 @@
 import { createFragment } from '../utils/fragment';
 import prisma from '../../prisma';
 
-async function onboardingPersonal(_, { input }) {
-  const { accountType, id, firstName, lastName } = input;
+const onboardingResFrag = `
+  fragment EmpOnbdRes on User {
+    id
+    onboardingStep
+  }
+`;
+
+async function onboardingPersonal(_, { input }, { user: auth }) {
+  const { accountType, firstName, lastName } = input;
+  const { id } = auth;
   const fragment = `
       fragment PersonalOnboard on User {
         id
@@ -39,23 +47,21 @@ async function onboardingPersonal(_, { input }) {
     throw new Error('Invalid account type');
   }
 
-  await prisma.updateUser({
-    where: { id },
-    data: {
-      firstName,
-      lastName,
-      onboardingStep,
-    },
-  });
-
-  return {
-    id,
-    onboardingStep,
-  };
+  return prisma
+    .updateUser({
+      where: { id },
+      data: {
+        firstName,
+        lastName,
+        onboardingStep,
+      },
+    })
+    .$fragment(onboardingResFrag);
 }
 
-async function onboardingEmployer(_, { input }) {
-  const { id, avatarFileId, ...employer } = input;
+async function onboardingEmployer(_, { input, user: auth }) {
+  const { id } = auth;
+  const { avatarFileId, ...employer } = input;
   const userFrag = `
       fragment EmpOnb on User {
         id
@@ -63,12 +69,6 @@ async function onboardingEmployer(_, { input }) {
         asEmployer { id }
       }
     `;
-  const resFrag = `
-    fragment EmpOnbdRes on User {
-      id
-      onboardingStep
-    }
-  `;
 
   const { onboardingStep, asEmployer } = await prisma
     .user({ id })
@@ -93,7 +93,55 @@ async function onboardingEmployer(_, { input }) {
         },
       },
     })
-    .$fragment(resFrag);
+    .$fragment(onboardingResFrag);
+}
+
+async function onboardingFreelancer(_, { input }, { user: auth }) {
+  const { id } = auth;
+  // const { avatarFileId, ...create } = input;
+  const userFrag = `
+      fragment EmpOnb on User {
+        id
+        onboardingStep
+        asFreelancer { id }
+      }
+    `;
+  const { onboardingStep, asFreelancer } = await prisma
+    .user({ id })
+    .$fragment(userFrag);
+
+  if (onboardingStep !== 'FREELANCER') {
+    throw new Error('Invalid onboarding access');
+  }
+  if (asFreelancer) {
+    throw new Error('Already a freelancer');
+  }
+
+  const portfolio = input.portfolio.map(p => ({
+    ...p,
+    images: {
+      connect: p.images,
+    },
+  }));
+  const skills = { set: input.skills };
+  const socials = { create: input.socials };
+
+  return prisma
+    .updateUser({
+      where: { id },
+      data: {
+        onboardingStep: null,
+        asFreelancer: {
+          create: {
+            ...input,
+            skills,
+            socials,
+            portfolio: { create: portfolio },
+          },
+        },
+      },
+    })
+    .$fragment(onboardingResFrag);
 }
 
 export default {
@@ -103,6 +151,7 @@ export default {
   Mutation: {
     onboardingPersonal,
     onboardingEmployer,
+    onboardingFreelancer,
     deleteUser: async (_, { id }) => {
       const res = await prisma.deleteUser({ id });
 

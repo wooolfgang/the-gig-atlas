@@ -9,7 +9,7 @@ import { ONBOARDING_PERSONAL } from '../../graphql/user';
 import router from '../../utils/router';
 
 const Personal = ({ user }) => {
-  const { firstName, lastName, id, onboardingStep } = user;
+  const { firstName, lastName, onboardingStep } = user;
   const [onboardingPersonal] = useMutation(ONBOARDING_PERSONAL);
   const accountType = onboardingStep === 'PERSONAL' ? '' : onboardingStep;
   // console.log(onboardingStep);
@@ -26,7 +26,7 @@ const Personal = ({ user }) => {
           // [info] => __typedata of User allows modification of current user in chache
           // [ref] => https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-after-a-mutation
           const { data, errors } = await onboardingPersonal({
-            variables: { input: { ...values, id } },
+            variables: { input: { ...values } },
           });
 
           if (errors) {

@@ -141,7 +141,7 @@ const PortfolioProjectsCreate = ({ onChange, portfolio }) => {
                   placeholder="https://www.instagramclone.com"
                   labelStyle={{ marginBottom: '.75rem' }}
                   component={CustomField}
-                  required={false}
+                  // required={false}
                 />
                 <Field
                   name="description"

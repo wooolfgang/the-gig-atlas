@@ -13,6 +13,7 @@ export const paymentTypeRegex = /^(HOURLY|FIXED)$/;
 export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
 export const threadTagRegex = /^(FREELANCE|DESIGN|DISCUSS|WEBDEV|PRODUCTIVITY)$/;
 export const accountTypeRegex = /^(FREELANCER|EMPLOYER)$/;
+export const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm; // [ref] => https://www.regextester.com/94502
 
 export const id = yup.string();
 
@@ -149,7 +150,7 @@ export const freelancerPersonalInput = yup.object().shape({
 export const portfolioInput = yup.object().shape({
   title: yup.string().required('Title is required'),
   description: yup.string().required('Description is required'),
-  url: yup.string().url('Website must be a correct url format'),
+  url: yup.string(),
   images: yup.array(),
 });
 

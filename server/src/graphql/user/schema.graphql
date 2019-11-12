@@ -6,6 +6,7 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
   onboardingPersonal(input: PersonalInput!): User!
   onboardingEmployer(input: EmployerOnboardbIn!): User!
+  onboardingFreelancer(input: FreelancerOnboardIn!): User!
 }
 
 type User {
@@ -27,18 +28,25 @@ enum AccountType {
 }
 
 input PersonalInput {
-  id: ID!
   firstName: String!
   lastName: String!
   accountType: AccountType!
 }
 
 input EmployerOnboardbIn {
-  id: ID!
   employerType: EmployerType! # get from generated
   displayName: String!
   email: String!
   introduction: String
   website: String
   avatarFileId: String
+}
+
+input FreelancerOnboardIn {
+  bio: String
+  website: String
+  location: String
+  socials: [SocialInput!]!
+  portfolio: [PortfolioInput!]!
+  skills: [String!]!
 }
