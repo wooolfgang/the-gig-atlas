@@ -60,7 +60,7 @@ type Freelancer {
   isPrivate: Boolean @default(value: false)
   isForHire: Boolean @default(value: true)
   socials: [Social!] @scalarList(strategy: RELATION)
-  skills: [String!] @scalarList(strategy: RELATION)
+  skills: [String!]! @scalarList(strategy: RELATION)
   portfolio: [PortfolioProject!]
 }
 

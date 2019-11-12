@@ -9,6 +9,7 @@ export default {
     deleteUser: isAdminOnly,
     onboardingPersonal: isAuthenticated,
     onboardingEmployer: isAuthenticated,
+    onboardingFreelancer: isAuthenticated,
   },
   User: allow,
 };

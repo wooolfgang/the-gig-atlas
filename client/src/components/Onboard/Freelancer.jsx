@@ -13,6 +13,7 @@ import {
 import PortfolioProjectsCreate from '../PortfolioProjectsCreate';
 import router from '../../utils/router';
 import { FieldError, Spinner } from '../../primitives';
+import { ONBOARDING_FREELANCER } from '../../graphql/user';
 
 const socialMap = {
   GITHUB: {
@@ -47,15 +48,17 @@ const Skip = styled.span`
   }
 `;
 
-const Employer = ({ user }) => {
+const Freelancer = ({ user }) => {
   const [redirecting, setRedirecting] = useState(false);
   const [skipFreelancerOnboarding] = useMutation(SKIP_FREELANCER_ONBOARDING);
-  const [freelancerOnboardingPortfolio] = useMutation(
-    FREELANCER_ONBOARDING_PORTFOLIO,
-  );
+  const [onboardingFreelancer] = useMutation(ONBOARDING_FREELANCER);
+  // const [freelancerOnboardingPortfolio] = useMutation(
+  //   FREELANCER_ONBOARDING_PORTFOLIO,
+  // );
+
   return (
     <Formik
-      validationSchema={common.validation.onboardingEmployer}
+      validationSchema={common.validation.freelancerPortfolioInput}
       initialValues={{
         socials: Object.keys(socialMap).map(key => ({
           type: key,
@@ -64,13 +67,22 @@ const Employer = ({ user }) => {
         portfolio: [],
         skills: [],
       }}
-      onSubmit={async values => {
-        await freelancerOnboardingPortfolio({
-          variables: {
-            input: values,
-          },
-        });
-        router.toIndex();
+      onSubmit={async (values, action) => {
+        try {
+          const { data, errors } = await onboardingFreelancer({
+            variables: { input: values },
+          });
+
+          if (errors) {
+            throw errors;
+          }
+
+          router.toIndex();
+        } catch (e) {
+          console.error('On freelancer submit', e);
+        }
+        action.setSubmitting(false);
+        console.log('values: ', values);
       }}
       render={({
         values,
@@ -184,4 +196,4 @@ const Employer = ({ user }) => {
   );
 };
 
-export default Employer;
+export default Freelancer;
