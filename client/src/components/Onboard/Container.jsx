@@ -99,8 +99,8 @@ function _profileType(step) {
   }
   if (step === 'FREELANCER') {
     return {
-      title: 'Freelancer info',
-      description: 'Tell us more about you',
+      title: 'Freelancer Portfolio',
+      description: 'Show your best work to the world.',
     };
   }
 }

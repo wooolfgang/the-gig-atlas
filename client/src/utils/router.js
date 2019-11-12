@@ -65,7 +65,7 @@ const toFreelancerOnboardingPortfolio = redirect(
 const toError = redirect('/error');
 const toPersonalOnboarding = redirect('/onboard/personal');
 const toEmployerOnboarding = redirect('/onboard/employer');
-const toFreelancerOnboarding = redirect('/onboard/employer');
+const toFreelancerOnboarding = redirect('/onboard/freelancer');
 
 export default {
   toIndex,
