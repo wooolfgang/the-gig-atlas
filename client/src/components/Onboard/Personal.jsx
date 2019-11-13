@@ -12,6 +12,7 @@ const Personal = ({ user }) => {
   const { firstName, lastName, onboardingStep } = user;
   const [onboardingPersonal] = useMutation(ONBOARDING_PERSONAL);
   const accountType = onboardingStep === 'PERSONAL' ? '' : onboardingStep;
+  let isFinished = false;
   // console.log(onboardingStep);
   return (
     <Formik
@@ -22,6 +23,11 @@ const Personal = ({ user }) => {
         lastName: lastName || '',
       }}
       onSubmit={async (values, action) => {
+        if (isFinished) {
+          action.setSubmitting(false);
+          return;
+        }
+
         try {
           // [info] => __typedata of User allows modification of current user in chache
           // [ref] => https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-after-a-mutation
@@ -32,6 +38,7 @@ const Personal = ({ user }) => {
           if (errors) {
             throw errors;
           }
+          isFinished = true;
           const step = data.onboardingPersonal.onboardingStep;
           if (step === 'EMPLOYER') {
             router.toEmployerOnboarding();

@@ -9,8 +9,8 @@ import { ONBOARDING_EMPLOYER } from '../../graphql/user';
 import router from '../../utils/router';
 
 const Employer = ({ user }) => {
-  const { id } = user;
   const [onboardingEmployer] = useMutation(ONBOARDING_EMPLOYER);
+  let isFinished = false; // double click optimization
 
   return (
     <Formik
@@ -24,6 +24,11 @@ const Employer = ({ user }) => {
         avatarFileId: '',
       }}
       onSubmit={async (values, action) => {
+        if (isFinished) {
+          action.setSubmitting(false);
+          return;
+        }
+
         try {
           const { data, errors } = await onboardingEmployer({
             variables: { input: { ...values } },
@@ -32,7 +37,9 @@ const Employer = ({ user }) => {
           if (errors) {
             throw errors;
           }
+          isFinished = true;
           router.toIndex();
+
           // router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
         } catch (e) {
           console.error('on employer submit', e);
