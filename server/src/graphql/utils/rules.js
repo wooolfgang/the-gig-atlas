@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { header } from '@shared/common';
 import { JSDOM } from 'jsdom';
 import DOMPurify from 'dompurify';
+import * as yup from 'yup';
 import config from '../../config';
 
 const { window } = new JSDOM('<!DOCTYPE html>');
@@ -119,7 +120,7 @@ export { isEitherAuth };
  * Validates input values by provided schema
  * @param {YupObjectSchema} schema schema validator for specified format
  */
-export const validate = schema =>
+const validate = schema =>
   rule()(async (_, args) => {
     try {
       await schema.validate(args);
@@ -129,6 +130,13 @@ export const validate = schema =>
       return e;
     }
   });
+
+/**
+ * add shape for nested input
+ */
+validate.withShape = shape => validate(yup.object().shape(shape));
+
+export { validate };
 
 export const purify = (fields, object) => {
   const field = fields.shift();
