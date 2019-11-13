@@ -43,7 +43,10 @@ export const GET_THREADS = gql`
       commentCount
       upvoteCount
       viewCount
-      tags
+      tags {
+        id
+        name
+      }
       postedBy {
         id
         email
@@ -66,7 +69,10 @@ export const GET_THREADS = gql`
 
 export const GET_THREAD_TAGS = gql`
   query GET_THREAD_TAGS {
-    threadTags
+    threadTags {
+      id
+      name
+    }
   }
 `;
 
@@ -101,7 +107,10 @@ export const GET_THREAD = gql`
       commentCount
       upvoteCount
       viewCount
-      tags
+      tags {
+        id
+        name
+      }
       postedBy {
         id
         firstName

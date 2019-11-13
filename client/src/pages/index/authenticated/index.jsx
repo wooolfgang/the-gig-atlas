@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/react-hooks';
 import Nav from '../../../components/Nav';
 import { GET_THREADS, GET_THREAD_TAGS } from '../../../graphql/thread';
@@ -19,28 +20,35 @@ const Container = styled.div`
   min-height: calc(100vh - 67.5px);
   grid-template-areas:
     '. . . . '
-    '. main sidebar .'
+    '. main side .'
     '. . . . ';
   grid-template-rows: 1rem 1fr 1rem;
   grid-template-columns: 1fr 65vw 20vw 1fr;
 `;
 
-const TagsContainer = styled.div`
-  #thread-tag {
-    margin: 2px 4px;
-    font-size: 0.9rem;
-    color: ${props => props.theme.color.d3};
-    cursor: pointer;
-    padding: 2px 4px;
-    box-sizing: border-box;
-    border-radius: 2px;
-    transition: all 100ms ease-out;
+const TagsContainer = styled.div``;
 
-    &:hover {
-      background: ${props => props.theme.color.neutral5};
-      color: ${props => props.theme.color.d2};
-    }
+const ThreadTagLink = styled.button`
+  margin: 2px 4px;
+  font-size: 0.9rem;
+  color: ${props => props.theme.color.d3};
+  cursor: pointer;
+  padding: 2px 4px;
+  box-sizing: border-box;
+  border-radius: 2px;
+  transition: all 100ms ease-out;
+  outline: none;
+  border: none;
+
+  &:hover {
+    font-weight: bold;
   }
+
+  ${props =>
+    props.active &&
+    `
+    font-weight: bold;
+  `}
 `;
 
 const ThreadContainer = styled.div`
@@ -51,9 +59,10 @@ const Main = styled.div`
   grid-area: main;
 `;
 
-const Sidebar = styled.div`
-  grid-area: sidebar;
+const Side = styled.div`
+  grid-area: side;
 `;
+
 const CollabContainer = styled.div`
   background: ${props => props.theme.color.d5};
   height: 376px;
@@ -72,25 +81,58 @@ const CollabContainer = styled.div`
 `;
 
 const Authenticated = () => {
+  const router = useRouter();
+
   const { data: threads } = useQuery(GET_THREADS, {
     fetchPolicy: 'network-only',
+    variables: {
+      where: {
+        tags_some: router.query.tag && {
+          name: router.query.tag,
+        },
+      },
+    },
   });
   const { data: threadTags } = useQuery(GET_THREAD_TAGS);
   const { data: newestFreelancers } = useQuery(GET_NEWEST_FREELANCERS, {
     fetchPolicy: 'network-only',
   });
+
+  const handleRouteQueryChange = newQuery => {
+    const updatedQuery = { ...router.query, ...newQuery };
+    const { pathname } = router;
+    router.push({
+      pathname,
+      query: updatedQuery,
+    });
+  };
+
   return (
     <div>
       <Nav type="AUTHENTICATED_FREELANCER" />
       <Container>
         <Main>
           <TagsContainer>
-            <span id="thread-tag">Show All</span>
+            <ThreadTagLink
+              key="show-all-thread-tag"
+              id="thread-tag"
+              type="button"
+              active={router.pathname === '/' && !router.query.tag}
+              onClick={() => router.push('/')}
+            >
+              Show All
+            </ThreadTagLink>
             {threadTags &&
               threadTags.threadTags.map(tag => (
-                <span id="thread-tag" key={tag}>
-                  #{tag.toLowerCase()}{' '}
-                </span>
+                <ThreadTagLink
+                  id="thread-tag"
+                  key={tag.id}
+                  onClick={() => handleRouteQueryChange({ tag: tag.name })}
+                  type="button"
+                  active={router.query.tag && router.query.tag === tag.name}
+                >
+                  #{tag.name}{' '}
+                </ThreadTagLink>
               ))}
           </TagsContainer>
           <ThreadContainer>
@@ -99,7 +141,7 @@ const Authenticated = () => {
                 {threads.threads.map(thread => (
                   <ThreadLink thread={thread} key={thread.id} />
                 ))}
-                {threads.threads.length < 4 && (
+                {threads.threads.length < 12 && (
                   <div style={{ padding: '1rem .5rem' }}>
                     <Link href="/thread/create">
                       <a
@@ -133,7 +175,7 @@ const Authenticated = () => {
             )}
           </ThreadContainer>
         </Main>
-        <Sidebar>
+        <Side>
           <CollabContainer>
             <span
               style={{
@@ -189,7 +231,7 @@ const Authenticated = () => {
                 ))}
             </div>
           </CollabContainer>
-        </Sidebar>
+        </Side>
       </Container>
     </div>
   );
