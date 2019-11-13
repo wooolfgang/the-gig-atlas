@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import CommentTextArea from '../CommentTextArea';
+import Avatar from '../../primitives/Avatar';
 
 const CommentContainer = styled.div`
   margin-left: ${props => `${props.nestLevel * 22}px`};
@@ -43,7 +44,19 @@ const Comment = ({ comment, threadId, nestLevel = 0 }) => {
     <>
       <CommentContainer nestLevel={nestLevel}>
         <div>
-          <User>[-] {comment.postedBy.firstName}</User>
+          {comment.postedBy && (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar
+                src={comment.postedBy.avatar && comment.postedBy.avatar.url}
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  marginRight: '5px',
+                }}
+              />
+              <User>[-] {comment.postedBy.firstName}</User>
+            </div>
+          )}
           <div dangerouslySetInnerHTML={{ __html: comment.text }} />
         </div>
         <ReplyButton

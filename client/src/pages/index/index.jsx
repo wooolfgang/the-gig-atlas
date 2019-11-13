@@ -6,7 +6,9 @@ import auth from '../../utils/auth';
 import { GET_AUTHENTICATED_USER } from '../../graphql/auth';
 
 const Index = ({ authenticatedUser }) => {
-  if (authenticatedUser) return <Authenticated />;
+  if (authenticatedUser) {
+    return <Authenticated authenticatedUser={authenticatedUser} />;
+  }
   return <Landing />;
 };
 
