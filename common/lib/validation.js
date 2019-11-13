@@ -11,7 +11,7 @@ export const userRoleRegex = /^(ADMIN|MEMBER)$/;
 export const jobTypeRegex = /^(FULL_TIME|PART_TIME|CONTRACT)$/;
 export const paymentTypeRegex = /^(HOURLY|FIXED)$/;
 export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
-export const threadTagRegex = /^(FREELANCE|DESIGN|DISCUSS|WEBDEV|PRODUCTIVITY)$/;
+export const threadTagRegex = /^(freelance|design|discuss|webdev|productivity)$/;
 
 export const id = yup.string();
 
@@ -185,7 +185,7 @@ export const threadInput = yup.object().shape({
   tags: yup
     .array()
     .of(yup.string().matches(threadTagRegex, 'Invalid thread tag'))
-    .required(),
+    .nullable(),
 });
 
 // thread comment
