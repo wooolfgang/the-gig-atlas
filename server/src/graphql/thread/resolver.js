@@ -31,7 +31,9 @@ export default {
           title,
           body,
           tags: {
-            set: tags,
+            connect: tags.map(tag => ({
+              name: tag,
+            })),
           },
           postedBy: {
             connect: {
@@ -75,20 +77,8 @@ export default {
   Query: {
     thread: (root, args, { prisma }, info) => prisma.thread(args.where, info),
     threads: (root, args, { prisma }, info) => prisma.threads(args, info),
-    threadTags: async (root, args, { prisma }) => {
-      const query = `
-        query {
-          __type(name: "ThreadTag") {
-            enumValues {
-              name
-            }
-          }
-        }
-      `;
-      const res = await prisma.$graphql(query);
-      // eslint-disable-next-line no-underscore-dangle
-      return res.__type.enumValues.map(t => t.name);
-    },
+    threadTags: async (root, args, { prisma }, info) =>
+      prisma.threadTags(args, info),
   },
 
   Thread: {
@@ -99,6 +89,7 @@ export default {
         .postedBy()
         .$fragment(fragment);
     },
+    tags: (root, args, { prisma }) => prisma.thread({ id: root.id }).tags(),
     comments: (root, args, { prisma }, info) => {
       const fragment = createFragment(info, 'CommentsFromThread', 'Comment');
       return prisma

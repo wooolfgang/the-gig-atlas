@@ -18,6 +18,23 @@ beforeAll(async () => {
     email: 'averagejoe123@gmail.com',
     password: hashed,
   });
+
+  try {
+    await prisma.createThreadTag({
+      name: 'freelance',
+    });
+  } catch (e) {
+    console.log('fail gracefully');
+  }
+
+  try {
+    await prisma.createThreadTag({
+      name: 'discuss',
+    });
+  } catch (e) {
+    console.log('fail gracefully');
+  }
+
   const res = await axios.post(testUrl, {
     query: `
       mutation {
@@ -48,7 +65,7 @@ describe('Test thread resolvers', () => {
     const thread = {
       title: 'What is love?',
       body: "Baby don't hurt me, don't hurt me no more",
-      tags: ['WEBDEV', 'DISCUSS'],
+      tags: ['freelance', 'discuss'],
     };
 
     let res;
@@ -68,7 +85,10 @@ describe('Test thread resolvers', () => {
                 comments {
                   id
                 }
-                tags
+                tags {
+                  id
+                  name
+                }
               }
             }
           `,
@@ -88,7 +108,7 @@ describe('Test thread resolvers', () => {
     expect(createThread.title).toBe(thread.title);
     expect(createThread.postedBy.id).toBe(normalUser.id);
     expect(createThread.comments).toEqual([]);
-    expect(createThread.tags).toEqual(thread.tags);
+    expect(createThread.tags.map(t => t.name)).toEqual(thread.tags);
   });
 
   it('Creates a parent comment, and connects to children comment properly', async () => {
