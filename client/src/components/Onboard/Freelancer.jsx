@@ -3,13 +3,14 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import common from '@shared/common';
 import styled from 'styled-components';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import Button from '../../primitives/Button';
 import CustomField from '../CustomField';
 import PortfolioProjectsCreate from '../PortfolioProjectsCreate';
 import router from '../../utils/router';
 import { FieldError, Spinner } from '../../primitives';
 import { ONBOARDING_FREELANCER } from '../../graphql/user';
+import { GET_AUTHENTICATED_USER } from '../../graphql/auth';
 
 const labelStyle = {
   flex: '1',
@@ -49,6 +50,7 @@ const socialMap = {
 const Freelancer = ({ user }) => {
   const [redirecting, setRedirecting] = useState(false);
   const [onboardingFreelancer] = useMutation(ONBOARDING_FREELANCER);
+  let isFinished = false;
 
   return (
     <Formik
@@ -62,6 +64,10 @@ const Freelancer = ({ user }) => {
         skills: [],
       }}
       onSubmit={async (values, action) => {
+        if (isFinished) {
+          action.setSubmitting(false);
+          return;
+        }
         try {
           const input = { ...values, socials: _trimSocials(values.socials) };
           const { data, errors } = await onboardingFreelancer({
@@ -71,7 +77,7 @@ const Freelancer = ({ user }) => {
           if (errors) {
             throw errors;
           }
-
+          isFinished = true;
           router.toIndex();
         } catch (e) {
           console.error('On freelancer submit', e);
@@ -153,6 +159,7 @@ const Freelancer = ({ user }) => {
                   setRedirecting(true);
                   router.toIndex();
                 } catch (e) {
+                  console.log(e);
                   setRedirecting(false);
                 }
               }}

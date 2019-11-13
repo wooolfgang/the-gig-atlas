@@ -33,7 +33,7 @@ const Freelancer = ({ user }) => (
   />
 );
 
-Freelancer.gerInitialProps = async ctx => {
+Freelancer.getInitialProps = async ctx => {
   const { user } = ctx;
 
   if (user.asFreelancer) {

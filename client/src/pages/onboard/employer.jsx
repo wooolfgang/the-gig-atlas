@@ -26,7 +26,7 @@ const Employer = ({ user }) => (
   />
 );
 
-Employer.gerInitialProps = async ctx => {
+Employer.getInitialProps = async ctx => {
   const { user } = ctx;
 
   if (user.asEmployer) {
