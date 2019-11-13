@@ -3,14 +3,13 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import common from '@shared/common';
 import styled from 'styled-components';
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import Button from '../../primitives/Button';
 import CustomField from '../CustomField';
 import PortfolioProjectsCreate from '../PortfolioProjectsCreate';
 import router from '../../utils/router';
 import { FieldError, Spinner } from '../../primitives';
 import { ONBOARDING_FREELANCER } from '../../graphql/user';
-import { GET_AUTHENTICATED_USER } from '../../graphql/auth';
 
 const labelStyle = {
   flex: '1',
@@ -70,7 +69,7 @@ const Freelancer = ({ user }) => {
         }
         try {
           const input = { ...values, socials: _trimSocials(values.socials) };
-          const { data, errors } = await onboardingFreelancer({
+          const { errors } = await onboardingFreelancer({
             variables: { input },
           });
 
@@ -83,7 +82,6 @@ const Freelancer = ({ user }) => {
           console.error('On freelancer submit', e);
         }
         action.setSubmitting(false);
-        console.log('values: ', values);
       }}
       render={({
         values,
@@ -150,7 +148,7 @@ const Freelancer = ({ user }) => {
                 const input = { socials: [], portfolio: [], skills: [] };
                 try {
                   // await skipFreelancerOnboarding();
-                  const { data, errors: onbe } = await onboardingFreelancer({
+                  const { errors: onbe } = await onboardingFreelancer({
                     variables: { input },
                   });
                   if (onbe) {

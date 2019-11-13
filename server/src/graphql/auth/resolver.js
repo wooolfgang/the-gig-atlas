@@ -7,7 +7,12 @@ import { createAuth, createUser, loginUser } from './util';
 /**
  * Resolver for handling user password
  */
-const signup = (_, { input }) => createUser(input);
+const signup = (_, { input }) => {
+  const { accountType, ...create } = input;
+  create.onboardingStep = accountType;
+
+  return createUser(create);
+};
 
 const login = (_, { email, password }) => loginUser(email, password);
 

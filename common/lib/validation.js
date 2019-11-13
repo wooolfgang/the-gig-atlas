@@ -17,6 +17,13 @@ export const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[
 
 export const id = yup.string();
 
+// fields
+
+const accountType = yup
+  .string()
+  .matches(accountTypeRegex, 'Valid account type is required')
+  .required('Account type is required');
+
 // user
 export const email = yup
   .string('Email must be a string')
@@ -27,6 +34,7 @@ export const password = yup
   .min(6, 'Password must be at least 6 characters');
 export const userRole = yup.string().matches(userRoleRegex);
 export const signupInput = yup.object().shape({
+  accountType,
   email: email.required('Email is required'),
   firstName: name.required('First name is required'),
   lastName: name.required('Last name is required'),
@@ -193,12 +201,9 @@ export const commentInput = yup.object().shape({
 
 // onboarding
 export const onboardingPersonal = yup.object().shape({
+  accountType,
   firstName: name.required('First name is required'),
   lastName: name.required('Last name is required'),
-  accountType: yup
-    .string()
-    .matches(accountTypeRegex, 'Valid account type is required')
-    .required('Account type is required'),
 });
 
 export const onboardingEmployer = employerInput;

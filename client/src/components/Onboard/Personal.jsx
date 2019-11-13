@@ -9,11 +9,24 @@ import { ONBOARDING_PERSONAL } from '../../graphql/user';
 import router from '../../utils/router';
 
 const Personal = ({ user }) => {
-  const { firstName, lastName, onboardingStep } = user;
-  const [onboardingPersonal] = useMutation(ONBOARDING_PERSONAL);
-  const accountType = onboardingStep === 'PERSONAL' ? '' : onboardingStep;
   let isFinished = false;
-  // console.log(onboardingStep);
+  const { firstName, lastName, onboardingStep } = user;
+  const accountType = onboardingStep === 'PERSONAL' ? '' : onboardingStep;
+  const [onboardingPersonal] = useMutation(ONBOARDING_PERSONAL, {
+    onCompleted: data => {
+      isFinished = true;
+      const step = data.onboardingPersonal.onboardingStep;
+      if (step === 'EMPLOYER') {
+        router.toEmployerOnboarding();
+      } else if (step === 'FREELANCER') {
+        router.toFreelancerOnboarding();
+      }
+    },
+    onError: e => {
+      console.error('submit e: ', e);
+    },
+  });
+
   return (
     <Formik
       validationSchema={common.validation.onboardingPersonal}
@@ -29,24 +42,11 @@ const Personal = ({ user }) => {
         }
 
         try {
-          // [info] => __typedata of User allows modification of current user in chache
-          // [ref] => https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-after-a-mutation
-          const { data, errors } = await onboardingPersonal({
+          await onboardingPersonal({
             variables: { input: { ...values } },
           });
-
-          if (errors) {
-            throw errors;
-          }
-          isFinished = true;
-          const step = data.onboardingPersonal.onboardingStep;
-          if (step === 'EMPLOYER') {
-            router.toEmployerOnboarding();
-          } else if (step === 'FREELANCER') {
-            router.toFreelancerOnboarding();
-          }
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
         action.setSubmitting(false);
       }}

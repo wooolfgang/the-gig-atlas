@@ -11,29 +11,37 @@ import ErrorBanner from '../../primitives/ErrorBanner';
 
 const SignupLocal = () => {
   const [error, setError] = useState(null);
-  const [signup] = useMutation(SIGNUP_LOCAL, {
-    onCompleted: data => {
-      auth.setTokenCookie(data.signup.token);
-      router.toPersonalOnboarding();
-    },
-  });
+  const [signup] = useMutation(SIGNUP_LOCAL, { onError: setError });
 
   return (
     <>
       <Formik
         onSubmit={async (values, actions) => {
+          actions.setSubmitting(true);
           try {
-            await signup({ variables: { input: values } });
-            actions.setSubmitting(true);
+            const { errors, data } = await await signup({
+              variables: { input: values },
+            });
+            if (errors) {
+              throw errors;
+            }
+
+            auth.setTokenCookie(data.signup.token);
+            if (values.accountType === 'FREELANCER') {
+              router.toFreelancerOnboarding();
+            } else if (values.accountType === 'EMPLOYER') {
+              router.toEmployerOnboarding();
+            }
           } catch (e) {
             /**
              * @todo: handle error
              */
             setError(e);
-            actions.setSubmitting(false);
           }
+          actions.setSubmitting(false);
         }}
         initialValues={{
+          accountType: '',
           email: '',
           password: '',
           firstName: '',
@@ -45,6 +53,17 @@ const SignupLocal = () => {
             {error && (
               <ErrorBanner error={error} style={{ marginBottom: '1rem' }} />
             )}
+            <Field
+              name="accountType"
+              type="select"
+              label="Account type"
+              component={CustomField}
+              options={[
+                { label: 'Freelancer', value: 'FREELANCER' },
+                { label: 'Employer', value: 'EMPLOYER' },
+              ]}
+              help="Select which account you would like to use"
+            />
             <Field
               name="firstName"
               type="text"
