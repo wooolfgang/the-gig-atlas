@@ -6,6 +6,7 @@ type User {
   password: String!
   role: UserRole! @default(value: MEMBER)
   createdAt: DateTime! @createdAt
+  avatar: File
   
   asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE)
   asFreelancer: Freelancer @unique @relation(name: "AsFreelancer", link: INLINE, onDelete: CASCADE)
@@ -51,7 +52,6 @@ type Freelancer {
   updatedAt: DateTime! @updatedAt
   asUser: User @unique @relation(name: "AsFreelancer")
   bio: String
-  avatar: File
   website: String
   location: String
   timezone: String
