@@ -12,6 +12,7 @@ const seeds = {
   admin: require('./admin').default,
   product: require('./product').default,
   thread: require('./thread').default,
+  threadTag: require('./threadTag').default,
 };
 
 const toSeeds = [];
