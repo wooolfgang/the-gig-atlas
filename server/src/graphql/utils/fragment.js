@@ -1,10 +1,10 @@
-const assembleFields = (selectionSet, hasChild) => {
+const assembleFields = (selectionSet, isRecursive) => {
   const fields = selectionSet.selections.reduce((collected, current) => {
     if (current.selectionSet) {
-      return hasChild
+      return isRecursive
         ? `${collected} ${current.name.value} ${assembleFields(
             current.selectionSet,
-            hasChild,
+            isRecursive,
           )}`
         : collected;
     }
@@ -20,11 +20,11 @@ const assembleFields = (selectionSet, hasChild) => {
  * @param {object} info the graphql info object
  * @param {string} operation fragment name
  * @param {string} type corresponding schema type
- * @param {boolean} hasChild allow relationship query default: false
+ * @param {boolean} isRecursive [default=false] allow relationship query
  */
 /* eslint-disable import/prefer-default-export */
-export const createFragment = (info, operation, type, hasChild = false) =>
+export const createFragment = (info, operation, type, isRecursive = false) =>
   `fragment ${operation} on ${type} ${assembleFields(
     info.fieldNodes[0].selectionSet,
-    hasChild,
+    isRecursive,
   )}`;

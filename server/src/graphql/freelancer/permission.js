@@ -29,4 +29,6 @@ export default {
     freelancers: isAuthenticated,
   },
   Freelancer: allow,
+  PortfolioProject: allow,
+  Social: allow,
 };

@@ -102,7 +102,8 @@ export const locationRestriction = yup.string();
 export const avatarFileId = yup.string('Avatar is required');
 export const website = yup
   .string('Website must be a string')
-  .url('Website must be a url');
+  .matches(urlRegex, 'Website must be a valid url');
+  // .url('Website must be a url');
 
 export const gigInput = yup.object().shape({
   title,
@@ -120,17 +121,17 @@ export const gigInput = yup.object().shape({
 });
 
 export const employerInput = yup.object().shape({
+  website,
+  avatarFileId,
   displayName: yup
     .string('Display name must be a string')
     .required('Display name is required'),
-  website,
   introduction: yup.string('Introduction must be a string'),
   email: email.required('Email is required'),
   employerType: yup
     .string('Employer type must be a string')
     .required('Employer type is required')
     .matches(employerTypeRegex, 'Invalid employer type'),
-  avatarFileId,
 });
 
 // employer
@@ -146,9 +147,9 @@ export const createGigInput = yup.object().shape({
 
 // freelancer
 export const freelancerPersonalInput = yup.object().shape({
+  avatarFileId,
   firstName: name.required('First name is required'),
   lastName: name.required('Last name is required'),
-  avatarFileId,
   bio: yup.string('Bio must be a string').required('Bio is required'),
   website: yup.string('Website must be a string').url('Website must be a url'),
   location: yup.string('Location must be a string'),

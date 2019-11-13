@@ -59,9 +59,9 @@ type Freelancer {
   timezone: String
   isPrivate: Boolean @default(value: false)
   isForHire: Boolean @default(value: true)
-  socials: [Social!] @scalarList(strategy: RELATION)
   skills: [String!]! @scalarList(strategy: RELATION)
-  portfolio: [PortfolioProject!]
+  socials: [Social!]! @relation(onDelete: CASCADE)
+  portfolio: [PortfolioProject!]! @relation(onDelete: CASCADE)
 }
 
 type PortfolioProject {
@@ -71,12 +71,14 @@ type PortfolioProject {
   url: String
   avatar: File @relation(name: "PortfolioAvatar")
   images: [File]! @relation(name: "PortfolioImages")
+  freelancer: Freelancer! @relation(link: INLINE)
 }
 
 type Social {
   id: ID! @id
   type: SocialType!
   url: String!
+  freelancer: Freelancer! @relation(link: INLINE)
 }
 
 enum SocialType {

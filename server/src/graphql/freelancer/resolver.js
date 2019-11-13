@@ -96,5 +96,6 @@ export default {
         .avatar()
         .$fragment(fragment);
     },
+    portfolio: async (root,)
   },
 };
