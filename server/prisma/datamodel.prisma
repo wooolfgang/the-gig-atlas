@@ -175,7 +175,7 @@ type Thread {
   body: String!
   viewCount: Int! @default(value: 0)
   upvoteCount: Int! @default(value: 1)
-  tags: [ThreadTag!]! @scalarList(strategy: RELATION)
+  tags: [ThreadTag!]!
   
   postedBy: User! @relation(name: "ThreadsByUser")
   comments: [Comment]! @relation(name: "ThreadComments", onDelete: "CASCADE")
@@ -197,10 +197,9 @@ type Comment {
   postedBy: User! @relation(name: "CommentsByUser")
 }
 
-enum ThreadTag {
-  FREELANCE
-  DESIGN
-  DISCUSS
-  WEBDEV
-  PRODUCTIVITY
+# Use Type instead of Enum because an Enum (scalarList) type is not queryable
+# See -> https://github.com/prisma/prisma/issues/2930
+type ThreadTag {
+  id: ID! @id
+  name: String @unique
 }

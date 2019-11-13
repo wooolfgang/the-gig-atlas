@@ -54,7 +54,7 @@ type Comment {
 input ThreadInput {
   title: String!
   body: String!
-  tags: [ThreadTag!]!
+  tags: [String!]!
 }
 
 input CommentInput {
