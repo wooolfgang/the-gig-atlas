@@ -59,7 +59,7 @@ async function onboardingPersonal(_, { input }, { user: auth }) {
     .$fragment(onboardingResFrag);
 }
 
-async function onboardingEmployer(_, { input, user: auth }) {
+async function onboardingEmployer(_, { input }, { user: auth }) {
   const { id } = auth;
   const { avatarFileId, ...employer } = input;
   const userFrag = `
