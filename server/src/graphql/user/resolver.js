@@ -3,6 +3,8 @@ import prisma from '../../prisma';
 
 const onboardingResFrag = `
   fragment EmpOnbdRes on User {
+    firstName
+    lastName
     id
     onboardingStep
   }
@@ -96,7 +98,7 @@ async function onboardingEmployer(_, { input }, { user: auth }) {
     .$fragment(onboardingResFrag);
 }
 
-async function onboardingFreelancer(_, { input }, { user: auth }) {
+async function onboardingFreelancer(_, { input }, { user: auth }, info) {
   const { id } = auth;
   // const { avatarFileId, ...create } = input;
   const userFrag = `
@@ -126,6 +128,8 @@ async function onboardingFreelancer(_, { input }, { user: auth }) {
   const skills = { set: input.skills };
   const socials = { create: input.socials };
 
+  const frag = createFragment(info, 'TestUserFreelancer', 'User', true);
+
   return prisma
     .updateUser({
       where: { id },
@@ -141,7 +145,7 @@ async function onboardingFreelancer(_, { input }, { user: auth }) {
         },
       },
     })
-    .$fragment(onboardingResFrag);
+    .$fragment(frag);
 }
 
 export default {
@@ -158,26 +162,26 @@ export default {
       return !!res;
     },
   },
-  User: {
-    asEmployer: async (root, _args, _, info) => {
-      const fragment = createFragment(info, 'AsEmployerFromUser', 'Employer');
+  // User: {
+  //   asEmployer: async (root, _args, _, info) => {
+  //     const fragment = createFragment(info, 'AsEmployerFromUser', 'Employer');
 
-      return prisma
-        .user({ id: root.id })
-        .asEmployer()
-        .$fragment(fragment);
-    },
-    asFreelancer: async (root, _args, _, info) => {
-      const fragment = createFragment(
-        info,
-        'AsFreelancerFromUser',
-        'Freelancer',
-      );
+  //     return prisma
+  //       .user({ id: root.id })
+  //       .asEmployer()
+  //       .$fragment(fragment);
+  //   },
+  //   asFreelancer: async (root, _args, _, info) => {
+  //     const fragment = createFragment(
+  //       info,
+  //       'AsFreelancerFromUser',
+  //       'Freelancer',
+  //     );
 
-      return prisma
-        .user({ id: root.id })
-        .asFreelancer()
-        .$fragment(fragment);
-    },
-  },
+  //     return prisma
+  //       .user({ id: root.id })
+  //       .asFreelancer()
+  //       .$fragment(fragment);
+  //   },
+  // },
 };
