@@ -6,14 +6,26 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import Button from '../../primitives/Button';
 import CustomField from '../CustomField';
-import {
-  FREELANCER_ONBOARDING_PORTFOLIO,
-  SKIP_FREELANCER_ONBOARDING,
-} from '../../graphql/freelancer';
 import PortfolioProjectsCreate from '../PortfolioProjectsCreate';
 import router from '../../utils/router';
 import { FieldError, Spinner } from '../../primitives';
 import { ONBOARDING_FREELANCER } from '../../graphql/user';
+
+const labelStyle = {
+  flex: '1',
+  marginRight: '.5rem',
+};
+
+const Skip = styled.span`
+  margin-top: 2rem
+  margin-right: 2rem
+  color: ${props => props.theme.color.s2};
+  cursor: pointer;
+
+  :hover {
+    text-decoration: underline;
+  }
+`;
 
 const socialMap = {
   GITHUB: {
@@ -34,27 +46,9 @@ const socialMap = {
   },
 };
 
-const labelStyle = {
-  flex: '1',
-  marginRight: '.5rem',
-};
-
-const Skip = styled.span`
-  color: ${props => props.theme.color.s2};
-  cursor: pointer;
-
-  :hover {
-    text-decoration: underline;
-  }
-`;
-
 const Freelancer = ({ user }) => {
   const [redirecting, setRedirecting] = useState(false);
-  const [skipFreelancerOnboarding] = useMutation(SKIP_FREELANCER_ONBOARDING);
   const [onboardingFreelancer] = useMutation(ONBOARDING_FREELANCER);
-  // const [freelancerOnboardingPortfolio] = useMutation(
-  //   FREELANCER_ONBOARDING_PORTFOLIO,
-  // );
 
   return (
     <Formik
@@ -69,8 +63,9 @@ const Freelancer = ({ user }) => {
       }}
       onSubmit={async (values, action) => {
         try {
+          const input = { ...values, socials: _trimSocials(values.socials) };
           const { data, errors } = await onboardingFreelancer({
-            variables: { input: values },
+            variables: { input },
           });
 
           if (errors) {
@@ -146,8 +141,15 @@ const Freelancer = ({ user }) => {
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Skip
               onClick={async () => {
+                const input = { socials: [], portfolio: [], skills: [] };
                 try {
-                  await skipFreelancerOnboarding();
+                  // await skipFreelancerOnboarding();
+                  const { data, errors: onbe } = await onboardingFreelancer({
+                    variables: { input },
+                  });
+                  if (onbe) {
+                    throw onbe;
+                  }
                   setRedirecting(true);
                   router.toIndex();
                 } catch (e) {
@@ -197,3 +199,9 @@ const Freelancer = ({ user }) => {
 };
 
 export default Freelancer;
+
+// utils
+
+function _trimSocials(socials) {
+  return socials.filter(s => !!s.url);
+}

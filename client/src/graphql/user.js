@@ -60,7 +60,7 @@ export const ONBOARDING_FREELANCER = gql`
     onboardingFreelancer(input: $input) {
       id
       onboardingStep
-      asEmployer {
+      asFreelancer {
         id
       }
     }
