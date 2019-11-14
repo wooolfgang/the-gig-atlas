@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
-import debugReq from '../utils/req_debug';
+import { createDebugPost } from '../utils/req_debug';
 
 const { testUrl, admin } = config;
 const input = {
@@ -16,6 +16,23 @@ const user2 = {
   firstName: 'Li',
   lastName: 'test',
 };
+
+const signupMutatation = `
+mutation Test($input: SignupInput!) {
+  signup(input: $input) {
+    id
+    token
+  }
+}
+`;
+const _loginMutation = (email, pass) => `
+mutation {
+  login(email: "${email}", password: "${pass}") {
+    id
+    token
+  }
+}
+`;
 
 /**
  * IMPORTANT: added users must be remove after test
@@ -33,20 +50,14 @@ afterAll(async () => {
   }
 });
 
-describe('basic signup', () => {
+describe('User Authentication', () => {
   let newId;
 
-  it('Creates a new user of role=MEMBER', async () => {
+  it('Creates a new user as EMPLOYER of role=MEMBER', async () => {
+    const create = { ...input, accountType: 'EMPLOYER' };
     const res = await axios.post(testUrl, {
-      query: `
-        mutation Test($input: SignupInput!) {
-          signup(input: $input) {
-            id
-            token
-          }
-        }
-      `,
-      variables: { input },
+      query: signupMutatation,
+      variables: { input: create },
     });
 
     const signup = res.data.data.signup;
@@ -56,16 +67,10 @@ describe('basic signup', () => {
   });
 
   it('Fails on duplicate email', async () => {
+    const create = { ...input, accountType: 'FREELANCER' };
     const res = await axios.post(testUrl, {
-      query: `
-        mutation Test($input: SignupInput!) {
-          signup(input: $input) {
-            id
-            token
-          }
-        }
-      `,
-      variables: { input },
+      query: signupMutatation,
+      variables: { input: create },
     });
 
     expect(res.data.errors).toBeTruthy();
@@ -74,14 +79,7 @@ describe('basic signup', () => {
 
   it('Logins to the created user', async () => {
     const res = await axios.post(testUrl, {
-      query: `
-        mutation {
-          login(email: "${input.email}", password: "${input.password}") {
-            id
-            token
-          }
-        }
-      `,
+      query: _loginMutation(input.email, input.password),
     });
     const { id, token } = res.data.data.login;
 
@@ -91,14 +89,7 @@ describe('basic signup', () => {
 
   it('Removes user by admin credentials', async () => {
     const res = await axios.post(testUrl, {
-      query: `
-        mutation {
-          login(email: "${admin.email}", password: "${admin.password}") {
-            id
-            token
-          }
-        }
-      `,
+      query: _loginMutation(admin.email, admin.password),
     });
 
     const adminToken = res.data.data.login.token;

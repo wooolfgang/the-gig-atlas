@@ -1,7 +1,8 @@
 import axios from 'axios';
 import config from '../../config';
-import { prisma } from '../../generated/prisma-client';
+import prisma from '../../prisma';
 import debugReq from '../utils/req_debug';
+import { createUser } from '../auth/util';
 
 const { testUrl } = config;
 
@@ -10,6 +11,7 @@ const userInput = {
   lastName: 'ool',
   email: 'nico@gmail.com',
   password: 'asdfksdfjs;ldjfksadf',
+  onboardingStep: 'EMPLOYER',
 };
 const inputGig = {
   title: 'Testing App',
@@ -33,26 +35,14 @@ const input = {
   },
   gig: inputGig,
 };
+let userAuth;
 let token;
 let debugPost;
 let fileId;
 
 beforeAll(async () => {
-  const res = await axios.post(testUrl, {
-    query: `
-      mutation Test($input: SignupInput!) {
-        signup(input: $input) {
-          id
-          token
-        }
-      }
-    `,
-    variables: { input: userInput },
-  });
-
-  token = res.data.data.signup.token;
-  const headers = { Authorization: `Bearer ${token}` };
-  debugPost = debugReq.createDebugPost(testUrl, { headers });
+  userAuth = await createUser(userInput);
+  debugPost = debugReq.createDebugPost.withAuth(testUrl, userAuth);
   const file = await prisma.createFile({ name: 'this is a file' });
 
   fileId = file.id;
@@ -85,9 +75,9 @@ describe('Employer crud operation', () => {
               gigs {
                 id
                 title
-                communicationType
+                communicationType 
                 description
-                technologies
+                technologies 
                 projectType
                 paymentType
                 minFee
