@@ -10,12 +10,6 @@ type Query {
   ): [Freelancer]!
 }
 
-type Mutation {
-  # freelancerOnboardingPersonal(input: FreelancerOnboardingPersonal!): Boolean!
-  # freelancerOnboardingPortfolio(input: FreelancerOnboardingPortfolio!): Boolean!
-  skipFreelancerOnboarding: Boolean!
-}
-
 type Freelancer {
   id: ID
   createdAt: DateTime
@@ -39,7 +33,7 @@ type PortfolioProject {
   description: String
   url: String
   avatar: File
-  images: [File]!
+  images: [File]
 }
 
 type Social {

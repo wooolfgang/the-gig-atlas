@@ -24,6 +24,10 @@ const accountType = yup
   .matches(accountTypeRegex, 'Valid account type is required')
   .required('Account type is required');
 
+export const website = yup
+  .string('Website must be a string');
+  // .matches(urlRegex, 'Website must be a valid url');
+
 // user
 export const email = yup
   .string('Email must be a string')
@@ -100,10 +104,6 @@ export const communicationWebsite = yup.string().when('communicationType', {
 });
 export const locationRestriction = yup.string();
 export const avatarFileId = yup.string('Avatar is required');
-export const website = yup
-  .string('Website must be a string')
-  .matches(urlRegex, 'Website must be a valid url');
-  // .url('Website must be a url');
 
 export const gigInput = yup.object().shape({
   title,
