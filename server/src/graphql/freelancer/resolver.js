@@ -15,11 +15,11 @@ export default {
           asFreelancer: {
             create: {
               ...asFreelancer,
-              avatar: {
-                connect: {
-                  id: avatarFileId,
-                },
-              },
+            },
+          },
+          avatar: {
+            connect: {
+              id: avatarFileId,
             },
           },
         },
@@ -93,6 +93,7 @@ export default {
       );
       return prisma
         .freelancer({ id: root.id })
+        .asUser()
         .avatar()
         .$fragment(fragment);
     },

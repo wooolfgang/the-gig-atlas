@@ -33,5 +33,12 @@ export default {
         .asFreelancer()
         .$fragment(fragment);
     },
+    avatar: async (root, _args, { prisma }, info) => {
+      const fragment = createFragment(info, 'AvatarFromUser', 'Avatar');
+      return prisma
+        .user({ id: root.id })
+        .avatar()
+        .$fragment(fragment);
+    },
   },
 };

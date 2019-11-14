@@ -13,6 +13,14 @@ export const CREATE_COMMENT = gql`
     createComment(input: $input) {
       id
       text
+      postedBy {
+        id
+        firstName
+        avatar {
+          id
+          url
+        }
+      }
     }
   }
 `;
@@ -55,12 +63,12 @@ export const GET_THREADS = gql`
       posters {
         id
         firstName
+        avatar {
+          id
+          url
+        }
         asFreelancer {
           id
-          avatar {
-            id
-            url
-          }
         }
       }
     }
@@ -94,6 +102,10 @@ export const GET_THREAD = gql`
     postedBy {
       id
       firstName
+      avatar {
+        id
+        url
+      }
     }
   }
 
