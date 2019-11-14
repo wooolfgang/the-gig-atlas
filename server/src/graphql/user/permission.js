@@ -1,6 +1,11 @@
 import { allow, and } from 'graphql-shield';
 import { validation } from '@shared/common';
-import { isAdminOnly, isAuthenticated, validate } from '../utils/rules';
+import {
+  isAdminOnly,
+  isAuthenticated,
+  validate,
+  dompurify,
+} from '../utils/rules';
 
 export default {
   Query: {
@@ -17,6 +22,7 @@ export default {
       isAuthenticated,
     ),
     onboardingFreelancer: and(
+      dompurify('input.bio'),
       validate.withShape({ input: validation.freelancerPortfolioInput }),
       isAuthenticated,
     ),

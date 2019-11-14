@@ -3,9 +3,9 @@ import prisma from '../../prisma';
 
 const onboardingResFrag = `
   fragment EmpOnbdRes on User {
+    id
     firstName
     lastName
-    id
     onboardingStep
   }
 `;
@@ -128,8 +128,6 @@ async function onboardingFreelancer(_, { input }, { user: auth }, info) {
   const skills = { set: input.skills };
   const socials = { create: input.socials };
 
-  const frag = createFragment(info, 'TestUserFreelancer', 'User', true);
-
   return prisma
     .updateUser({
       where: { id },
@@ -145,7 +143,7 @@ async function onboardingFreelancer(_, { input }, { user: auth }, info) {
         },
       },
     })
-    .$fragment(frag);
+    .$fragment(onboardingResFrag);
 }
 
 export default {
@@ -162,26 +160,26 @@ export default {
       return !!res;
     },
   },
-  // User: {
-  //   asEmployer: async (root, _args, _, info) => {
-  //     const fragment = createFragment(info, 'AsEmployerFromUser', 'Employer');
+  User: {
+    asEmployer: async (root, _args, _, info) => {
+      const fragment = createFragment(info, 'AsEmployerFromUser', 'Employer');
 
-  //     return prisma
-  //       .user({ id: root.id })
-  //       .asEmployer()
-  //       .$fragment(fragment);
-  //   },
-  //   asFreelancer: async (root, _args, _, info) => {
-  //     const fragment = createFragment(
-  //       info,
-  //       'AsFreelancerFromUser',
-  //       'Freelancer',
-  //     );
+      return prisma
+        .user({ id: root.id })
+        .asEmployer()
+        .$fragment(fragment);
+    },
+    asFreelancer: (root, _args, _, info) => {
+      const fragment = createFragment(
+        info,
+        'AsFreelancerFromUser',
+        'Freelancer',
+      );
 
-  //     return prisma
-  //       .user({ id: root.id })
-  //       .asFreelancer()
-  //       .$fragment(fragment);
-  //   },
-  // },
+      return prisma
+        .user({ id: root.id })
+        .asFreelancer()
+        .$fragment(fragment);
+    },
+  },
 };

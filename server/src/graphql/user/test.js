@@ -17,17 +17,19 @@ const loginUser2 = {
   email: 'mario@yahoo.com',
   password: 'password',
 };
-const signupFreelanceUser = {
-  firstName: 'John',
-  lastName: 'Doe',
-  email: 'john1234187@gmail.com',
-  password: 'password',
-};
 const signupEmployerUser = {
   firstName: 'John2',
   lastName: 'Doe2',
   email: 'john123986@gmail.com',
   password: 'password',
+  onboardingStep: 'EMPLOYER',
+};
+const signupFreelanceUser = {
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john1234187@gmail.com',
+  password: 'password',
+  onboardingStep: 'FREELANCER',
 };
 let users;
 
@@ -36,8 +38,8 @@ beforeAll(async () => {
     users = await Promise.all([
       prisma.createUser(loginUser),
       prisma.createUser(loginUser2),
-      prisma.createUser(signupFreelanceUser),
       prisma.createUser(signupEmployerUser),
+      prisma.createUser(signupFreelanceUser),
     ]);
   } catch (e) {
     console.log('ERROR: create users');
@@ -86,6 +88,7 @@ const freelancerQuery = `
       id
       onboardingStep
       asFreelancer {
+        id
         bio
         website
         location
@@ -110,7 +113,7 @@ const freelancerQuery = `
   }
 `;
 
-describe('user api', () => {
+describe('User onboarding', () => {
   it('onboarding from personal to employer', async () => {
     const [user] = users;
     const { token } = await createAuth(user.id, user.role);
@@ -144,7 +147,6 @@ describe('user api', () => {
     expect(oe.id).toBe(user.id);
     expect(oe.onboardingStep).toBe(null);
     const employer = oe.asEmployer;
-    console.log('the employer: ', employer);
     expect(employer.employerType).toBe(employerinput.employerType);
     expect(employer.displayName).toBe(employerinput.displayName);
   });
@@ -191,7 +193,59 @@ describe('user api', () => {
       variables: { input: freelanceIn },
     });
 
-    console.log(of);
+    expect(of.onboardingStep).toBe(null);
+    const freelancer = of.asFreelancer;
+    expect(freelancer.bio).toBe(freelanceIn.bio);
+    expect(freelancer.skills).toEqual(freelanceIn.skills);
+  });
+
+  it('onboarding from signup to employer', async () => {
+    const [_, _a, user] = users;
+    const debugPost = await createDebugPost.withAuth(testUrl, user);
+
+    const employerinput = {
+      employerType: 'COMPANY',
+      displayName: 'The Power Lattice',
+      email: 'power@gmail.com',
+      introduction: 'Im good',
+      website: 'power.com',
+    };
+    const { onboardingEmployer: oe } = await debugPost({
+      query: employerQuery,
+      variables: { input: employerinput },
+    });
+    expect(oe.id).toBe(user.id);
+    expect(oe.onboardingStep).toBe(null);
+    const employer = oe.asEmployer;
+    expect(employer.employerType).toBe(employerinput.employerType);
+    expect(employer.displayName).toBe(employerinput.displayName);
+  });
+
+  it('onboarding from signup to freelancer', async () => {
+    const [_, _a, _b, user] = users;
+    const debugPost = await createDebugPost.withAuth(testUrl, user);
+
+    const freelanceIn = {
+      bio: 'I am good',
+      website: 'lol.com',
+      location: 'Iloilo, Ph',
+      socials: [{ type: 'TWITTER', url: 'twitter.com/3kj45' }],
+      portfolio: [
+        {
+          title: 'Accounting business',
+          description: 'Calculates all incomes',
+          images: [],
+          url: 'accc.com',
+        },
+      ],
+      skills: ['node', 'react'],
+    };
+
+    const { onboardingFreelancer: of } = await debugPost({
+      query: freelancerQuery,
+      variables: { input: freelanceIn },
+    });
+
     expect(of.onboardingStep).toBe(null);
     const freelancer = of.asFreelancer;
     expect(freelancer.bio).toBe(freelanceIn.bio);
