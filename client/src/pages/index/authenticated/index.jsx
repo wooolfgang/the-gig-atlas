@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/react-hooks';
 import Nav from '../../../components/Nav';
@@ -80,7 +81,7 @@ const CollabContainer = styled.div`
   }
 `;
 
-const Authenticated = () => {
+const Authenticated = ({ authenticatedUser }) => {
   const router = useRouter();
 
   const { data: threads } = useQuery(GET_THREADS, {
@@ -109,7 +110,7 @@ const Authenticated = () => {
 
   return (
     <div>
-      <Nav type="AUTHENTICATED_FREELANCER" />
+      <Nav type="AUTHENTICATED_FREELANCER" user={authenticatedUser} />
       <Container>
         <Main>
           <TagsContainer>
@@ -235,6 +236,20 @@ const Authenticated = () => {
       </Container>
     </div>
   );
+};
+
+Authenticated.propTypes = {
+  authenticatedUser: PropTypes.shape({
+    id: PropTypes.string,
+    email: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    isEmailVerified: PropTypes.bool,
+    avatar: PropTypes.shape({
+      id: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
 export default Authenticated;

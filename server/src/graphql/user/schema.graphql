@@ -17,4 +17,5 @@ type User {
   asFreelancer: Freelancer
   isEmailVerified: Boolean
   freelancerOnboardingStep: FreelancerOnboardingStep
+  avatar: File
 }

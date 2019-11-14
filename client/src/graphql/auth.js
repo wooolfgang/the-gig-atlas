@@ -26,6 +26,10 @@ export const GET_AUTHENTICATED_USER = gql`
       lastName
       isEmailVerified
       freelancerOnboardingStep
+      avatar {
+        id
+        url
+      }
     }
   }
 `;

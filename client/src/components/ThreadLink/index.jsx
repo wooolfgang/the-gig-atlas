@@ -38,7 +38,7 @@ const ThreadLink = ({ thread }) => (
     <div style={{ display: 'flex' }}>
       {thread.posters.map(poster => (
         <Avatar
-          src={poster.asFreelancer.avatar.url}
+          src={poster.avatar && poster.avatar.url}
           style={{ width: '25px', height: '25px' }}
           key={poster.id}
         />
