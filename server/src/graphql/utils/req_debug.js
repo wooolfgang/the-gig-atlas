@@ -29,9 +29,28 @@ function createDebugPost(url, config = {}) {
   };
 }
 
-createDebugPost.withAuth = async (url, user) => {
+/**
+ * Auth object
+ * @typedef {Object} Auth
+ * @property {string} token - user token
+ * @property {string} id - user id
+ */
+
+/**
+ * Creates new debug post util function
+ * @param {string} url - api url
+ * @param {Auth} auth - auth obj
+ */
+createDebugPost.withAuth = (url, auth) => {
+  const headers = { Authorization: `Bearer ${auth.token}` };
+
+  return createDebugPost(url, { headers });
+};
+
+createDebugPost.withUser = async (url, user) => {
   const { token } = await createAuth(user.id, user.role);
   const headers = { Authorization: `Bearer ${token}` };
+
   return createDebugPost(url, { headers });
 };
 

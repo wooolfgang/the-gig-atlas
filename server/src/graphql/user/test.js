@@ -201,7 +201,7 @@ describe('User onboarding', () => {
 
   it('onboarding from signup to employer', async () => {
     const [_, _a, user] = users;
-    const debugPost = await createDebugPost.withAuth(testUrl, user);
+    const debugPost = await createDebugPost.withUser(testUrl, user);
 
     const employerinput = {
       employerType: 'COMPANY',
@@ -223,7 +223,7 @@ describe('User onboarding', () => {
 
   it('onboarding from signup to freelancer', async () => {
     const [_, _a, _b, user] = users;
-    const debugPost = await createDebugPost.withAuth(testUrl, user);
+    const debugPost = await createDebugPost.withUser(testUrl, user);
 
     const freelanceIn = {
       bio: 'I am good',
