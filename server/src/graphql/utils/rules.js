@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 /* eslint-disable function-paren-newline */
 import { rule } from 'graphql-shield';
 import jwt from 'jsonwebtoken';
@@ -138,44 +139,72 @@ validate.withShape = shape => validate(yup.object().shape(shape));
 
 export { validate };
 
-export const purify = (fields, object) => {
+export const purify = (fields, object, isRequired = true) => {
   const field = fields.shift();
 
   if (fields.length === 0) {
-    if (typeof object[field] !== 'string') {
-      throw new Error(
-        'Error trying to sanitize an input that is not a valid string',
-      );
+    const value = object[field];
+    if (typeof value === 'string') {
+      // eslint-disable-next-line no-param-reassign
+      object[field] = domPurify.sanitize(value);
+
+      return true;
     }
-    // eslint-disable-next-line no-param-reassign
-    object[field] = domPurify.sanitize(object[field]);
-    return true;
+
+    if (value === undefined && !isRequired) {
+      return true;
+    }
+
+    throw new Error(
+      `Sanitazion Error: field '${field}'; value '${value}'. Must be string.`,
+    );
   }
 
-  return purify(fields, object[field]);
+  return purify(fields, object[field], isRequired);
 };
 
 /**
+ * Field
+ * @typedef {Object} Field
+ * @property {string} name - the field name
+ * @property {boolean=} isNeed - [default=true] set field required
+ */
+
+/**
  * Compares the args object. Uses dot notation
- * @param {String or Array} field
+ * By default field are required and willthrow error
+ *  unless isNeed is set to false ({name: 'input.description', isNeed: false })
+ * @param {Field|Field[]|string|String[]} field
  * Ex: "input.description" compares it to args.input.description and purifies it
  */
-export const dompurify = field =>
-  rule()(async (_, args) => {
-    if (!field) {
-      console.warn(
-        "No field input in dompurify. Verify if you're using this function correctly",
-      );
-      return false;
-    }
+export const dompurify = field => {
+  if (field instanceof Array) {
+    const fields = field.map(f => {
+      if (f instanceof Object && typeof f.name === 'string') {
+        return field;
+      }
 
-    if (field instanceof Array) {
-      return field.every(f => purify(f.split('.'), args) === true);
-    }
+      if (typeof f === 'string') {
+        return { name: f };
+      }
 
-    if (typeof field === 'string') {
-      return purify(field.split('.'), args);
-    }
+      throw new Error(`Invalid field, ${f}`);
+    });
 
-    return false;
-  });
+    return rule()(async (_, args) =>
+      fields.every(f => purify(f.name.split('.'), args, f.isNeed) === true),
+    );
+  }
+
+  if (field instanceof Object && typeof field.name === 'string') {
+    return rule()(async (_, args) =>
+      purify(field.name.split('.'), args, field.isNeed),
+    );
+  }
+
+  if (typeof field === 'string') {
+    return rule()(async (_, args) => purify(field.split('.'), args, true));
+  }
+
+  throw new Error(`Invalid field value: ${field}`);
+};
