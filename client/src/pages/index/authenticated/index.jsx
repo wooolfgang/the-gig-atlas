@@ -208,6 +208,7 @@ const Authenticated = ({ authenticatedUser }) => {
                     },
                   }}
                   passHref
+                  key={tag.id}
                 >
                   <ThreadTagLink
                     key={tag.id}
