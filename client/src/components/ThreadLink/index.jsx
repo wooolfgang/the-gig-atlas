@@ -8,15 +8,15 @@ import {
   UpvoteContainer,
   ArrowRightContainer,
 } from './style';
-import Avatar from '../../primitives/Avatar';
 import { color } from '../../utils/theme';
+import AvatarUserDropdown from '../AvatarUserDropdown';
 
 const ArrowRightSimpleAnimated = () => (
   <ArrowRightContainer id="arrow-right-animated">
     <ArrowRightSimple
       width="24"
-      height="auto"
-      viewBox="0 0 32 24"
+      height="18"
+      viewBox="0 0 32 20"
       preserveAspectRatio="xMidYMid meet"
       style={{ marginLeft: '2px' }}
     />
@@ -76,11 +76,13 @@ const ThreadLink = ({ thread }) => (
     </div>
     <div style={{ display: 'flex' }}>
       {thread.posters.map(poster => (
-        <Avatar
-          src={poster.avatar && poster.avatar.url}
-          style={{ width: '25px', height: '25px' }}
-          key={poster.id}
-        />
+        <div key={poster.id}>
+          <AvatarUserDropdown
+            src={poster.avatar && poster.avatar.url}
+            avatarStyle={{ width: '25px', height: '25px' }}
+            userId={poster.id}
+          />
+        </div>
       ))}
     </div>
   </ThreadLinkContainer>
