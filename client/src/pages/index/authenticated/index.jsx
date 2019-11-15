@@ -7,8 +7,9 @@ import { useQuery } from '@apollo/react-hooks';
 import Nav from '../../../components/Nav';
 import { GET_THREADS, GET_THREAD_TAGS } from '../../../graphql/thread';
 import { GET_NEWEST_FREELANCERS } from '../../../graphql/freelancer';
-import { Avatar, Button } from '../../../primitives';
+import { Button } from '../../../primitives';
 import ThreadLink from '../../../components/ThreadLink';
+import AvatarUserDropdown from '../../../components/AvatarUserDropdown';
 import { color } from '../../../utils/theme';
 import Working from '../../../icons/Working';
 import media from '../../../utils/media';
@@ -16,15 +17,13 @@ import media from '../../../utils/media';
 const Container = styled.div`
   box-sizing: border-box;
   box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.05);
-  margin: auto;
   padding-top: 2rem;
-  padding-bottom: 2rem;
   display: grid;
-  min-height: calc(100vh - 67.5px);
+  min-height: calc(102vh);
   grid-template-areas:
-    '. . . . '
+    '. . . .'
     '. main side .'
-    '. . . . ';
+    '. . . .';
   grid-template-rows: 1rem 1fr 1rem;
   grid-template-columns: 1fr 65vw 21vw 1fr;
 
@@ -148,6 +147,20 @@ const PaginationLink = styled.a`
   }
 `;
 
+const ThreadCreateLink = styled.a`
+  text-decoration: none;
+  padding: 1rem 1rem;
+  border: 1px dashed ${props => props.theme.color.neutral20};
+  display: inline-block;
+  transition: 100ms;
+  outline: none;
+
+  :hover,
+  :focus {
+    border: 1px dashed ${props => props.theme.color.neutral40};
+  }
+`;
+
 const Authenticated = ({ authenticatedUser }) => {
   const router = useRouter();
   const pagination = 8;
@@ -170,7 +183,7 @@ const Authenticated = ({ authenticatedUser }) => {
   });
 
   return (
-    <div>
+    <>
       <Nav type="AUTHENTICATED_FREELANCER" user={authenticatedUser} />
       <Container>
         <Main>
@@ -211,47 +224,41 @@ const Authenticated = ({ authenticatedUser }) => {
                 {threads.threads.map(thread => (
                   <ThreadLink thread={thread} key={thread.id} />
                 ))}
-                {threads.threads.length < 12 && (
-                  <div style={{ padding: '1rem .5rem' }}>
-                    <Link href="/thread/create">
-                      <a
-                        href="/thread/create"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <Working
-                            width="80"
-                            height="50"
-                            viewBox="100 100 1000 450"
-                            preserveAspectRatio="xMidYMid slice"
-                          />
-                          <div>
-                            <p
-                              style={{
-                                margin: 0,
-                                fontSize: '1rem',
-                                color: color.s1,
-                              }}
-                            >
-                              Want to discuss something with fellow freelancers?
-                            </p>
-                            <p
-                              style={{
-                                margin: 0,
-                                fontSize: '1rem',
-                                color: color.s1,
-                                display: 'flex',
-                                alignItems: 'center',
-                              }}
-                            >
-                              {' '}
-                              Create a thread ->
-                            </p>
-                          </div>
+                {threads.threads.length < pagination && (
+                  <Link href="/thread/create">
+                    <ThreadCreateLink href="/thread/create">
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Working
+                          width="80"
+                          viewBox="100 100 1000 450"
+                          preserveAspectRatio="xMidYMid slice"
+                        />
+                        <div>
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: '1rem',
+                              color: color.s1,
+                            }}
+                          >
+                            Want to discuss something with fellow freelancers?
+                          </p>
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: '1rem',
+                              color: color.s1,
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            {' '}
+                            Create a thread ->
+                          </p>
                         </div>
-                      </a>
-                    </Link>
-                  </div>
+                      </div>
+                    </ThreadCreateLink>
+                  </Link>
                 )}
                 <PaginationContainer>
                   {router.query.page > 0 && (
@@ -326,9 +333,10 @@ const Authenticated = ({ authenticatedUser }) => {
                       marginBottom: '.85rem',
                     }}
                   >
-                    <Avatar
-                      src={freelancer.avatar.url}
-                      style={{
+                    <AvatarUserDropdown
+                      src={freelancer.avatar && freelancer.avatar.url}
+                      userId={freelancer.asUser && freelancer.asUser.id}
+                      avatarStyle={{
                         width: '36px',
                         height: '36px',
                         marginRight: '.5rem',
@@ -365,7 +373,7 @@ const Authenticated = ({ authenticatedUser }) => {
           </CollabContainer>
         </Side>
       </Container>
-    </div>
+    </>
   );
 };
 

@@ -32,6 +32,7 @@ export const GET_NEWEST_FREELANCERS = gql`
     ) {
       id
       asUser {
+        id
         firstName
         lastName
       }
