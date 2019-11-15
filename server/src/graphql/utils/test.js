@@ -22,8 +22,6 @@ describe('dompurify', () => {
       },
     };
     const fields = ['person', 'description'];
-    expect(() => purify(fields, input)).toThrowError(
-      'Error trying to sanitize an input that is not a valid string',
-    );
+    expect(() => purify(fields, input)).toThrowError();
   });
 });
