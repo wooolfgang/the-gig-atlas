@@ -4,6 +4,7 @@ export default {
   Query: {
     user: (_, _args, { prisma, user: { id } }, info) =>
       prisma.user({ id }, info),
+    getUser: (_, args, { prisma }, info) => prisma.user(args.where, info),
   },
   Mutation: {
     deleteUser: async (_, { id }, { prisma }) => {
