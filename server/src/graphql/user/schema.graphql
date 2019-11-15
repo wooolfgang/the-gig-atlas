@@ -1,5 +1,6 @@
 type Query {
   user: User!
+  getUser (where: UserWhereUniqueInput!): User!
 }
 
 type Mutation {
