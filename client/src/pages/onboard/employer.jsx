@@ -28,7 +28,6 @@ const Employer = ({ user }) => (
 
 Employer.getInitialProps = async ctx => {
   const { user } = ctx;
-
   if (user.asEmployer) {
     router.toError(ctx, { query: { message: 'Already an employer' } });
   } else if (user.onboardingStep !== 'EMPLOYER') {

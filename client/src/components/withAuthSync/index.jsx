@@ -59,7 +59,6 @@ const withAuthSync = (WrappedComponent, type) => {
         });
         user = res.data.authenticatedUser;
         ctx.user = user;
-        // console.log('withAuthSync.js: \n', user);
         if (!user) {
           // => for user dont exist
           router.toSignin(ctx);
