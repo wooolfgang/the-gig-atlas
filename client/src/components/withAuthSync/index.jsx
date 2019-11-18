@@ -55,7 +55,7 @@ const withAuthSync = (WrappedComponent, type) => {
         // => if type is 'all' with no token, skip this
         const res = await ctx.apolloClient.query({
           query: GET_AUTHENTICATED_USER,
-          // fetchPolicy: 'network-only', // => Make sure to always fetch network first, as apollo defaults to cache
+          fetchPolicy: 'network-only', // => Make sure to always fetch network first, as apollo defaults to cache
         });
         user = res.data.authenticatedUser;
         ctx.user = user;
@@ -79,7 +79,7 @@ const withAuthSync = (WrappedComponent, type) => {
       return {};
     }
     // add onboarding hooks
-    _hancleOnboarding(ctx, user);
+    _handleOnboarding(ctx, user);
 
     let componentProps = {};
     if (WrappedComponent.getInitialProps) {
@@ -100,7 +100,7 @@ export default withAuthSync;
 
 // utils
 
-function _hancleOnboarding(ctx, user) {
+function _handleOnboarding(ctx, user) {
   const currentPath = ctx.pathname;
   if (user && user.onboardingStep && !currentPath.startsWith('/onboard')) {
     // => only with onboardingStep prop and path not directed to onboarding

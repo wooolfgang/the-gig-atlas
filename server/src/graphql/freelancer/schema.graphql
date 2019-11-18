@@ -42,16 +42,6 @@ type Social {
   url: String
 }
 
-input FreelancerOnboardingPersonal { # to be depricated
-  firstName: String
-  lastName: String
-  avatarFileId: String
-  bio: String
-  website: String
-  location: String
-  timezone: String
-}
-
 input ImageInput {
   id: ID!
 }
@@ -66,10 +56,4 @@ input PortfolioInput {
 input SocialInput {
   type: SocialType!
   url: String!
-}
-
-input FreelancerOnboardingPortfolio { # to be depricated
-  socials: [SocialInput!]!
-  portfolio: [PortfolioInput!]!
-  skills: [String!]!
 }

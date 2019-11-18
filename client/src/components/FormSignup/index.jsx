@@ -11,13 +11,14 @@ import ErrorBanner from '../../primitives/ErrorBanner';
 
 const SignupLocal = () => {
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [signup] = useMutation(SIGNUP_LOCAL, { onError: setError });
 
   return (
     <>
       <Formik
-        onSubmit={async (values, actions) => {
-          actions.setSubmitting(true);
+        onSubmit={async values => {
+          setIsSubmitting(true);
           try {
             const { errors, data } = await await signup({
               variables: { input: values },
@@ -37,8 +38,8 @@ const SignupLocal = () => {
              * @todo: handle error
              */
             setError(e);
+            setIsSubmitting(false);
           }
-          actions.setSubmitting(false);
         }}
         initialValues={{
           accountType: '',
@@ -48,7 +49,7 @@ const SignupLocal = () => {
           lastName: '',
         }}
         validationSchema={common.validation.signupInput}
-        render={({ isSubmitting }) => (
+        render={() => (
           <Form>
             {error && (
               <ErrorBanner error={error} style={{ marginBottom: '1rem' }} />

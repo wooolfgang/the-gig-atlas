@@ -8,7 +8,7 @@ import CustomField from '../CustomField';
 import { ONBOARDING_EMPLOYER } from '../../graphql/user';
 import router from '../../utils/router';
 
-const Employer = ({ user }) => {
+const Employer = () => {
   const [onboardingEmployer] = useMutation(ONBOARDING_EMPLOYER);
   let isFinished = false; // double click optimization
 
@@ -39,8 +39,6 @@ const Employer = ({ user }) => {
           }
           isFinished = true;
           router.toIndex();
-
-          // router.toOnboarding({}, { query: { step: data.onboardingPersonal } });
         } catch (e) {
           console.error('on employer submit', e);
         }
