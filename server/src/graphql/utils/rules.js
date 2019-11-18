@@ -167,13 +167,13 @@ export const purify = (fields, object, isRequired = true) => {
  * Field
  * @typedef {Object} Field
  * @property {string} name - the field name
- * @property {boolean=} isNeed - [default=true] set field required
+ * @property {boolean=} isRequired - [default=true] set field required
  */
 
 /**
  * Compares the args object. Uses dot notation
  * By default field are required and willthrow error
- *  unless isNeed is set to false ({name: 'input.description', isNeed: false })
+ *  unless isRequired is set to false ({name: 'input.description', isRequired: false })
  * @param {Field|Field[]|string|String[]} field
  * Ex: "input.description" compares it to args.input.description and purifies it
  */
@@ -192,13 +192,13 @@ export const dompurify = field => {
     });
 
     return rule()(async (_, args) =>
-      fields.every(f => purify(f.name.split('.'), args, f.isNeed) === true),
+      fields.every(f => purify(f.name.split('.'), args, f.isRequired) === true),
     );
   }
 
   if (field instanceof Object && typeof field.name === 'string') {
     return rule()(async (_, args) =>
-      purify(field.name.split('.'), args, field.isNeed),
+      purify(field.name.split('.'), args, field.isRequired),
     );
   }
 

@@ -22,7 +22,7 @@ export default {
       isAuthenticated,
     ),
     onboardingFreelancer: and(
-      dompurify({ name: 'input.bio', isNeed: false }),
+      dompurify({ name: 'input.bio', isRequired: false }),
       validate.withShape({ input: validation.freelancerPortfolioInput }),
       isAuthenticated,
     ),
