@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import common from '@shared/common';
-import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import Button from '../../primitives/Button';
 import CustomField from '../CustomField';
@@ -35,6 +34,11 @@ const socialMap = {
   },
 };
 
+const socialList = Object.keys(socialMap).map(key => ({
+  type: key,
+  url: '',
+}));
+
 const Freelancer = () => {
   const [onboardingFreelancer] = useMutation(ONBOARDING_FREELANCER);
   let isFinished = false;
@@ -43,10 +47,7 @@ const Freelancer = () => {
     <Formik
       validationSchema={common.validation.freelancerPortfolioInput}
       initialValues={{
-        socials: Object.keys(socialMap).map(key => ({
-          type: key,
-          url: '',
-        })),
+        socials: [],
         portfolio: [],
         skills: [],
       }}
@@ -97,7 +98,7 @@ const Freelancer = () => {
                   marginBottom: '.5rem',
                 }}
               >
-                {values.socials.map((social, index) => {
+                {socialList.map((social, index) => {
                   const { label, placeholder } = socialMap[social.type] || {
                     label: '',
                     placeholder: '',
@@ -120,6 +121,7 @@ const Freelancer = () => {
             value={touched.socials && errors.socials}
             visible={!!(touched.socials && errors.socials)}
           />
+          <div style={{ marginBottom: '.5rem' }} />
           <PortfolioProjectsCreate
             onChange={portfolio => {
               setFieldValue('portfolio', portfolio);
