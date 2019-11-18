@@ -22,8 +22,8 @@ export default async () => {
   ];
 
   try {
-    const [deleted, ...newThreadTags] = await Promise.all([
-      prisma.deleteManyThreadTags(),
+    const deleted = await prisma.deleteManyThreadTags();
+    const newThreadTags = await Promise.all([
       ...threadTags.map(tag => prisma.createThreadTag(tag)),
     ]);
 
