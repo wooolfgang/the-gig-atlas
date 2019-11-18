@@ -1,6 +1,4 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import styled from 'styled-components';
 import Stepper from '../Stepper';
@@ -65,21 +63,6 @@ const OnboardContainer = ({ step, header, form }) => (
     </Container>
   </div>
 );
-
-// Container.propTypes = {
-//   user: PropTypes.shape({
-//     id: PropTypes.string,
-//     firstName: PropTypes.string,
-//     lastName: PropTypes.string,
-//     email: PropTypes.string,
-//   }).isRequired,
-// };
-
-// Container.getInitialProps = ctx => {
-//   const { step } = ctx.query;
-
-//   return { step };
-// };
 
 export default OnboardContainer;
 

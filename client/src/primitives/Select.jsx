@@ -79,8 +79,3 @@ Select.defaultProps = {
 };
 
 export default Select;
-
-// function _debugProp(prop) {
-//   console.log(prop);
-//   return prop;
-// }

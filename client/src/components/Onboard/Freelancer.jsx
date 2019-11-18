@@ -8,24 +8,13 @@ import Button from '../../primitives/Button';
 import CustomField from '../CustomField';
 import PortfolioProjectsCreate from '../PortfolioProjectsCreate';
 import router from '../../utils/router';
-import { FieldError, Spinner } from '../../primitives';
+import { FieldError } from '../../primitives';
 import { ONBOARDING_FREELANCER } from '../../graphql/user';
 
 const labelStyle = {
   flex: '1',
   marginRight: '.5rem',
 };
-
-const Skip = styled.span`
-  margin-top: 2rem
-  margin-right: 2rem
-  color: ${props => props.theme.color.s2};
-  cursor: pointer;
-
-  :hover {
-    text-decoration: underline;
-  }
-`;
 
 const socialMap = {
   GITHUB: {
@@ -46,8 +35,7 @@ const socialMap = {
   },
 };
 
-const Freelancer = ({ user }) => {
-  const [redirecting, setRedirecting] = useState(false);
+const Freelancer = () => {
   const [onboardingFreelancer] = useMutation(ONBOARDING_FREELANCER);
   let isFinished = false;
 
@@ -143,33 +131,6 @@ const Freelancer = ({ user }) => {
             visible={!!(touched.portfolio && errors.portfolio)}
           />
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Skip
-              onClick={async () => {
-                const input = { socials: [], portfolio: [], skills: [] };
-                try {
-                  // await skipFreelancerOnboarding();
-                  const { errors: onbe } = await onboardingFreelancer({
-                    variables: { input },
-                  });
-                  if (onbe) {
-                    throw onbe;
-                  }
-                  setRedirecting(true);
-                  router.toIndex();
-                } catch (e) {
-                  console.log(e);
-                  setRedirecting(false);
-                }
-              }}
-            >
-              {redirecting ? (
-                <>
-                  Redirecting... <Spinner />{' '}
-                </>
-              ) : (
-                "Skip, I'll do this it later"
-              )}
-            </Skip>
             <Button
               style={{
                 marginTop: '.8rem',

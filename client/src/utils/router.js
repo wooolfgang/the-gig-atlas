@@ -58,10 +58,6 @@ const toIndex = redirect('/');
 const toSignin = redirect('/login');
 const toSignup = redirect('/signup');
 const toProfile = redirect('/profile');
-const toFreelancerOnboardingPersonal = redirect('/onboard/freelancer');
-const toFreelancerOnboardingPortfolio = redirect(
-  '/onboard/freelancer/portfolio',
-);
 const toError = redirect('/error');
 const toPersonalOnboarding = redirect('/onboard/personal');
 const toEmployerOnboarding = redirect('/onboard/employer');
@@ -72,8 +68,6 @@ export default {
   toSignin,
   toSignup,
   toProfile,
-  toFreelancerOnboardingPersonal,
-  toFreelancerOnboardingPortfolio,
   toError,
   toPersonalOnboarding,
   toEmployerOnboarding,
