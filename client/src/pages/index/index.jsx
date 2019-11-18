@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Authenticated from './authenticated';
 import Landing from './landing';
 import auth from '../../utils/auth';
+import router from '../../utils/router';
 import { GET_AUTHENTICATED_USER } from '../../graphql/auth';
 
 const Index = ({ authenticatedUser }) => {
@@ -34,6 +35,16 @@ Index.getInitialProps = async ctx => {
     });
 
     if (res.data.authenticatedUser) {
+      const { authenticatedUser } = res.data;
+
+      if (authenticatedUser.onboardingStep === 'PERSONAL') {
+        router.toPersonalOnboarding(ctx);
+      } else if (authenticatedUser.onboardingStep === 'EMPLOYER') {
+        router.toEmployerOnboarding(ctx);
+      } else if (authenticatedUser.onboardingStep === 'FREELANCER') {
+        router.toFreelancerOnboarding(ctx);
+      }
+
       return {
         authenticatedUser: res.data.authenticatedUser,
       };

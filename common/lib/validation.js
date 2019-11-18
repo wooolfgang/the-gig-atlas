@@ -12,17 +12,30 @@ export const jobTypeRegex = /^(FULL_TIME|PART_TIME|CONTRACT)$/;
 export const paymentTypeRegex = /^(HOURLY|FIXED)$/;
 export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
 export const threadTagRegex = /^(freelance|design|discuss|webdev|productivity)$/;
+export const accountTypeRegex = /^(FREELANCER|EMPLOYER)$/;
 
 export const id = yup.string();
 
+const accountType = yup
+  .string()
+  .matches(accountTypeRegex, 'Valid account type is required')
+  .required('Account type is required');
+
+export const website = yup
+  .string('Website must be a string')
+  .url('Must be a proper url');
+
 // user
-export const email = yup.string().email('Email must be a valid email');
+export const email = yup
+  .string('Email must be a string')
+  .email('Email must be a valid email');
 export const name = yup.string();
 export const password = yup
   .string('Password must be a string')
   .min(6, 'Password must be at least 6 characters');
 export const userRole = yup.string().matches(userRoleRegex);
 export const signupInput = yup.object().shape({
+  accountType,
   email: email.required('Email is required'),
   firstName: name.required('First name is required'),
   lastName: name.required('Last name is required'),
@@ -87,13 +100,7 @@ export const communicationWebsite = yup.string().when('communicationType', {
     .required('Website url is required'),
 });
 export const locationRestriction = yup.string();
-export const avatarFileId = yup
-  .string('Avatar is required')
-  .required('Avatar is required');
-export const website = yup
-  .string('Website must be a string')
-  .url('Website must be a url')
-  .required('Website is required');
+export const avatarFileId = yup.string('Avatar is required');
 
 export const gigInput = yup.object().shape({
   title,
@@ -111,22 +118,17 @@ export const gigInput = yup.object().shape({
 });
 
 export const employerInput = yup.object().shape({
+  website,
+  avatarFileId,
   displayName: yup
     .string('Display name must be a string')
     .required('Display name is required'),
-  website,
-  introduction: yup
-    .string('Introduction must be a string')
-    .required('Introduction is required'),
-  email: yup
-    .string('Email must be a string')
-    .email('Email must be the correct email format')
-    .required('Email is required'),
+  introduction: yup.string('Introduction must be a string'),
+  email: email.required('Email is required'),
   employerType: yup
     .string('Employer type must be a string')
     .required('Employer type is required')
-    .matches(employerTypeRegex),
-  avatarFileId,
+    .matches(employerTypeRegex, 'Invalid employer type'),
 });
 
 // employer
@@ -142,9 +144,9 @@ export const createGigInput = yup.object().shape({
 
 // freelancer
 export const freelancerPersonalInput = yup.object().shape({
+  avatarFileId,
   firstName: name.required('First name is required'),
   lastName: name.required('Last name is required'),
-  avatarFileId,
   bio: yup.string('Bio must be a string').required('Bio is required'),
   website: yup.string('Website must be a string').url('Website must be a url'),
   location: yup.string('Location must be a string'),
@@ -154,7 +156,7 @@ export const freelancerPersonalInput = yup.object().shape({
 export const portfolioInput = yup.object().shape({
   title: yup.string().required('Title is required'),
   description: yup.string().required('Description is required'),
-  url: yup.string().url('Website must be a correct url format'),
+  url: yup.string(),
   images: yup.array(),
 });
 
@@ -167,7 +169,7 @@ export const freelancerPortfolioInput = yup.object().shape({
         url: yup.string(),
       }),
     )
-    .min(1, 'Please add at least 1 social'),
+    .min(0),
   skills: yup
     .array()
     .of(yup.string())
@@ -194,3 +196,12 @@ export const commentInput = yup.object().shape({
   threadId: yup.string().required('ThreadId is required'),
   parentId: yup.string().nullable(),
 });
+
+// onboarding
+export const onboardingPersonal = yup.object().shape({
+  accountType,
+  firstName: name.required('First name is required'),
+  lastName: name.required('Last name is required'),
+});
+
+export const onboardingEmployer = employerInput;

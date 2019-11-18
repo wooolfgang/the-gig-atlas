@@ -1,6 +1,7 @@
 import axios from 'axios';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
+import { createDebugPost } from '../utils/req_debug';
 
 const { testUrl, admin } = config;
 const input = {
@@ -15,6 +16,23 @@ const user2 = {
   firstName: 'Li',
   lastName: 'test',
 };
+
+const signupMutatation = `
+mutation Test($input: SignupInput!) {
+  signup(input: $input) {
+    id
+    token
+  }
+}
+`;
+const _loginMutation = (email, pass) => `
+mutation {
+  login(email: "${email}", password: "${pass}") {
+    id
+    token
+  }
+}
+`;
 
 /**
  * IMPORTANT: added users must be remove after test
@@ -32,20 +50,14 @@ afterAll(async () => {
   }
 });
 
-describe('basic signup', () => {
+describe('User Authentication', () => {
   let newId;
 
-  it('creates a new user as role=MEMBER', async () => {
+  it('Creates a new user as EMPLOYER of role=MEMBER', async () => {
+    const create = { ...input, accountType: 'EMPLOYER' };
     const res = await axios.post(testUrl, {
-      query: `
-        mutation Test($input: SignupInput!) {
-          signup(input: $input) {
-            id
-            token
-          }
-        }
-      `,
-      variables: { input },
+      query: signupMutatation,
+      variables: { input: create },
     });
 
     const signup = res.data.data.signup;
@@ -54,33 +66,20 @@ describe('basic signup', () => {
     expect(signup.token).toBeTruthy();
   });
 
-  it('fails on duplicate email', async () => {
+  it('Fails on duplicate email', async () => {
+    const create = { ...input, accountType: 'FREELANCER' };
     const res = await axios.post(testUrl, {
-      query: `
-        mutation Test($input: SignupInput!) {
-          signup(input: $input) {
-            id
-            token
-          }
-        }
-      `,
-      variables: { input },
+      query: signupMutatation,
+      variables: { input: create },
     });
 
     expect(res.data.errors).toBeTruthy();
     // const signup = res.data.data.signup;
   });
 
-  it('logins to the created user', async () => {
+  it('Logins to the created user', async () => {
     const res = await axios.post(testUrl, {
-      query: `
-        mutation {
-          login(email: "${input.email}", password: "${input.password}") {
-            id
-            token
-          }
-        }
-      `,
+      query: _loginMutation(input.email, input.password),
     });
     const { id, token } = res.data.data.login;
 
@@ -88,16 +87,9 @@ describe('basic signup', () => {
     expect(token).toBeTruthy();
   });
 
-  it('removes user by admin credentials', async () => {
+  it('Removes user by admin credentials', async () => {
     const res = await axios.post(testUrl, {
-      query: `
-        mutation {
-          login(email: "${admin.email}", password: "${admin.password}") {
-            id
-            token
-          }
-        }
-      `,
+      query: _loginMutation(admin.email, admin.password),
     });
 
     const adminToken = res.data.data.login.token;
@@ -111,7 +103,7 @@ describe('basic signup', () => {
           }
         `,
       },
-      { headers: { Authorization: adminToken } },
+      { headers: { Authorization: `Bearer ${adminToken}` } },
     );
 
     expect(delRes.data.data.deleteUser).toBe(true);

@@ -6,18 +6,15 @@ const plus = google.plus('v1');
 // const { oauth } = config;
 const { id: clientId, secret, redirectURI } = config.googleOauth;
 const oauth2Client = new google.auth.OAuth2(clientId, secret, redirectURI);
-const defaultScope = [
-  'https://www.googleapis.com/auth/plus.me',
-  'https://www.googleapis.com/auth/userinfo.email',
-];
 
 google.options({ auth: oauth2Client });
 
 function getConnectionUrl() {
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: defaultScope.join(' '),
+    scope: 'openid email profile',
   });
+  // [ref] => https://developers.google.com/+/api/oauth#obtaininguserprofileinformation
 }
 
 /**

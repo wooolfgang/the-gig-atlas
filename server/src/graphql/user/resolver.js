@@ -1,5 +1,155 @@
 import { createFragment } from '../utils/fragment';
 
+const onboardingResFrag = `
+  fragment EmpOnbdRes on User {
+    id
+    firstName
+    lastName
+    onboardingStep
+  }
+`;
+
+async function onboardingPersonal(_, { input }, { user: auth, prisma }) {
+  const { accountType, firstName, lastName } = input;
+  const { id } = auth;
+  const fragment = `
+      fragment PersonalOnboard on User {
+        id
+        firstName
+        lastName
+        onboardingStep
+        asEmployer { id }
+        asFreelancer { id }
+      }
+    `;
+  // => get user with respective account type for validation
+  const user = await prisma.user({ id }).$fragment(fragment);
+  if (!user) {
+    throw new Error('Invalid user');
+  }
+  let onboardingStep;
+
+  // eslint-disable-next-line prettier/prettier
+  if (!user.onboardingStep) {
+    throw new Error('Invalid onboarding access');
+  }
+
+  if (accountType === 'EMPLOYER') {
+    if (user.asEmployer) {
+      throw new Error('Already an employer');
+    }
+    onboardingStep = 'EMPLOYER';
+  } else if (accountType === 'FREELANCER') {
+    if (user.asFreelancer) {
+      throw new Error('Already an freelancer');
+    }
+    onboardingStep = 'FREELANCER';
+  } else {
+    throw new Error('Invalid account type');
+  }
+
+  return prisma
+    .updateUser({
+      where: { id },
+      data: {
+        firstName,
+        lastName,
+        onboardingStep,
+      },
+    })
+    .$fragment(onboardingResFrag);
+}
+
+async function onboardingEmployer(_, { input }, { user: auth, prisma }) {
+  const { id } = auth;
+  const { avatarFileId, ...employer } = input;
+  const userFrag = `
+      fragment EmpOnb on User {
+        id
+        onboardingStep
+        asEmployer { id }
+      }
+    `;
+
+  const { onboardingStep, asEmployer } = await prisma
+    .user({ id })
+    .$fragment(userFrag);
+
+  if (onboardingStep !== 'EMPLOYER') {
+    throw new Error('Invalid onboarding access');
+  }
+  if (asEmployer) {
+    throw new Error('Already an employer');
+  }
+
+  return prisma
+    .updateUser({
+      where: { id },
+      data: {
+        onboardingStep: null,
+        asEmployer: {
+          create: {
+            ...employer,
+          },
+        },
+      },
+    })
+    .$fragment(onboardingResFrag);
+}
+
+async function onboardingFreelancer(
+  _,
+  { input },
+  { user: auth, prisma },
+  info,
+) {
+  const { id } = auth;
+  // const { avatarFileId, ...create } = input;
+  const userFrag = `
+      fragment EmpOnb on User {
+        id
+        onboardingStep
+        asFreelancer { id }
+      }
+    `;
+  const { onboardingStep, asFreelancer } = await prisma
+    .user({ id })
+    .$fragment(userFrag);
+
+  if (onboardingStep !== 'FREELANCER') {
+    throw new Error('Invalid onboarding access');
+  }
+  if (asFreelancer) {
+    throw new Error('Already a freelancer');
+  }
+
+  const portfolio = input.portfolio.map(p => ({
+    ...p,
+    images: {
+      connect: p.images,
+    },
+  }));
+  const skills = { set: input.skills };
+  const socials = { create: input.socials };
+
+  return prisma
+    .updateUser({
+      where: { id },
+      data: {
+        onboardingStep: null,
+        asFreelancer: {
+          create: {
+            ...input,
+            skills,
+            socials,
+            portfolio: { create: portfolio },
+          },
+        },
+      },
+    })
+    .$fragment(onboardingResFrag);
+}
+
 export default {
   Query: {
     user: (_, _args, { prisma, user: { id } }, info) =>
@@ -7,6 +157,9 @@ export default {
     getUser: (_, args, { prisma }, info) => prisma.user(args.where, info),
   },
   Mutation: {
+    onboardingPersonal,
+    onboardingEmployer,
+    onboardingFreelancer,
     deleteUser: async (_, { id }, { prisma }) => {
       const res = await prisma.deleteUser({ id });
 
@@ -22,7 +175,7 @@ export default {
         .asEmployer()
         .$fragment(fragment);
     },
-    asFreelancer: async (root, _args, { prisma }, info) => {
+    asFreelancer: (root, _args, { prisma }, info) => {
       const fragment = createFragment(
         info,
         'AsFreelancerFromUser',
