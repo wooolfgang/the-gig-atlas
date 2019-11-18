@@ -1,5 +1,4 @@
 import axios from 'axios';
-import argon2 from 'argon2';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
 import { createAuth, createUser } from '../auth/util';
@@ -11,6 +10,22 @@ const reqConfig = { headers: { Authorization: '' } };
 const createdThreadIds = [];
 
 beforeAll(async () => {
+  try {
+    await prisma.createThreadTag({
+      name: 'freelance',
+    });
+  } catch (e) {
+    console.log('fail gracefully');
+  }
+
+  try {
+    await prisma.createThreadTag({
+      name: 'discuss',
+    });
+  } catch (e) {
+    console.log('fail gracefully');
+  }
+
   const userInput = {
     email: 'averagejoe123@gmail.com',
     password: 'password',
@@ -42,7 +57,7 @@ describe('Test thread resolvers', () => {
     const thread = {
       title: 'What is love?',
       body: "Baby don't hurt me, don't hurt me no more",
-      tags: ['WEBDEV', 'DISCUSS'],
+      tags: ['freelance', 'discuss'],
     };
 
     let res;
@@ -62,7 +77,10 @@ describe('Test thread resolvers', () => {
                 comments {
                   id
                 }
-                tags
+                tags {
+                  id
+                  name
+                }
               }
             }
           `,
@@ -82,7 +100,7 @@ describe('Test thread resolvers', () => {
     expect(createThread.title).toBe(thread.title);
     expect(createThread.postedBy.id).toBe(normalUser.id);
     expect(createThread.comments).toEqual([]);
-    expect(createThread.tags).toEqual(thread.tags);
+    expect(createThread.tags.map(t => t.name)).toEqual(thread.tags);
   });
 
   it('Creates a parent comment, and connects to children comment properly', async () => {

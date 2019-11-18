@@ -51,6 +51,7 @@ const ThreadCreate = () => {
             onSubmit={async values => {
               try {
                 setIsSubmitting(true);
+                console.log(values);
                 const res = await createThread({
                   variables: { input: values },
                 });
@@ -85,7 +86,10 @@ const ThreadCreate = () => {
                   isMulti
                   options={
                     threadTags &&
-                    threadTags.threadTags.map(t => ({ label: t, value: t }))
+                    threadTags.threadTags.map(t => ({
+                      label: t.name,
+                      value: t.name,
+                    }))
                   }
                 />
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>

@@ -26,6 +26,25 @@ export const USER_AUTH = gql`
   }
 `;
 
+export const GET_USER = gql`
+  query GET_USER($where: UserWhereUniqueInput!) {
+    getUser(where: $where) {
+      id
+      firstName
+      lastName
+      asFreelancer {
+        id
+        website
+        location
+        socials {
+          id
+          type
+        }
+      }
+    }
+  }
+`;
+
 // MUTATIONS
 
 // note => mutation must return user as reference for chaching

@@ -1,5 +1,6 @@
 type Query {
   user: User!
+  getUser (where: UserWhereUniqueInput!): User!
 }
 
 type Mutation {
@@ -20,6 +21,7 @@ type User {
   asFreelancer: Freelancer
   isEmailVerified: Boolean
   onboardingStep: OnboardingStep # type taken from generated
+  avatar: File
 }
 
 enum AccountType {

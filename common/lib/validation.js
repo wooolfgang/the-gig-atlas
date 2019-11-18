@@ -11,13 +11,10 @@ export const userRoleRegex = /^(ADMIN|MEMBER)$/;
 export const jobTypeRegex = /^(FULL_TIME|PART_TIME|CONTRACT)$/;
 export const paymentTypeRegex = /^(HOURLY|FIXED)$/;
 export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
-export const threadTagRegex = /^(FREELANCE|DESIGN|DISCUSS|WEBDEV|PRODUCTIVITY)$/;
+export const threadTagRegex = /^(freelance|design|discuss|webdev|productivity)$/;
 export const accountTypeRegex = /^(FREELANCER|EMPLOYER)$/;
-export const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm; // [ref] => https://www.regextester.com/94502
 
 export const id = yup.string();
-
-// fields
 
 const accountType = yup
   .string()
@@ -25,8 +22,8 @@ const accountType = yup
   .required('Account type is required');
 
 export const website = yup
-  .string('Website must be a string');
-  // .matches(urlRegex, 'Website must be a valid url');
+  .string('Website must be a string')
+  .url('Must be a proper url');
 
 // user
 export const email = yup
@@ -190,7 +187,7 @@ export const threadInput = yup.object().shape({
   tags: yup
     .array()
     .of(yup.string().matches(threadTagRegex, 'Invalid thread tag'))
-    .required(),
+    .nullable(),
 });
 
 // thread comment

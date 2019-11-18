@@ -16,6 +16,7 @@ const seeds = {
   'test-plan': planModule.dailyTestPlan,
   // product: require('./product').default,
   thread: require('./thread').default,
+  threadTag: require('./threadTag').default,
 };
 
 const toSeeds = [];
