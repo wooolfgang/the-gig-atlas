@@ -8,6 +8,11 @@ import CustomField from '../CustomField';
 import { ONBOARDING_EMPLOYER } from '../../graphql/user';
 import router from '../../utils/router';
 
+const labelStyle = {
+  flex: '1',
+  marginRight: '.5rem',
+};
+
 const Employer = () => {
   const [onboardingEmployer] = useMutation(ONBOARDING_EMPLOYER);
   let isFinished = false; // double click optimization
@@ -57,18 +62,21 @@ const Employer = () => {
               { label: 'Personal', value: 'PERSONAL' },
             ]}
             help="Select what type of employer you are"
+            labelStyle={labelStyle}
           />
           <Field
             name="displayName"
             label="Business name"
             component={CustomField}
             help="To display your business name"
+            labelStyle={labelStyle}
           />
           <Field
             name="email"
             label="Contact email"
             component={CustomField}
             help="Input contact email"
+            labelStyle={labelStyle}
           />
           <Field
             name="introduction"
@@ -76,6 +84,7 @@ const Employer = () => {
             type="textarea"
             component={CustomField}
             help="Write something about your business (Optional)"
+            labelStyle={labelStyle}
           />
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button
