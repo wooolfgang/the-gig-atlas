@@ -169,7 +169,7 @@ export const freelancerPortfolioInput = yup.object().shape({
         url: yup.string(),
       }),
     )
-    .min(1, 'Please add at least 1 social'),
+    .min(0),
   skills: yup
     .array()
     .of(yup.string())
