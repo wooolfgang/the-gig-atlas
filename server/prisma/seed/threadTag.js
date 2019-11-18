@@ -32,6 +32,5 @@ export default async () => {
     console.log('created new threadTags:\n', newThreadTags);
   } catch (e) {
     console.error('error on inserting threadTags(s)\n', e);
-    process.exit(1);
   }
 };

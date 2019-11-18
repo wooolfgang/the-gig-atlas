@@ -10,22 +10,6 @@ const reqConfig = { headers: { Authorization: '' } };
 const createdThreadIds = [];
 
 beforeAll(async () => {
-  try {
-    await prisma.createThreadTag({
-      name: 'freelance',
-    });
-  } catch (e) {
-    console.log('fail gracefully');
-  }
-
-  try {
-    await prisma.createThreadTag({
-      name: 'discuss',
-    });
-  } catch (e) {
-    console.log('fail gracefully');
-  }
-
   const userInput = {
     email: 'averagejoe123@gmail.com',
     password: 'password',

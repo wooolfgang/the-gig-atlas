@@ -72,6 +72,7 @@ const employerQuery = `
       id
       onboardingStep
       asEmployer {
+        id
         employerType
         displayName
         email
@@ -138,7 +139,8 @@ describe('User onboarding', () => {
       displayName: 'The Power Lattice',
       email: 'power@gmail.com',
       introduction: 'Im good',
-      website: 'pwer.com',
+      website: 'https://www.pwer.com',
+      avatarFileId: '',
     };
     const { onboardingEmployer: oe } = await debugPost({
       query: employerQuery,
@@ -208,7 +210,8 @@ describe('User onboarding', () => {
       displayName: 'The Power Lattice',
       email: 'power@gmail.com',
       introduction: 'Im good',
-      website: 'power.com',
+      website: 'https://www.pwer.com',
+      avatarFileId: '',
     };
     const { onboardingEmployer: oe } = await debugPost({
       query: employerQuery,
