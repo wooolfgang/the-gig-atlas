@@ -3,7 +3,7 @@ import { isAuthenticated } from '../utils/rules';
 
 export default {
   Mutation: {
-    uploadImage: isAuthenticated,
+    uploadImage: allow,
     createFile: isAuthenticated,
   },
   Query: {
