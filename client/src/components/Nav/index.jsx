@@ -16,8 +16,7 @@ import router from '../../utils/router';
 import SearchIcon from '../../icons/Search';
 import { color } from '../../utils/theme';
 
-// eslint-disable-next-line react/prop-types
-const NotAuthenticated = ({ user }) => (
+const NotAuthenticated = () => (
   <NavLinks>
     <NavLink style={{ marginRight: '20px' }} href="/community">
       Community
@@ -25,11 +24,9 @@ const NotAuthenticated = ({ user }) => (
     <NavLink style={{ marginRight: '20px' }} href="/gigs">
       Gigs
     </NavLink>
-    {user && (
-      <NavLink style={{ marginRight: '20px' }} href="/login">
-        Login
-      </NavLink>
-    )}
+    <NavLink style={{ marginRight: '20px' }} href="/login">
+      Login
+    </NavLink>
     <NavLink href="/gig/tech/create">
       <PostGigButton>Post A Gig</PostGigButton>
     </NavLink>
