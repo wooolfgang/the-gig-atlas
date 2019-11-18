@@ -3,6 +3,7 @@ import { ApolloClient, InMemoryCache, ApolloLink, concat } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
 import { createUploadLink as CreateUploadLink } from 'apollo-upload-client';
 import getConfig from 'next/config';
+import { header } from '@shared/common';
 import { persistCache } from 'apollo-cache-persist';
 import auth from './auth';
 
@@ -10,7 +11,6 @@ const { publicRuntimeConfig } = getConfig();
 const isServer = typeof window === 'undefined';
 let apolloClient = null;
 
-// const endpoint = publicRuntimeConfig.uriServerGql;
 // => Polyfill fetch() on the server (used by apollo-client)
 if (isServer) {
   global.fetch = fetch;
@@ -31,7 +31,7 @@ function create(initialState, ctx) {
     const token = auth.getToken(ctx);
     operation.setContext({
       headers: {
-        authorization: token,
+        authorization: header.setAuthorization(token),
       },
     });
 

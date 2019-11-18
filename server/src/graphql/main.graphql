@@ -12,4 +12,5 @@ scalar DateTime
 # import Queries.*, Mutations.*, * from './checkout/schema.graphql'
 # import Queries.*, Mutations.*, * from './product/schema.graphql'
 # import Queries.*, Mutations.*, * from './freelancer/schema.graphql'
+# import Queries.*, Mutations.*, * from './subscription/schema.graphql'
 # import Queries.*, Mutations.*, * from './thread/schema.graphql'

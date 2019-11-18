@@ -11,6 +11,7 @@ type Mutation {
 }
 
 input SignupInput {
+  accountType: String!
   email: String!
   firstName: String!
   lastName: String!

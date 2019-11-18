@@ -26,7 +26,7 @@ export const SKIP_FREELANCER_ONBOARDING = gql`
 export const GET_NEWEST_FREELANCERS = gql`
   query GET_NEWEST_FREELANCERS {
     freelancers(
-      where: { asUser: { freelancerOnboardingStep: FINISHED } }
+      where: { asUser: { onboardingStep: null } }
       orderBy: createdAt_DESC
       first: 4
     ) {

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import config from '../../config';
-import { prisma } from '../../generated/prisma-client';
+import prisma from '../../prisma';
+import debugReq from '../utils/req_debug';
+import { createUser } from '../auth/util';
 
 const { testUrl } = config;
 
@@ -9,6 +11,7 @@ const userInput = {
   lastName: 'ool',
   email: 'nico@gmail.com',
   password: 'asdfksdfjs;ldjfksadf',
+  onboardingStep: 'EMPLOYER',
 };
 const inputGig = {
   title: 'Testing App',
@@ -32,36 +35,18 @@ const input = {
   },
   gig: inputGig,
 };
+let userAuth;
 let token;
+let debugPost;
+let fileId;
 
 beforeAll(async () => {
-  const res = await axios.post(testUrl, {
-    query: `
-      mutation Test($input: SignupInput!) {
-        signup(input: $input) {
-          id
-          token
-        }
-      }
-    `,
-    variables: { input: userInput },
-  });
-  const file = await axios.post(testUrl, {
-    query: `
-      mutation ($file: FileInput!) {
-        createFile(file: $file) {
-          id
-        }
-      }
-    `,
-    variables: {
-      file: {
-        name: 'this is a file',
-      },
-    },
-  });
-  input.employer.avatarFileId = file.data.data.createFile.id;
-  token = res.data.data.signup.token;
+  userAuth = await createUser(userInput);
+  debugPost = debugReq.createDebugPost.withAuth(testUrl, userAuth);
+  const file = await prisma.createFile({ name: 'this is a file' });
+
+  fileId = file.id;
+  input.employer.avatarFileId = file.id;
 });
 
 afterAll(async () => {
@@ -71,14 +56,18 @@ afterAll(async () => {
     // eslint-disable-next-line no-console
     console.log(e);
   }
+  try {
+    await prisma.deleteFile({ id: fileId });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
 });
 
 describe('Employer crud operation', () => {
   it('sets logged member as employer together with posted gig', async () => {
-    const res = await axios.post(
-      testUrl,
-      {
-        query: `
+    const res = await debugPost({
+      query: `
           mutation Test($employer: EmployerInput!, $gig: GigInput!) {
             setEmployer(employer: $employer, gig: $gig) {
               id
@@ -86,9 +75,9 @@ describe('Employer crud operation', () => {
               gigs {
                 id
                 title
-                communicationType
+                communicationType 
                 description
-                technologies
+                technologies 
                 projectType
                 paymentType
                 minFee
@@ -98,12 +87,10 @@ describe('Employer crud operation', () => {
             }
           }
         `,
-        variables: { ...input },
-      },
-      { headers: { Authorization: token } },
-    );
+      variables: { ...input },
+    });
 
-    const { employerType, gigs } = res.data.data.setEmployer;
+    const { employerType, gigs } = res.setEmployer;
     // eslint-disable-next-line no-unused-vars
     const { id, ...insertedGig } = gigs[0];
 
@@ -112,10 +99,8 @@ describe('Employer crud operation', () => {
   });
 
   it('queries user as employer with gig', async () => {
-    const res = await axios.post(
-      testUrl,
-      {
-        query: `
+    const res = await debugPost({
+      query: `
           query {
             user {
               id
@@ -134,11 +119,9 @@ describe('Employer crud operation', () => {
             }
           }
         `,
-      },
-      { headers: { Authorization: token } },
-    );
+    });
 
-    const user = res.data.data.user;
+    const user = res.user;
     const employer = user.asEmployer;
     const gig = employer.gigs[0];
 
@@ -148,10 +131,8 @@ describe('Employer crud operation', () => {
   });
 
   it('disallow re-setting of employer', async () => {
-    const res = await axios.post(
-      testUrl,
-      {
-        query: `
+    const reqData = {
+      query: `
           mutation Test($employer: EmployerInput!, $gig: GigInput!) {
             setEmployer(employer: $employer, gig: $gig) {
               id
@@ -171,10 +152,15 @@ describe('Employer crud operation', () => {
             }
           }
         `,
-        variables: { ...input },
-      },
-      { headers: { Authorization: token } },
-    );
-    expect(res.data.errors[0].message).toBe('Already an Employer');
+      variables: { ...input },
+    };
+
+    try {
+      await debugPost(reqData, {}, false);
+      // eslint-disable-next-line no-undef
+      fail('NO BUG RESULT!: Something went wrong with employer re-setting');
+    } catch (e) {
+      expect(e.message).toBe('Already an Employer');
+    }
   });
 });

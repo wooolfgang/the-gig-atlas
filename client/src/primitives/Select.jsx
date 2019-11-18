@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactSelect from 'react-select';
@@ -37,14 +38,18 @@ const Select = ({
   ...props
 }) => (
   <ReactSelect
-    value={options.filter(o => o.value === defaultValue)[0]}
+    value={options.find(o => o.value === defaultValue)}
     styles={customStyles}
     options={options}
     isClearable={isClearable}
     hasError={hasError}
     onChange={val => {
-      const newValue = val ? val.map(v => v.value) : [];
-      onChange({ target: { name, value: newValue } });
+      if (val instanceof Array) {
+        const newValue = val ? val.map(v => v.value) : [];
+        onChange({ target: { name, value: newValue } });
+      } else {
+        onChange({ target: { name, value: val.value } });
+      }
     }}
     {...props}
   />
@@ -53,7 +58,7 @@ const Select = ({
 Select.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
-      title: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
     }),
   ),

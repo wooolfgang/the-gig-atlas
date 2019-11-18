@@ -17,8 +17,8 @@ type Employer {
   introduction: String
   email: String
   employerType: EmployerType
-  avatar: File!
-  gigs: [Gig]!
+  avatar: File
+  gigs: [Gig]
 }
 
 input EmployerInput {

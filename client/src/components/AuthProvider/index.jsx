@@ -11,7 +11,7 @@ import Button from '../../primitives/Button';
  * @param {Function} handler handles popup window event
  */
 const openPopup = (url, name, handler) => {
-  const width = 600;
+  const width = 500;
   const height = 600;
   const left = window.innerWidth / 2 - width / 2;
   const top = window.innerHeight / 2 - height / 2;
@@ -62,7 +62,10 @@ const AuthProvider = ({ oauthURL }) => {
       /**
        * @TODO handle error received upon failed authnetication
        */
-      console.log('received errors: ', errors);
+      console.error('received errors: ');
+      console.error(errors);
+      const query = { message: 'Server Error' };
+      router.toError({}, query);
     }
   };
 

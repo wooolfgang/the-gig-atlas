@@ -1,52 +1,28 @@
 import axios from 'axios';
-import argon2 from 'argon2';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
+import { createAuth, createUser } from '../auth/util';
 
 const { testUrl } = config;
 
-const normalUser = {
-  id: null,
-  token: null,
-};
+let normalUser;
+const reqConfig = { headers: { Authorization: '' } };
 const createdThreadIds = [];
 
 beforeAll(async () => {
-  const password = 'password';
-  const hashed = await argon2.hash(password);
-  const user = await prisma.createUser({
+  const userInput = {
     email: 'averagejoe123@gmail.com',
-    password: hashed,
-  });
-
+    password: 'password',
+    role: 'MEMBER',
+  };
   try {
-    await prisma.createThreadTag({
-      name: 'freelance',
-    });
+    const user = await createUser(userInput);
+    const auth = await createAuth(user.id, 'MEMBER');
+    normalUser = auth;
+    reqConfig.headers.Authorization = `Bearer ${auth.token}`;
   } catch (e) {
-    console.log('fail gracefully');
+    console.error('on create auth failed, ', e);
   }
-
-  try {
-    await prisma.createThreadTag({
-      name: 'discuss',
-    });
-  } catch (e) {
-    console.log('fail gracefully');
-  }
-
-  const res = await axios.post(testUrl, {
-    query: `
-      mutation {
-        login(email: "${user.email}", password: "${password}") {
-          id
-          token
-        }
-      }
-    `,
-  });
-  normalUser.id = user.id;
-  normalUser.token = res.data.data.login.token;
 });
 
 afterAll(async () => {
@@ -96,7 +72,7 @@ describe('Test thread resolvers', () => {
             input: thread,
           },
         },
-        { headers: { Authorization: normalUser.token } },
+        reqConfig,
       );
     } catch (e) {
       console.log(JSON.stringify(e));
@@ -147,7 +123,7 @@ describe('Test thread resolvers', () => {
             input: parentComment,
           },
         },
-        { headers: { Authorization: normalUser.token } },
+        reqConfig,
       );
     } catch (e) {
       console.log(JSON.stringify(e));
@@ -191,7 +167,7 @@ describe('Test thread resolvers', () => {
             input: childrenComment,
           },
         },
-        { headers: { Authorization: normalUser.token } },
+        reqConfig,
       );
     } catch (e) {
       JSON.stringify(e);

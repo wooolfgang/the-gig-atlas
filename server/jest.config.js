@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 // import config from '../src/config';
 
+const isTest = process.env.NODE_ENV === 'test';
+
 module.exports = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -52,10 +54,10 @@ module.exports = {
   // forceCoverageMatch: [],
 
   // A path to a module which exports an async function that is triggered once before all test suites
-  globalSetup: `${__dirname}/global-setup.js`,
+  globalSetup: isTest ? `${__dirname}/global-setup.js` : null,
 
   // A path to a module which exports an async function that is triggered once after all test suites
-  globalTeardown: `${__dirname}/global-teardown.js`,
+  globalTeardown: isTest ? `${__dirname}/global-teardown.js` : null,
 
   // A set of global variables that need to be available in all test environments
   // globals: {},
