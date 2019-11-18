@@ -6,6 +6,7 @@ type User {
   password: String!
   role: UserRole! @default(value: MEMBER)
   createdAt: DateTime! @createdAt
+  avatar: File
   
   asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE) #// cascade deltes also related employer
   asFreelancer: Freelancer @unique @relation(name: "AsFreelancer", link: INLINE, onDelete: CASCADE)
@@ -53,7 +54,6 @@ type Freelancer {
   updatedAt: DateTime! @updatedAt
   asUser: User @unique @relation(name: "AsFreelancer")
   bio: String
-  avatar: File
   website: String
   location: String
   timezone: String
@@ -225,7 +225,7 @@ type Thread {
   body: String!
   viewCount: Int! @default(value: 0)
   upvoteCount: Int! @default(value: 1)
-  tags: [ThreadTag!]! @scalarList(strategy: RELATION)
+  tags: [ThreadTag!]!
   
   postedBy: User! @relation(name: "ThreadsByUser")
   comments: [Comment]! @relation(name: "ThreadComments", onDelete: "CASCADE")
@@ -247,10 +247,9 @@ type Comment {
   postedBy: User! @relation(name: "CommentsByUser")
 }
 
-enum ThreadTag {
-  FREELANCE
-  DESIGN
-  DISCUSS
-  WEBDEV
-  PRODUCTIVITY
+# Use Type instead of Enum because an Enum (scalarList) type is not queryable
+# See -> https://github.com/prisma/prisma/issues/2930
+type ThreadTag {
+  id: ID! @id
+  name: String @unique
 }

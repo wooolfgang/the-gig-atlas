@@ -1,5 +1,4 @@
 import { createFragment } from '../utils/fragment';
-import prisma from '../../prisma';
 
 const onboardingResFrag = `
   fragment EmpOnbdRes on User {
@@ -10,7 +9,7 @@ const onboardingResFrag = `
   }
 `;
 
-async function onboardingPersonal(_, { input }, { user: auth }) {
+async function onboardingPersonal(_, { input }, { user: auth, prisma }) {
   const { accountType, firstName, lastName } = input;
   const { id } = auth;
   const fragment = `
@@ -61,7 +60,7 @@ async function onboardingPersonal(_, { input }, { user: auth }) {
     .$fragment(onboardingResFrag);
 }
 
-async function onboardingEmployer(_, { input }, { user: auth }) {
+async function onboardingEmployer(_, { input }, { user: auth, prisma }) {
   const { id } = auth;
   const { avatarFileId, ...employer } = input;
   const userFrag = `
@@ -98,7 +97,12 @@ async function onboardingEmployer(_, { input }, { user: auth }) {
     .$fragment(onboardingResFrag);
 }
 
-async function onboardingFreelancer(_, { input }, { user: auth }, info) {
+async function onboardingFreelancer(
+  _,
+  { input },
+  { user: auth, prisma },
+  info,
+) {
   const { id } = auth;
   // const { avatarFileId, ...create } = input;
   const userFrag = `
@@ -148,20 +152,22 @@ async function onboardingFreelancer(_, { input }, { user: auth }, info) {
 
 export default {
   Query: {
-    user: (_, _args, { user: { id } }, info) => prisma.user({ id }, info),
+    user: (_, _args, { prisma, user: { id } }, info) =>
+      prisma.user({ id }, info),
+    getUser: (_, args, { prisma }, info) => prisma.user(args.where, info),
   },
   Mutation: {
     onboardingPersonal,
     onboardingEmployer,
     onboardingFreelancer,
-    deleteUser: async (_, { id }) => {
+    deleteUser: async (_, { id }, { prisma }) => {
       const res = await prisma.deleteUser({ id });
 
       return !!res;
     },
   },
   User: {
-    asEmployer: async (root, _args, _, info) => {
+    asEmployer: async (root, _args, { prisma }, info) => {
       const fragment = createFragment(info, 'AsEmployerFromUser', 'Employer');
 
       return prisma
@@ -169,7 +175,7 @@ export default {
         .asEmployer()
         .$fragment(fragment);
     },
-    asFreelancer: (root, _args, _, info) => {
+    asFreelancer: (root, _args, { prisma }, info) => {
       const fragment = createFragment(
         info,
         'AsFreelancerFromUser',
@@ -179,6 +185,13 @@ export default {
       return prisma
         .user({ id: root.id })
         .asFreelancer()
+        .$fragment(fragment);
+    },
+    avatar: async (root, _args, { prisma }, info) => {
+      const fragment = createFragment(info, 'AvatarFromUser', 'Avatar');
+      return prisma
+        .user({ id: root.id })
+        .avatar()
         .$fragment(fragment);
     },
   },

@@ -40,13 +40,12 @@ export const GET_AUTHENTICATED_USER = gql`
       }
       asFreelancer {
         id
-        avatar {
-          name
-          contentType
-          url
-        }
         isPrivate
         isForHire
+      }
+      avatar {
+        id
+        url
       }
     }
   }

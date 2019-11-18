@@ -50,7 +50,7 @@ const LoginSignup = () => (
   </NavLinks>
 );
 
-const AuthenticatedFreelancer = withRouter(({ router: { route } }) => (
+const AuthenticatedFreelancer = withRouter(({ router: { route }, user }) => (
   <NavLinks>
     <Button
       styleType={route === '/thread/create' ? 'default' : 'primary'}
@@ -62,6 +62,7 @@ const AuthenticatedFreelancer = withRouter(({ router: { route } }) => (
     <div>
       <Avatar
         style={{ width: '38px', height: '38px', marginLeft: '1.5rem' }}
+        src={user && user.avatar && user.avatar.url}
         onClick={() => {
           auth.logout();
           router.toIndex();
@@ -78,7 +79,7 @@ const NavType = {
   LOGIN_SIGNUP: LoginSignup,
 };
 
-const Nav = ({ type }) => {
+const Nav = ({ type, user }) => {
   const NavContent = NavType[type];
 
   if (!NavContent) {
@@ -118,7 +119,7 @@ const Nav = ({ type }) => {
             </SearchContainer>
           )}
           {size === 'desktop' || size === 'giant' || !size ? (
-            <NavContent />
+            <NavContent user={user} />
           ) : (
             <div>Menu</div>
           )}
@@ -130,6 +131,17 @@ const Nav = ({ type }) => {
 
 Nav.propTypes = {
   type: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.string,
+    email: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    isEmailVerified: PropTypes.bool,
+    avatar: PropTypes.shape({
+      id: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
 export default Nav;

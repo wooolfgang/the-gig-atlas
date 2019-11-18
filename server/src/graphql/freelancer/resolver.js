@@ -1,21 +1,22 @@
 import { createFragment } from '../utils/fragment';
-import prisma from '../../prisma';
 
 export default {
   Mutation: {},
+
   Query: {
-    freelancers: async (_, args, _ctx, info) => prisma.freelancers(args, info),
+    freelancers: async (_, args, { prisma }, info) =>
+      prisma.freelancers(args, info),
   },
 
   Freelancer: {
-    asUser: async (root, _args, _ctx, info) => {
+    asUser: async (root, _args, { prisma }, info) => {
       const fragment = createFragment(info, 'UserFromFreelancer', 'Freelancer');
       return prisma
         .freelancer({ id: root.id })
         .asUser()
         .$fragment(fragment);
     },
-    avatar: async (root, _args, _ctx, info) => {
+    avatar: async (root, _args, { prisma }, info) => {
       const fragment = createFragment(
         info,
         'AvatarFromFreelancer',
@@ -23,10 +24,12 @@ export default {
       );
       return prisma
         .freelancer({ id: root.id })
+        .asUser()
         .avatar()
         .$fragment(fragment);
     },
-    portfolio: root => prisma.freelancer({ id: root.id }).portfolio(),
-    socials: ({ id }) => prisma.freelancer({ id }).socials(),
+    portfolio: (root, args, { prisma }) =>
+      prisma.freelancer({ id: root.id }).portfolio(),
+    socials: ({ id }, args, { prisma }) => prisma.freelancer({ id }).socials(),
   },
 };
