@@ -1,4 +1,4 @@
-import { purify } from './rules';
+import { purify, dompurify } from './rules';
 
 describe('dompurify', () => {
   it('Purify function properly works', () => {
@@ -23,5 +23,22 @@ describe('dompurify', () => {
     };
     const fields = ['person', 'description'];
     expect(() => purify(fields, input)).toThrowError();
+  });
+
+  it('should ignore not requried field', () => {
+    const input = {
+      person: {
+        name: 'jansel',
+      },
+    };
+
+    // const field = { name: 'person.description', isRequired: false };
+    const fields = ['person', 'description'];
+    let res;
+    expect(() => {
+      res = purify(fields, input, false);
+      return res;
+    }).not.toThrowError();
+    expect(res.description).toBe(undefined);
   });
 });
