@@ -8,8 +8,8 @@ import { createAuth, createUser, loginUser } from './util';
  * Resolver for handling user password
  */
 const signup = (_, { input }) => {
-  const { accountType, ...create } = input;
-  create.onboardingStep = accountType;
+  const { ...create } = input;
+  create.onboardingStep = 'PERSONAL';
 
   return createUser(create);
 };

@@ -6,6 +6,7 @@ const onboardingResFrag = `
     firstName
     lastName
     onboardingStep
+    accountType
   }
 `;
 
@@ -55,6 +56,7 @@ async function onboardingPersonal(_, { input }, { user: auth, prisma }) {
         firstName,
         lastName,
         onboardingStep,
+        accountType,
         avatar: {
           connect: {
             id: avatarFileId,

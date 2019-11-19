@@ -27,6 +27,7 @@ export const GET_AUTHENTICATED_USER = gql`
       isEmailVerified
       onboardingStep
       role
+      accountType
       asEmployer {
         id
         employerType
