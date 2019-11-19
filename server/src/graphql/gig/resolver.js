@@ -2,6 +2,7 @@ import uuidv4 from 'uuid/v4';
 import argon2 from 'argon2';
 // eslint-disable-next-line import/no-cycle
 import { transformEmployerInput } from '../employer/resolver';
+import prisma from '../../prisma';
 
 export function transformGigInput(gigInput) {
   return {
@@ -13,14 +14,13 @@ export function transformGigInput(gigInput) {
 }
 export default {
   Query: {
-    gigs: (_, args, { prisma }) => prisma.gigs(args),
-    searchGigs: (_, { search }, { prisma }) =>
+    gigs: (_, args) => prisma.gigs(args),
+    searchGigs: (_, { search }) =>
       prisma.gigs({ where: { title_contains: search } }),
-    gigsListLanding: (_, args, { prisma }) =>
-      prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
+    gigsListLanding: () => prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
   },
   Mutation: {
-    createGig: async (_, { gig, employer }, { prisma }) => {
+    createGig: async (_, { gig, employer }) => {
       const existingUser = await prisma.$exists.user({ email: employer.email });
       const password = await argon2.hash(uuidv4());
       const createGigInput = {
@@ -46,13 +46,13 @@ export default {
       };
       return prisma.createGig(createGigInput);
     },
-    deleteGig: async (_, args, { prisma }) => {
+    deleteGig: async (_, args) => {
       await prisma.deleteGig(args);
 
       return true;
     },
   },
   Gig: {
-    employer: ({ id }, _, { prisma }) => prisma.gig({ id }).employer(),
+    employer: ({ id }) => prisma.gig({ id }).employer(),
   },
 };

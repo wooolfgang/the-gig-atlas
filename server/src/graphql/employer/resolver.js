@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-cycle
 import { transformGigInput } from '../gig/resolver';
+import prisma from '../../prisma';
 
 export function transformEmployerInput({
   displayName,
@@ -30,7 +31,7 @@ export default {
       ctx.prisma.employers({ where: { name_contains: name } }),
   },
   Mutation: {
-    setEmployer: async (_, { employer, gig }, { prisma, user }) => {
+    setEmployer: async (_, { employer, gig }, { user }) => {
       const exist = await prisma.user({ id: user.id }).asEmployer();
       if (exist) {
         throw new Error('Already an Employer');
@@ -46,8 +47,8 @@ export default {
     },
   },
   Employer: {
-    gigs: ({ id }, _, { prisma }) => prisma.employer({ id }).gigs(),
-    avatar: ({ id }, _, { prisma }) => prisma.employer({ id }).avatar(),
-    asUser: ({ id }, _, { prisma }) => prisma.employer({ id }).asUser(),
+    gigs: ({ id }) => prisma.employer({ id }).gigs(),
+    avatar: ({ id }) => prisma.employer({ id }).avatar(),
+    asUser: ({ id }) => prisma.employer({ id }).asUser(),
   },
 };
