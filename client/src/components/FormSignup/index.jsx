@@ -20,9 +20,15 @@ const SignupLocal = () => {
         onSubmit={async values => {
           setIsSubmitting(true);
           try {
-            const { errors, data } = await await signup({
+            const res = await signup({
               variables: { input: values },
             });
+
+            if (!res) {
+              throw new Error('Failed to signup');
+            }
+
+            const { errors, data } = res;
             if (errors) {
               throw errors;
             }
@@ -64,20 +70,7 @@ const SignupLocal = () => {
                 { label: 'Employer', value: 'EMPLOYER' },
               ]}
               help="Select which account you would like to use"
-            />
-            <Field
-              name="firstName"
-              type="text"
-              label="First Name"
               labelStyle={{ marginBottom: '.6rem' }}
-              component={CustomField}
-            />
-            <Field
-              name="lastName"
-              type="text"
-              label="Last Name"
-              labelStyle={{ marginBottom: '.6rem' }}
-              component={CustomField}
             />
             <Field
               name="email"

@@ -6,11 +6,12 @@ const onboardingResFrag = `
     firstName
     lastName
     onboardingStep
+    accountType
   }
 `;
 
 async function onboardingPersonal(_, { input }, { user: auth, prisma }) {
-  const { accountType, firstName, lastName } = input;
+  const { accountType, firstName, lastName, avatarFileId } = input;
   const { id } = auth;
   const fragment = `
       fragment PersonalOnboard on User {
@@ -55,6 +56,12 @@ async function onboardingPersonal(_, { input }, { user: auth, prisma }) {
         firstName,
         lastName,
         onboardingStep,
+        accountType,
+        avatar: {
+          connect: {
+            id: avatarFileId,
+          },
+        },
       },
     })
     .$fragment(onboardingResFrag);
@@ -62,7 +69,7 @@ async function onboardingPersonal(_, { input }, { user: auth, prisma }) {
 
 async function onboardingEmployer(_, { input }, { user: auth, prisma }) {
   const { id } = auth;
-  const { avatarFileId, ...employer } = input;
+  const { ...employer } = input;
   const userFrag = `
       fragment EmpOnb on User {
         id

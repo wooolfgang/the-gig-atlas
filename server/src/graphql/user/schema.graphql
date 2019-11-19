@@ -22,6 +22,7 @@ type User {
   isEmailVerified: Boolean
   onboardingStep: OnboardingStep # type taken from generated
   avatar: File
+  accountType: AccountType
 }
 
 enum AccountType {
@@ -33,6 +34,7 @@ input PersonalInput {
   firstName: String!
   lastName: String!
   accountType: AccountType!
+  avatarFileId: ID!
 }
 
 input EmployerOnboardbIn {
