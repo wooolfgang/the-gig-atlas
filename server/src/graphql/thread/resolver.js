@@ -31,16 +31,8 @@ export default {
         {
           title,
           body,
-          tags: {
-            connect: tags.map(tag => ({
-              name: tag,
-            })),
-          },
-          postedBy: {
-            connect: {
-              id: user.id,
-            },
-          },
+          tags: { connect: tags.map(tag => ({ name: tag })) },
+          postedBy: { connect: { id: user.id } },
         },
         info,
       );
@@ -48,27 +40,16 @@ export default {
     createComment: async (_, { input }, { user }, info) => {
       const { text, threadId, parentId } = input;
       const isRoot = !parentId;
+      const parent = isRoot ? undefined : { connect: { id: parentId } };
+      console.log(parent);
+
       return prisma.createComment(
         {
           text,
           isRoot,
-          parent: parentId
-            ? {
-                connect: {
-                  id: parentId,
-                },
-              }
-            : {},
-          thread: {
-            connect: {
-              id: threadId,
-            },
-          },
-          postedBy: {
-            connect: {
-              id: user.id,
-            },
-          },
+          parent,
+          thread: { connect: { id: threadId } },
+          postedBy: { connect: { id: user.id } },
         },
         info,
       );
@@ -137,7 +118,7 @@ export default {
   },
 
   Comment: {
-    parent: (root, info) => {
+    parent: (root, _a, _c, info) => {
       const fragment = createFragment(info, 'ParentFromComment', 'Comment');
       return prisma
         .comment({ id: root.id })
