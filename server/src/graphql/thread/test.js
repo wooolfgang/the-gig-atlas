@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { validation } from '@shared/common';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
