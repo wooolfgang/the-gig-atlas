@@ -3,6 +3,7 @@ import google from '../../serverless/google';
 import github from '../../serverless/github';
 import { verifyToken } from '../utils/rules';
 import { createAuth, createUser, loginUser } from './util';
+import prisma from '../../prisma';
 
 /**
  * Resolver for handling user password
@@ -40,7 +41,7 @@ const checkValidToken = async (_, _1, { req }) => {
 /**
  * Resolver for handling providers OAuth
  */
-const oauth = async (_, { input }, { prisma }) => {
+const oauth = async (_, { input }) => {
   const { code, provider } = input;
   let data;
 
@@ -87,7 +88,7 @@ const oauthURL = () => ({
 /**
  * Get current logged in user
  */
-const authenticatedUser = async (root, args, { prisma, user }, info) =>
+const authenticatedUser = async (_r, _a, { user }, info) =>
   prisma.user({ id: user.id }, info);
 
 export default {
