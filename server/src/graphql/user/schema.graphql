@@ -33,6 +33,7 @@ input PersonalInput {
   firstName: String!
   lastName: String!
   accountType: AccountType!
+  avatarFileId: ID!
 }
 
 input EmployerOnboardbIn {

@@ -202,6 +202,7 @@ export const onboardingPersonal = yup.object().shape({
   accountType,
   firstName: name.required('First name is required'),
   lastName: name.required('Last name is required'),
+  avatarFileId,
 });
 
 export const onboardingEmployer = employerInput;
