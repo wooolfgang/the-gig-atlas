@@ -81,6 +81,7 @@ mutation ONBOARDING_PERSONAL($input: PersonalInput!) {
     onboardingStep
     firstName
     lastName
+    accountType
   }
 }
 `;
@@ -89,6 +90,7 @@ const employerQuery = `
     onboardingEmployer(input: $input) {
       id
       onboardingStep
+      accountType
       asEmployer {
         id
         employerType
@@ -106,6 +108,7 @@ const freelancerQuery = `
     onboardingFreelancer(input: $input) {
       id
       onboardingStep
+      accountType
       asFreelancer {
         id
         bio
@@ -152,6 +155,7 @@ describe('User onboarding', () => {
 
     expect(op.id).toBe(user.id);
     expect(op.onboardingStep).toBe('EMPLOYER');
+    expect(op.accountType).toBe('EMPLOYER');
 
     const employerinput = {
       employerType: 'COMPANY',
@@ -192,6 +196,7 @@ describe('User onboarding', () => {
     expect(op.onboardingStep).toBe(personalInput.accountType);
     expect(op.firstName).toBe(personalInput.firstName);
     expect(op.lastName).toBe(personalInput.lastName);
+    expect(op.accountType).toBe('FREELANCER');
 
     const freelanceIn = {
       bio: 'I am good',
