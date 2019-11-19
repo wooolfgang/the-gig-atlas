@@ -31,7 +31,13 @@ const signupFreelanceUser = {
   password: 'password',
   onboardingStep: 'FREELANCER',
 };
+const avatarFile = {
+  name: 'Avatar',
+  url:
+    'https://avatars3.githubusercontent.com/u/20152170?s=400&u=3a22690968ee9bb7f2d102cecabdac8823eeb018&v=4',
+};
 let users;
+let avatarFileId;
 
 beforeAll(async () => {
   try {
@@ -45,6 +51,13 @@ beforeAll(async () => {
     console.log('ERROR: create users');
     console.error(e);
   }
+
+  try {
+    const res = await prisma.createFile(avatarFile);
+    avatarFileId = res.id;
+  } catch (e) {
+    console.log('Error creating avatarFile', JSON.stringify(e));
+  }
 });
 
 afterAll(async () => {
@@ -53,6 +66,11 @@ afterAll(async () => {
     await prisma.deleteManyUsers({ id_in: ids });
   } catch (e) {
     // soft delete
+  }
+  try {
+    await prisma.deleteFile({ id: avatarFileId });
+  } catch (e) {
+    //
   }
 });
 
@@ -63,6 +81,7 @@ mutation ONBOARDING_PERSONAL($input: PersonalInput!) {
     onboardingStep
     firstName
     lastName
+    accountType
   }
 }
 `;
@@ -71,6 +90,7 @@ const employerQuery = `
     onboardingEmployer(input: $input) {
       id
       onboardingStep
+      accountType
       asEmployer {
         id
         employerType
@@ -88,6 +108,7 @@ const freelancerQuery = `
     onboardingFreelancer(input: $input) {
       id
       onboardingStep
+      accountType
       asFreelancer {
         id
         bio
@@ -125,6 +146,7 @@ describe('User onboarding', () => {
       firstName: 'Maria',
       lastName: 'Santos',
       accountType: 'EMPLOYER',
+      avatarFileId,
     };
     const { onboardingPersonal: op } = await debugPost({
       query: personalQuery,
@@ -133,6 +155,7 @@ describe('User onboarding', () => {
 
     expect(op.id).toBe(user.id);
     expect(op.onboardingStep).toBe('EMPLOYER');
+    expect(op.accountType).toBe('EMPLOYER');
 
     const employerinput = {
       employerType: 'COMPANY',
@@ -140,7 +163,6 @@ describe('User onboarding', () => {
       email: 'power@gmail.com',
       introduction: 'Im good',
       website: 'https://www.pwer.com',
-      avatarFileId: '',
     };
     const { onboardingEmployer: oe } = await debugPost({
       query: employerQuery,
@@ -163,6 +185,7 @@ describe('User onboarding', () => {
       firstName: 'Maria',
       lastName: 'Santos',
       accountType: 'FREELANCER',
+      avatarFileId,
     };
     const { onboardingPersonal: op } = await debugPost({
       query: personalQuery,
@@ -173,6 +196,7 @@ describe('User onboarding', () => {
     expect(op.onboardingStep).toBe(personalInput.accountType);
     expect(op.firstName).toBe(personalInput.firstName);
     expect(op.lastName).toBe(personalInput.lastName);
+    expect(op.accountType).toBe('FREELANCER');
 
     const freelanceIn = {
       bio: 'I am good',
@@ -211,7 +235,6 @@ describe('User onboarding', () => {
       email: 'power@gmail.com',
       introduction: 'Im good',
       website: 'https://www.pwer.com',
-      avatarFileId: '',
     };
     const { onboardingEmployer: oe } = await debugPost({
       query: employerQuery,

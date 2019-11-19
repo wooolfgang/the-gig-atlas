@@ -26,7 +26,6 @@ const Employer = () => {
         introduction: '',
         email: '',
         website: '',
-        avatarFileId: '',
       }}
       onSubmit={async (values, action) => {
         if (isFinished) {

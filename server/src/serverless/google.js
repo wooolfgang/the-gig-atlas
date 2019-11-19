@@ -27,12 +27,18 @@ async function getUserData(code) {
   const res = await plus.people.get({ userId: 'me' });
   const { id, emails, name, image } = res.data;
 
+  let imageUrl = null;
+  if (image && image.url) {
+    // Resize image to dimensions 200 x 200
+    imageUrl = image.url.replace('s50', 's200');
+  }
+
   return {
     id,
     email: emails[0].value,
     firstName: name.givenName,
     lastName: name.familyName,
-    imageUrl: image.url,
+    imageUrl,
     token: tokens,
   };
 }

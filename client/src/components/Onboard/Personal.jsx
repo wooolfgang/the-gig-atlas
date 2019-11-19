@@ -15,8 +15,7 @@ const labelStyle = {
 
 const Personal = ({ user }) => {
   let isFinished = false;
-  const { firstName, lastName, onboardingStep } = user;
-  const accountType = onboardingStep === 'PERSONAL' ? '' : onboardingStep;
+  const { firstName, lastName, avatar, accountType } = user;
   const [onboardingPersonal] = useMutation(ONBOARDING_PERSONAL, {
     onCompleted: data => {
       isFinished = true;
@@ -36,6 +35,7 @@ const Personal = ({ user }) => {
     <Formik
       validationSchema={common.validation.onboardingPersonal}
       initialValues={{
+        avatarFileId: avatar ? avatar.id : null,
         accountType,
         firstName: firstName || '',
         lastName: lastName || '',
@@ -57,6 +57,13 @@ const Personal = ({ user }) => {
       }}
       render={({ isSubmitting }) => (
         <Form>
+          <Field
+            name="avatarFileId"
+            label="Avatar"
+            help="Your avatar will be shown in your gig posting"
+            type="avatarupload"
+            component={CustomField}
+          />
           <Field
             name="accountType"
             type="select"
