@@ -1,6 +1,5 @@
 import { allow, chain } from 'graphql-shield';
 import common from '@shared/common';
-import * as yup from 'yup';
 import { validate, hasNoAuth, isAuthenticated } from '../utils/rules';
 
 export default {
@@ -12,7 +11,7 @@ export default {
   Mutation: {
     signup: chain(
       hasNoAuth,
-      validate(yup.object().shape({ input: common.validation.signupInput })),
+      validate.withShape({ input: common.validation.signupInput }),
     ),
     login: chain(hasNoAuth, validate(common.validation.signinInput)),
     oauth: hasNoAuth,

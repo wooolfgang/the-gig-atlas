@@ -8,8 +8,8 @@ import { createAuth, createUser, loginUser } from './util';
  * Resolver for handling user password
  */
 const signup = (_, { input }) => {
-  const { accountType, ...create } = input;
-  create.onboardingStep = accountType;
+  const { ...create } = input;
+  create.onboardingStep = 'PERSONAL';
 
   return createUser(create);
 };
@@ -52,7 +52,7 @@ const oauth = async (_, { input }, { prisma }) => {
     throw new Error('No provider');
   }
 
-  const { email, firstName, lastName } = data;
+  const { email, firstName, lastName, imageUrl } = data;
   const user = await prisma // => check user if already a member or not
     .user({ email })
     .$fragment('fragment Login on User { id role password }');
@@ -66,12 +66,22 @@ const oauth = async (_, { input }, { prisma }) => {
   } else {
     // => create new User if user dont exist
     logType = 'SIGNUP';
+
     const create = {
       email,
       firstName,
       lastName,
       isEmailVerified: true,
     };
+
+    if (imageUrl) {
+      create.avatar = {
+        create: {
+          name: 'Avatar Url',
+          url: imageUrl,
+        },
+      };
+    }
 
     authPayload = await createUser(create, prisma);
   }
