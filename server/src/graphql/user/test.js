@@ -31,13 +31,12 @@ const signupFreelanceUser = {
   password: 'password',
   onboardingStep: 'FREELANCER',
 };
-const avatarFile = {
+let avatarFile = {
   name: 'Avatar',
   url:
     'https://avatars3.githubusercontent.com/u/20152170?s=400&u=3a22690968ee9bb7f2d102cecabdac8823eeb018&v=4',
 };
 let users;
-let avatarFileId;
 
 beforeAll(async () => {
   try {
@@ -53,8 +52,9 @@ beforeAll(async () => {
   }
 
   try {
-    const res = await prisma.createFile(avatarFile);
-    avatarFileId = res.id;
+    avatarFile = await prisma.createFile(avatarFile);
+    // avatarFileId = res.id;
+    // console.log(avatarFileId);
   } catch (e) {
     console.log('Error creating avatarFile', JSON.stringify(e));
   }
@@ -63,14 +63,12 @@ beforeAll(async () => {
 afterAll(async () => {
   try {
     const ids = users.map(u => u.id);
-    await prisma.deleteManyUsers({ id_in: ids });
+    await Promise.all([
+      prisma.deleteManyUsers({ id_in: ids }),
+      prisma.deleteFile({ id: avatarFile.id }),
+    ]);
   } catch (e) {
     // soft delete
-  }
-  try {
-    await prisma.deleteFile({ id: avatarFileId });
-  } catch (e) {
-    //
   }
 });
 
@@ -141,12 +139,11 @@ describe('User onboarding', () => {
     const { token } = await createAuth(user.id, user.role);
     const headers = { Authorization: `Bearer ${token}` };
     const debugPost = createDebugPost(testUrl, { headers }); // => to avoid redundant debugging code
-
     const personalInput = {
+      avatarFileId: avatarFile.id,
       firstName: 'Maria',
       lastName: 'Santos',
       accountType: 'EMPLOYER',
-      avatarFileId,
     };
     const { onboardingPersonal: op } = await debugPost({
       query: personalQuery,
@@ -185,7 +182,7 @@ describe('User onboarding', () => {
       firstName: 'Maria',
       lastName: 'Santos',
       accountType: 'FREELANCER',
-      avatarFileId,
+      avatarFileId: avatarFile.id,
     };
     const { onboardingPersonal: op } = await debugPost({
       query: personalQuery,
