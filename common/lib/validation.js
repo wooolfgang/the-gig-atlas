@@ -41,8 +41,8 @@ export const userRole = yup.string().matches(userRoleRegex);
 export const signupInput = yup.object().shape({
   accountType,
   email: email.required('Email is required'),
-  firstName: name.required('First name is required'),
-  lastName: name.required('Last name is required'),
+  firstName: name.nullable(),
+  lastName: name.nullable(),
   password: password.required('Password is required'),
 });
 export const signinInput = yup.object().shape({
@@ -203,6 +203,7 @@ export const onboardingPersonal = yup.object().shape({
   accountType,
   firstName: name.required('First name is required'),
   lastName: name.required('Last name is required'),
+  avatarFileId,
 });
 
 export const onboardingEmployer = employerInput;

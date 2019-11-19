@@ -5,6 +5,7 @@ type User {
   email: String! @unique
   password: String!
   role: UserRole! @default(value: MEMBER)
+  accountType: AccountType
   createdAt: DateTime! @createdAt
   avatar: File
   
@@ -27,6 +28,11 @@ enum OnboardingStep {
 enum UserRole {
   ADMIN
   MEMBER
+}
+
+enum AccountType {
+  FREELANCER
+  EMPLOYER
 }
 
 type Employer {

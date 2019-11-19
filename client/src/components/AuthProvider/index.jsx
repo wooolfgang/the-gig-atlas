@@ -91,19 +91,40 @@ const AuthProvider = ({ oauthURL }) => {
         onClick={startAuth(oauthURL.google, 'Google OAuth')}
         disabled={isSigning}
         style={{
-          backgroundColor: '#4285F4',
-          color: 'white',
+          backgroundColor: '#white',
+          color: '#4285F4',
           marginBottom: '12px',
+          border: '2px solid #4285F4',
+          fontWeight: '500',
+          boxSizing: 'border-box',
         }}
       >
-        Continue With Google
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          Continue With Google
+          <img
+            src="/static/google-logo.png"
+            style={{ width: '1.1rem', height: '1rem', marginLeft: '8px' }}
+            alt="google-logo"
+          />
+        </div>
       </Button>
       <Button
         onClick={startAuth(oauthURL.github, 'Github OAuth')}
         disabled={isSigning}
-        style={{ backgroundColor: '#24292e', color: 'white' }}
+        style={{
+          backgroundColor: '#24292e',
+          color: 'white',
+          boxSizing: 'border-box',
+        }}
       >
-        Continue With Github
+        <div style={{ display: 'flex', alignItems: 'center', fontWeight: 500 }}>
+          Continue With Github
+          <img
+            src="/static/github-logo.png"
+            style={{ width: '1.1rem', height: '1rem', marginLeft: '8px' }}
+            alt="github-logo"
+          />
+        </div>
       </Button>
     </>
   );
