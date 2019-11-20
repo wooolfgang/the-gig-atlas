@@ -1,12 +1,14 @@
-import axios from 'axios';
+import { validation } from '@shared/common';
 import config from '../../config';
 import { prisma } from '../../generated/prisma-client';
 import { createAuth, createUser } from '../auth/util';
+import { createDebugPost } from '../utils/req_debug';
 
 const { testUrl } = config;
 
 let normalUser;
-const reqConfig = { headers: { Authorization: '' } };
+// const reqConfig = { headers: { Authorization: '' } };
+let debugPost;
 const createdThreadIds = [];
 
 beforeAll(async () => {
@@ -19,7 +21,8 @@ beforeAll(async () => {
     const user = await createUser(userInput);
     const auth = await createAuth(user.id, 'MEMBER');
     normalUser = auth;
-    reqConfig.headers.Authorization = `Bearer ${auth.token}`;
+    // reqConfig.headers.Authorization = `Bearer ${auth.token}`;
+    debugPost = createDebugPost.withAuth(testUrl, auth);
   } catch (e) {
     console.error('on create auth failed, ', e);
   }
@@ -37,48 +40,41 @@ afterAll(async () => {
 });
 
 describe('Test thread resolvers', () => {
+  it('allows tags', () => {
+    expect(() => {
+      validation.tags.validate(['freelance', 'discuss']);
+    }).not.toThrow();
+  });
+
   it('createThread properly connecting relations and doing validations', async () => {
     const thread = {
       title: 'What is love?',
       body: "Baby don't hurt me, don't hurt me no more",
       tags: ['freelance', 'discuss'],
     };
-
-    let res;
-
-    try {
-      res = await axios.post(
-        testUrl,
-        {
-          query: `mutation ($input: ThreadInput!) {
-              createThread(input: $input) {
-                id
-                title
-                postedBy {
-                  id
-                  email
-                }
-                comments {
-                  id
-                }
-                tags {
-                  id
-                  name
-                }
-              }
+    const res = await debugPost({
+      query: `mutation ($input: ThreadInput!) {
+          createThread(input: $input) {
+            id
+            title
+            postedBy {
+              id
+              email
             }
-          `,
-          variables: {
-            input: thread,
-          },
-        },
-        reqConfig,
-      );
-    } catch (e) {
-      console.log(JSON.stringify(e));
-    }
+            comments {
+              id
+            }
+            tags {
+              id
+              name
+            }
+          }
+        }
+      `,
+      variables: { input: thread },
+    });
 
-    const createThread = res.data.data.createThread;
+    const createThread = res.createThread;
     createdThreadIds.push(createThread.id);
 
     expect(createThread.title).toBe(thread.title);
@@ -96,40 +92,31 @@ describe('Test thread resolvers', () => {
     };
 
     // Create root comment
-    let parentRes;
 
-    try {
-      parentRes = await axios.post(
-        testUrl,
-        {
-          query: `mutation ($input: CommentInput!) {
-              createComment(input: $input) {
-                id
-                isRoot
-                postedBy {
-                  id
-                  email
-                }
-                parent {
-                  id
-                }
-                children {
-                  id
-                }
-              }
+    const res = await debugPost({
+      query: `mutation ($input: CommentInput!) {
+          createComment(input: $input) {
+            id
+            isRoot
+            postedBy {
+              id
+              email
             }
-          `,
-          variables: {
-            input: parentComment,
-          },
-        },
-        reqConfig,
-      );
-    } catch (e) {
-      console.log(JSON.stringify(e));
-    }
+            parent {
+              id
+            }
+            children {
+              id
+            }
+          }
+        }
+      `,
+      variables: {
+        input: parentComment,
+      },
+    });
 
-    const parentCommentRes = parentRes.data.data.createComment;
+    const parentCommentRes = res.createComment;
 
     expect(parentCommentRes.title).toBe(parentComment.title);
     expect(parentCommentRes.parent).toBeNull();
@@ -144,36 +131,26 @@ describe('Test thread resolvers', () => {
     };
 
     // Create child comment from root comment
-    let childrenRes;
-
-    try {
-      childrenRes = await axios.post(
-        testUrl,
-        {
-          query: `mutation ($input: CommentInput!) {
-              createComment(input: $input) {
+    const childRes = await debugPost({
+      query: `mutation ($input: CommentInput!) {
+            createComment(input: $input) {
+              id
+              text
+              parent {
                 id
-                text
-                parent {
-                  id
-                }
-                children {
-                  id
-                }
+              }
+              children {
+                id
               }
             }
-          `,
-          variables: {
-            input: childrenComment,
-          },
-        },
-        reqConfig,
-      );
-    } catch (e) {
-      JSON.stringify(e);
-    }
+          }
+        `,
+      variables: {
+        input: childrenComment,
+      },
+    });
 
-    const childrenCommentRes = childrenRes.data.data.createComment;
+    const childrenCommentRes = childRes.createComment;
     const parentChildren = await prisma
       .comment({ id: parentCommentRes.id })
       .children();
@@ -182,3 +159,4 @@ describe('Test thread resolvers', () => {
     expect(parentChildren[0].id).toEqual(childrenCommentRes.id);
   });
 });
+

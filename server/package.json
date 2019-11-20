@@ -19,7 +19,7 @@
     "test:paypal": "NODE_ENV=dev jest serverless/paypal/test.js --watch",
     "test:subscribe": "NODE_ENV=dev jest src/graphql/subscription/test.js",
     "seed": "NODE_ENV=dev node ./prisma/seed/index.js",
-    "seed:default": "yarn run seed admin plan",
+    "seed:default": "yarn run seed admin plan threadTag",
     "seed:test": "NODE_ENV=test node ./prisma/seed/index.js admin threadTag",
     "nodemon:clear": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p",
     "purge": "NODE_ENV=dev node ./prisma/_purge.js"
