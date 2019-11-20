@@ -1,4 +1,5 @@
 import cloudinary from '../../cloudinary';
+import prisma from '../../prisma';
 
 const cloudinaryUpload = file =>
   new Promise((res, rej) => {
@@ -19,7 +20,7 @@ const cloudinaryUpload = file =>
 
 export default {
   Mutation: {
-    uploadImage: async (root, args, { prisma }, info) => {
+    uploadImage: async (_r, args, _c, info) => {
       const file = await args.file;
       const { filename, type } = file;
       const { url } = await cloudinaryUpload(file);
@@ -27,11 +28,11 @@ export default {
 
       return prisma.createFile(createFile, info);
     },
-    createFile: async (root, { file }, { prisma }, info) =>
+    createFile: async (root, { file }, _c, info) =>
       prisma.createFile(file, info),
   },
 
   Query: {
-    file: async (root, { id }, { prisma }, info) => prisma.file({ id }, info),
+    file: async (_r, { id }, _c, info) => prisma.file({ id }, info),
   },
 };

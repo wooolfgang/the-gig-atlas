@@ -1,13 +1,13 @@
+import prisma from '../../prisma';
+
 /* eslint-disable arrow-body-style */
-const product = (_, { id }, { prisma }) => {
+const product = (_, { id }) => {
   return prisma.product(id);
 };
 
-const products = (_, _a, { prisma }) => {
-  return prisma.products();
-};
+const products = () => prisma.products();
 
-const addProduct = (_, { input }, { prisma }) => {
+const addProduct = (_, { input }) => {
   const { name, description, addOnToId } = input;
   const create = { name, description };
   if (addOnToId) {

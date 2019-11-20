@@ -14,8 +14,8 @@ export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
 export const threadTagRegex = /^(freelance|design|discuss|webdev|productivity)$/;
 export const accountTypeRegex = /^(FREELANCER|EMPLOYER)$/;
 
+// Independent fields
 export const id = yup.string();
-
 const accountType = yup
   .string()
   .matches(accountTypeRegex, 'Valid account type is required')
@@ -24,6 +24,10 @@ const accountType = yup
 export const website = yup
   .string('Website must be a string')
   .url('Must be a proper url');
+export const tags = yup
+  .array()
+  .of(yup.string().matches(threadTagRegex, 'Invalid thread tag'))
+  .nullable();
 
 // user
 export const email = yup
@@ -182,12 +186,9 @@ export const freelancerPortfolioInput = yup.object().shape({
 
 // thread
 export const threadInput = yup.object().shape({
+  tags,
   title: yup.string().required('Title is required'),
   body: yup.string().required('Body is required'),
-  tags: yup
-    .array()
-    .of(yup.string().matches(threadTagRegex, 'Invalid thread tag'))
-    .nullable(),
 });
 
 // thread comment

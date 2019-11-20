@@ -1,10 +1,11 @@
 import paypal from '../../serverless/paypal/order';
+import prisma from '../../prisma';
 
 function isProductsValid(ids, products) {
   return ids.every(id => products.some(product => product.id === id));
 }
 
-async function order(_, { items: ids }, { prisma, user }) {
+async function order(_, { items: ids }, { user }) {
   const [products, buyer] = await Promise.all([
     prisma.products({ where: { id_in: ids } }),
     prisma.user({ id: user.id }),
@@ -46,7 +47,7 @@ async function order(_, { items: ids }, { prisma, user }) {
  * Handles order after user approved the payment
  * @param {String} orderId if of user approved order
  */
-async function completeOrder(_, { orderId }, { prisma }) {
+async function completeOrder(_r, { orderId }) {
   const completedOrder = await paypal.capturePayment(orderId);
   const completedSys = await prisma.updateOrder({
     where: { serviceRefId: orderId },
