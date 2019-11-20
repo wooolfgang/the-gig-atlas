@@ -8,8 +8,9 @@ const { testUrl } = config;
 
 let normalUser;
 // const reqConfig = { headers: { Authorization: '' } };
-let debugPost;
 const createdThreadIds = [];
+let debugPost;
+const tags = ['freelance', 'discuss', 'node', 'react'];
 
 beforeAll(async () => {
   const userInput = {
@@ -31,9 +32,10 @@ beforeAll(async () => {
 afterAll(async () => {
   // No need to delete threads, as it cascade deletes on user delete
   try {
-    await prisma.deleteUser({
-      id: normalUser.id,
-    });
+    await Promise.all([
+      prisma.deleteUser({ id: normalUser.id }),
+      prisma.deleteManyTags({ name_in: tags }),
+    ]);
   } catch (e) {
     console.log('fail gracefully');
   }
@@ -48,10 +50,15 @@ describe('Test thread resolvers', () => {
 
   it('createThread properly connecting relations and doing validations', async () => {
     const thread = {
+      tags,
       title: 'What is love?',
       body: "Baby don't hurt me, don't hurt me no more",
-      tags: ['freelance', 'discuss'],
     };
+    // prepend initial tags to the database
+    await Promise.all([
+      prisma.createTag({ name: 'react' }),
+      prisma.createTag({ name: 'node' }),
+    ]);
     const res = await debugPost({
       query: `mutation ($input: ThreadInput!) {
           createThread(input: $input) {
@@ -80,7 +87,9 @@ describe('Test thread resolvers', () => {
     expect(createThread.title).toBe(thread.title);
     expect(createThread.postedBy.id).toBe(normalUser.id);
     expect(createThread.comments).toEqual([]);
-    expect(createThread.tags.map(t => t.name)).toEqual(thread.tags);
+    expect(createThread.tags.map(t => t.name).sort()).toEqual(
+      thread.tags.sort(),
+    );
   });
 
   it('Creates a parent comment, and connects to children comment properly', async () => {
@@ -159,4 +168,3 @@ describe('Test thread resolvers', () => {
     expect(parentChildren[0].id).toEqual(childrenCommentRes.id);
   });
 });
-

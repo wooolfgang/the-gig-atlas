@@ -13,7 +13,7 @@ type Query {
     first: Int
     last: Int
   ): [Thread!]!
-  threadTags: [ThreadTag!]!
+  threadTags: [Tag!]!
   thread(where: ThreadWhereUniqueInput!): Thread
 }
 
@@ -28,7 +28,7 @@ type Thread {
   upvoteCount: Int
   viewCount: Int
 
-  tags: [ThreadTag!]!
+  tags: [Tag!]!
   postedBy: User
   comments: [Comment]!
   commentTree: [Comment]!

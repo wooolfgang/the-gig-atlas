@@ -1,0 +1,17 @@
+type Query {
+  tag(id: ID): Tag  
+}
+
+# type Muatation {
+  
+# }
+
+type Tag {
+  id: ID
+  name: String
+  threads: [Thread]
+}
+
+input TagInput {
+  name: String
+}
