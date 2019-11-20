@@ -1,4 +1,10 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
+
+const loading = keyframes`
+  100% {
+    transform: translateX(100%);
+  }
+`;
 
 export const ThreadLinkContainer = styled.div`
   display: flex;
@@ -78,3 +84,62 @@ export const UpvoteContainer = styled.div`
 `;
 
 export const ArrowRightContainer = styled.div``;
+
+const after = css`
+  &::after {
+    content: '';
+    transform: translateX(-100%);
+    animation: ${loading} 1.5s infinite;
+    background: ${props => `
+      linear-gradient(
+        90deg,
+        transparent,
+        ${props.theme.color.neutral0},
+        transparent
+      )
+      `};
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+  }
+`;
+
+export const ThreadLinkContainerSkeleton = styled.div`
+  display: flex;
+  margin-bottom: 1.25rem;
+  padding: 0.2rem 0.2rem;
+  box-sizing: border-box;
+
+  #upvote-count {
+    border-radius: 50%;
+    background: ${props => props.theme.color.neutral5};
+    width: 1.5rem;
+    height: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    ${after}
+  }
+
+  #thread-title {
+    height: 1.15rem;
+    background: ${props => props.theme.color.neutral5};
+    width: 475px;
+    max-width: 85vw;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+    ${after}
+  }
+
+  #thread-lower div {
+    display: inline-block;
+    height: 1rem;
+    background: ${props => props.theme.color.neutral5};
+    width: 75px;
+    margin-right: 1rem;
+    position: relative;
+    overflow: hidden;
+    ${after}
+  }
+`;

@@ -103,7 +103,7 @@ const AuthProvider = ({ oauthURL }) => {
           Continue With Google
           <img
             src="/static/google-logo.png"
-            style={{ width: '1.1rem', height: '1rem', marginLeft: '8px' }}
+            style={{ width: '1rem', height: 'auto', marginLeft: '8px' }}
             alt="google-logo"
           />
         </div>
@@ -121,7 +121,7 @@ const AuthProvider = ({ oauthURL }) => {
           Continue With Github
           <img
             src="/static/github-logo.png"
-            style={{ width: '1.1rem', height: '1rem', marginLeft: '8px' }}
+            style={{ width: '1rem', height: 'auto', marginLeft: '8px' }}
             alt="github-logo"
           />
         </div>
