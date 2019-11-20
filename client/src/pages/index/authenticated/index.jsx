@@ -7,10 +7,11 @@ import { useQuery } from '@apollo/react-hooks';
 import Nav from '../../../components/Nav';
 import { GET_THREADS, GET_THREAD_TAGS } from '../../../graphql/thread';
 import { GET_NEWEST_FREELANCERS } from '../../../graphql/freelancer';
-import { Button } from '../../../primitives';
+import { Button, Spinner } from '../../../primitives';
 import ThreadLink from '../../../components/ThreadLink';
 import AvatarUserDropdown from '../../../components/AvatarUserDropdown';
 import { color } from '../../../utils/theme';
+import ListEmpty from '../../../icons/ListEmpty';
 import Working from '../../../icons/Working';
 import media from '../../../utils/media';
 
@@ -19,7 +20,7 @@ const Container = styled.div`
   box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.05);
   padding-top: 2rem;
   display: grid;
-  min-height: calc(102vh);
+  min-height: calc(100vh - 67.5px);
   grid-template-areas:
     '. . . .'
     '. main side .'
@@ -165,7 +166,7 @@ const Authenticated = ({ authenticatedUser }) => {
   const router = useRouter();
   const pagination = 8;
 
-  const { data: threads } = useQuery(GET_THREADS, {
+  const { data: threads, loading } = useQuery(GET_THREADS, {
     fetchPolicy: 'network-only',
     variables: {
       where: {
@@ -178,7 +179,10 @@ const Authenticated = ({ authenticatedUser }) => {
     },
   });
   const { data: threadTags } = useQuery(GET_THREAD_TAGS);
-  const { data: newestFreelancers } = useQuery(GET_NEWEST_FREELANCERS, {
+  const {
+    data: newestFreelancers,
+    loading: newestFreelancersLoading,
+  } = useQuery(GET_NEWEST_FREELANCERS, {
     fetchPolicy: 'network-only',
   });
 
@@ -220,6 +224,31 @@ const Authenticated = ({ authenticatedUser }) => {
               ))}
           </TagsContainer>
           <ThreadContainer>
+            {loading && [{}, {}, {}, {}, {}].map(_ => <ThreadLink loading />)}
+            {threads && threads.threads.length === 0 && !loading && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '400px',
+                  paddingBottom: '2rem',
+                  paddingTop: '.5rem',
+                }}
+              >
+                <p
+                  style={{
+                    color: color.neutral70,
+                    fontStyle: 'italic',
+                    margin: '0px',
+                  }}
+                >
+                  No threads found for this topic yet.
+                </p>
+                <ListEmpty width="175" height="175" viewBox="0 0 2700 2700" />
+              </div>
+            )}
             {threads && (
               <>
                 {threads.threads.map(thread => (
@@ -278,19 +307,22 @@ const Authenticated = ({ authenticatedUser }) => {
                       <PaginationLink>{'<-'} Previous Page </PaginationLink>
                     </Link>
                   )}
-                  <Link
-                    passHref
-                    href={{
-                      pathname: '/',
-                      query: {
-                        ...router.query,
-                        page:
-                          Number(router.query.page ? router.query.page : 0) + 1,
-                      },
-                    }}
-                  >
-                    <PaginationLink>Next Page -></PaginationLink>
-                  </Link>
+                  {threads.threads.length === pagination && (
+                    <Link
+                      passHref
+                      href={{
+                        pathname: '/',
+                        query: {
+                          ...router.query,
+                          page:
+                            Number(router.query.page ? router.query.page : 0) +
+                            1,
+                        },
+                      }}
+                    >
+                      <PaginationLink>Next Page -></PaginationLink>
+                    </Link>
+                  )}
                 </PaginationContainer>
               </>
             )}
@@ -298,79 +330,90 @@ const Authenticated = ({ authenticatedUser }) => {
         </Main>
         <Side>
           <CollabContainer>
-            <div id="top-header">
-              <span
-                style={{
-                  textAlign: 'center',
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                }}
-              >
-                Group Pomodoro Sessions
-              </span>
-              <span role="img" aria-label="people-emoji">
-                👨‍💻👩‍💻
-              </span>
-              <Button
-                style={{
-                  textAlign: 'center',
-                  fontSize: '0.9rem',
-                  color: color.neutral70,
-                  width: '125px',
-                  padding: '.5rem .75rem',
-                }}
-              >
-                Join Them
-              </Button>
-            </div>
-            <div id="newest-freelancers">
-              {newestFreelancers &&
-                newestFreelancers.freelancers.map(freelancer => (
-                  <div
-                    key={freelancer.id}
+            {newestFreelancersLoading ? (
+              <div style={{ margin: 'auto' }}>
+                <Spinner width="30" height="30" viewBox="0 0 50 50" />
+              </div>
+            ) : (
+              <>
+                <div id="top-header">
+                  <span
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: '.85rem',
+                      textAlign: 'center',
+                      fontSize: '1rem',
+                      fontWeight: 500,
                     }}
                   >
-                    <AvatarUserDropdown
-                      src={freelancer.avatar && freelancer.avatar.url}
-                      userId={freelancer.asUser && freelancer.asUser.id}
-                      avatarStyle={{
-                        width: '36px',
-                        height: '36px',
-                        marginRight: '.5rem',
-                        display: 'block',
-                      }}
-                    />
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      <span
+                    Group Pomodoro Sessions
+                  </span>
+                  <span role="img" aria-label="people-emoji">
+                    👨‍💻👩‍💻
+                  </span>
+                  <Button
+                    style={{
+                      textAlign: 'center',
+                      fontSize: '0.9rem',
+                      color: color.neutral70,
+                      width: '125px',
+                      padding: '.5rem .75rem',
+                    }}
+                  >
+                    Join Them
+                  </Button>
+                </div>
+                <div id="newest-freelancers">
+                  {newestFreelancers &&
+                    newestFreelancers.freelancers.map(freelancer => (
+                      <div
+                        key={freelancer.id}
                         style={{
-                          fontSize: '.95rem',
-                          marginBottom: '2px',
-                          height: '1.2rem',
-                          lineHeight: '1.2rem',
-                          overflow: 'hidden',
+                          display: 'flex',
+                          alignItems: 'center',
+                          marginBottom: '.85rem',
                         }}
                       >
-                        {freelancer.asUser.firstName}{' '}
-                        {freelancer.asUser.lastName}
-                      </span>
-                      <span
-                        style={{ fontSize: '.8rem', color: color.neutral50 }}
-                      >
-                        Fullstack Developer
-                      </span>
-                    </div>
-                  </div>
-                ))}
-            </div>
+                        <AvatarUserDropdown
+                          src={freelancer.avatar && freelancer.avatar.url}
+                          userId={freelancer.asUser && freelancer.asUser.id}
+                          avatarStyle={{
+                            width: '36px',
+                            height: '36px',
+                            marginRight: '.5rem',
+                            display: 'block',
+                          }}
+                        />
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: '.95rem',
+                              marginBottom: '2px',
+                              height: '1.2rem',
+                              lineHeight: '1.2rem',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {freelancer.asUser.firstName}{' '}
+                            {freelancer.asUser.lastName}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: '.8rem',
+                              color: color.neutral50,
+                            }}
+                          >
+                            Fullstack Developer
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </>
+            )}
           </CollabContainer>
         </Side>
       </Container>
