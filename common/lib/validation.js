@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import * as yup from 'yup';
 
 /* eslint-disable arrow-parens */
@@ -11,8 +12,9 @@ export const userRoleRegex = /^(ADMIN|MEMBER)$/;
 export const jobTypeRegex = /^(FULL_TIME|PART_TIME|CONTRACT)$/;
 export const paymentTypeRegex = /^(HOURLY|FIXED)$/;
 export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
-export const threadTagRegex = /^(freelance|design|discuss|webdev|productivity)$/;
+// export const threadTagRegex = /^(freelance|design|discuss|webdev|productivity)$/;
 export const accountTypeRegex = /^(FREELANCER|EMPLOYER)$/;
+export const tagRegex = /^[a-z\d]+[a-z\d\s\.-]*[a-z\d]+$/; // => alphanumeric in first+ char, allow space, hypen, dot in middle, alphanumeric at last char
 
 // Independent fields
 export const id = yup.string();
@@ -24,9 +26,14 @@ const accountType = yup
 export const website = yup
   .string('Website must be a string')
   .url('Must be a proper url');
+const tag = yup
+  .string()
+  .min(2, 'Tag must be minimum of 2 characters long')
+  .max(16, 'Tag must be maximum of 16 characters long')
+  .matches(tagRegex, 'Tag must be valid format');
 export const tags = yup
   .array()
-  .of(yup.string().matches(threadTagRegex, 'Invalid thread tag'))
+  .of(tag)
   .nullable();
 
 // user
