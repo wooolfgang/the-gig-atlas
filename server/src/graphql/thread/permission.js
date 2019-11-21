@@ -21,6 +21,6 @@ export default {
     threadTags: allow,
   },
   Thread: allow,
-  ThreadTag: allow,
+  Tag: allow,
   Comment: allow,
 };
