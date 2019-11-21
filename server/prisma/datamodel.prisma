@@ -253,10 +253,17 @@ type Comment {
   postedBy: User! @relation(name: "CommentsByUser")
 }
 
-# Use Type instead of Enum because an Enum (scalarList) type is not queryable
-# See -> https://github.com/prisma/prisma/issues/2930
 type Tag {
   id: ID! @id
   name: String @unique
   threads: [Thread] @relation(link: TABLE, name: "ThreadTag")
+  category: TagCategory!
+}
+
+# Use Type instead of Enum because an Enum (scalarList) type is not queryable
+# See -> https://github.com/prisma/prisma/issues/2930
+type TagCategory {
+  id: ID! @id
+  name: String @unique
+  tags: [Tag!]! @relation(link: TABLE, onDelete: CASCADE)
 }
