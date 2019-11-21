@@ -26,8 +26,8 @@ export const USER_AUTH = gql`
   }
 `;
 
-export const GET_USER = gql`
-  query GET_USER($where: UserWhereUniqueInput!) {
+export const GET_USER_INFO = gql`
+  query GET_USER_INFO($where: UserWhereUniqueInput!) {
     getUser(where: $where) {
       id
       firstName
@@ -45,11 +45,49 @@ export const GET_USER = gql`
   }
 `;
 
+export const GET_USER_FREELANCER_PROFILE = gql`
+  query GET_USER_FREELANCER_PROFILE($where: UserWhereUniqueInput!) {
+    getUser(where: $where) {
+      id
+      firstName
+      lastName
+      accountType
+      avatar {
+        id
+        url
+      }
+      asFreelancer {
+        id
+        bio
+        website
+        location
+        timezone
+        isPrivate
+        isForHire
+        socials {
+          id
+          type
+          url
+        }
+        skills
+        portfolio {
+          id
+          title
+          description
+          url
+          avatar {
+            id
+            url
+          }
+        }
+      }
+    }
+  }
+`;
+
 // MUTATIONS
-
-// note => mutation must return user as reference for chaching
-// note => the return user from onboaridng mutation replaces the data to apollo chached user
-
+// note => mutation must return user as reference for caching
+// note => the return user from onboarding mutation replaces the data to apollo cached user
 export const ONBOARDING_PERSONAL = gql`
   mutation ONBOARDING_PERSONAL($input: PersonalInput!) {
     onboardingPersonal(input: $input) {
