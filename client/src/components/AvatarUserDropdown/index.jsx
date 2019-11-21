@@ -5,12 +5,12 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import { AvatarUserContainer } from './style';
 import { Avatar, Spinner, Button } from '../../primitives';
 import Dropdown from '../Dropdown';
-import { GET_USER } from '../../graphql/user';
+import { GET_USER_INFO } from '../../graphql/user';
 
 const AvatarUserDropdown = ({ src, userId, avatarStyle, dropdownStyle }) => {
   const [visible, setVisible] = useState(false);
   const dropdownRef = createRef(null);
-  const [getUser, { loading, data }] = useLazyQuery(GET_USER, {
+  const [getUser, { loading, data }] = useLazyQuery(GET_USER_INFO, {
     variables: {
       where: {
         id: userId,
