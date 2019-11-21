@@ -7,7 +7,7 @@ import { useQuery } from '@apollo/react-hooks';
 import Nav from '../../../components/Nav';
 import { GET_THREADS, GET_THREAD_TAGS } from '../../../graphql/thread';
 import { GET_NEWEST_FREELANCERS } from '../../../graphql/freelancer';
-import { Button, Spinner } from '../../../primitives';
+import { Button, Spinner, OldSchoolLink } from '../../../primitives';
 import ThreadLink from '../../../components/ThreadLink';
 import AvatarUserDropdown from '../../../components/AvatarUserDropdown';
 import { color } from '../../../utils/theme';
@@ -45,47 +45,6 @@ const TagsContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const ThreadTagLink = styled.a`
-  margin: 2px 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 2px 4px;
-  box-sizing: border-box;
-  border-radius: 2px;
-  transition: background-color 100ms ease-in-out, box-shadow 100ms ease-in-out,
-    color 100ms ease-in-out;
-  outline: none;
-  border: none;
-  text-decoration: none;
-  display: block;
-  white-space: nowrap;
-  color: ${props => props.theme.color.d3};
-
-  &:hover,
-  &:focus {
-    background-color: ${props => props.theme.color.neutral5};
-    box-shadow: 0 2px 0 ${props => props.theme.color.neutral20};
-    color: ${props => props.theme.color.d2};
-  }
-
-  ${props =>
-    props.active &&
-    `
-    background-color: ${props.theme.color.neutral5};
-    box-shadow: 0 2px 0 ${props.theme.color.neutral20};
-    color: ${props.theme.color.d2};
-  `}
-
-  ::after {
-    display: block;
-    content: attr(title);
-    font-weight: bold;
-    height: 0;
-    overflow: hidden;
-    visibility: hidden;
-  }
-`;
-
 const ThreadContainer = styled.div`
   margin-top: 1.8rem;
 `;
@@ -118,6 +77,21 @@ const CollabContainer = styled.div`
     align-items: center;
     box-sizing: border-box;
     width: 100%;
+    background-color: ${props => props.theme.color.d5};
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='18' viewBox='0 0 100 18'%3E%3Cpath fill='blue' fill-opacity='0.10' d='M61.82 18c3.47-1.45 6.86-3.78 11.3-7.34C78 6.76 80.34 5.1 83.87 3.42 88.56 1.16 93.75 0 100 0v6.16C98.76 6.05 97.43 6 96 6c-9.59 0-14.23 2.23-23.13 9.34-1.28 1.03-2.39 1.9-3.4 2.66h-7.65zm-23.64 0H22.52c-1-.76-2.1-1.63-3.4-2.66C11.57 9.3 7.08 6.78 0 6.16V0c6.25 0 11.44 1.16 16.14 3.42 3.53 1.7 5.87 3.35 10.73 7.24 4.45 3.56 7.84 5.9 11.31 7.34zM61.82 0h7.66a39.57 39.57 0 0 1-7.34 4.58C57.44 6.84 52.25 8 46 8S34.56 6.84 29.86 4.58A39.57 39.57 0 0 1 22.52 0h15.66C41.65 1.44 45.21 2 50 2c4.8 0 8.35-.56 11.82-2z'%3E%3C/path%3E%3C/svg%3E");
+    transition: all 100ms ease-in-out;
+
+    :hover {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='18' viewBox='0 0 100 18'%3E%3Cpath fill='blue' fill-opacity='0.30' d='M61.82 18c3.47-1.45 6.86-3.78 11.3-7.34C78 6.76 80.34 5.1 83.87 3.42 88.56 1.16 93.75 0 100 0v6.16C98.76 6.05 97.43 6 96 6c-9.59 0-14.23 2.23-23.13 9.34-1.28 1.03-2.39 1.9-3.4 2.66h-7.65zm-23.64 0H22.52c-1-.76-2.1-1.63-3.4-2.66C11.57 9.3 7.08 6.78 0 6.16V0c6.25 0 11.44 1.16 16.14 3.42 3.53 1.7 5.87 3.35 10.73 7.24 4.45 3.56 7.84 5.9 11.31 7.34zM61.82 0h7.66a39.57 39.57 0 0 1-7.34 4.58C57.44 6.84 52.25 8 46 8S34.56 6.84 29.86 4.58A39.57 39.57 0 0 1 22.52 0h15.66C41.65 1.44 45.21 2 50 2c4.8 0 8.35-.56 11.82-2z'%3E%3C/path%3E%3C/svg%3E");
+    }
+
+    span {
+      padding: 0px 2px;
+      display: block;
+      margin-bottom: 3px;
+      color: ${props => props.theme.color.d2};
+      border-radius: 2px;
+    }    
   }
 
   #newest-freelancers {
@@ -193,12 +167,12 @@ const Authenticated = ({ authenticatedUser }) => {
         <Main>
           <TagsContainer>
             <Link href="/" passHref>
-              <ThreadTagLink
+              <OldSchoolLink
                 key="show-all-thread-tag"
                 active={router.pathname === '/' && !router.query.tag}
               >
                 Show All
-              </ThreadTagLink>
+              </OldSchoolLink>
             </Link>
             {threadTags &&
               threadTags.threadTags.map(tag => (
@@ -214,17 +188,20 @@ const Authenticated = ({ authenticatedUser }) => {
                   passHref
                   key={tag.id}
                 >
-                  <ThreadTagLink
+                  <OldSchoolLink
                     key={tag.id}
                     active={router.query.tag && router.query.tag === tag.name}
                   >
                     #{tag.name}{' '}
-                  </ThreadTagLink>
+                  </OldSchoolLink>
                 </Link>
               ))}
           </TagsContainer>
           <ThreadContainer>
-            {loading && [{}, {}, {}, {}, {}].map(_ => <ThreadLink loading />)}
+            {loading &&
+              [{}, {}, {}, {}, {}].map((_, i) => (
+                <ThreadLink loading key={i} />
+              ))}
             {threads && threads.threads.length === 0 && !loading && (
               <div
                 style={{
@@ -345,9 +322,9 @@ const Authenticated = ({ authenticatedUser }) => {
                     }}
                   >
                     Group Pomodoro Sessions
-                  </span>
-                  <span role="img" aria-label="people-emoji">
-                    👨‍💻👩‍💻
+                    <span role="img" aria-label="celebrate-emoji">
+                      🎉🙌🥳
+                    </span>
                   </span>
                   <Button
                     style={{

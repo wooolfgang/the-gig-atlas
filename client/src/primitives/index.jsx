@@ -12,6 +12,7 @@ import RadioButtons from './RadioButtons';
 import Select from './Select';
 import Spinner from './Spinner';
 import Avatar from './Avatar';
+import OldSchoolLink from './OldSchoolLink';
 
 export {
   FieldError,
@@ -28,4 +29,5 @@ export {
   Select,
   Spinner,
   Avatar,
+  OldSchoolLink,
 };
