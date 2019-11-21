@@ -1,5 +1,6 @@
 import { createFragment } from '../utils/fragment';
 import prisma from '../../prisma';
+import { sortExistTags } from '../tag/util';
 
 function constructCommentTree(parents, nodes) {
   if (nodes && nodes.length === 0) {
@@ -23,25 +24,28 @@ function constructCommentTree(parents, nodes) {
   return constructCommentTree(newParents, remainingNodes, parents);
 }
 
+async function createThread(_, { input }, { user }, info) {
+  const { title, body, tags } = input;
+  const createOrConnect = await sortExistTags(tags);
+
+  return prisma.createThread(
+    {
+      title,
+      body,
+      tags: createOrConnect,
+      postedBy: { connect: { id: user.id } },
+    },
+    info,
+  );
+}
+
 export default {
   Mutation: {
-    createThread: async (_, { input }, { user }, info) => {
-      const { title, body, tags } = input;
-      return prisma.createThread(
-        {
-          title,
-          body,
-          tags: { connect: tags.map(tag => ({ name: tag })) },
-          postedBy: { connect: { id: user.id } },
-        },
-        info,
-      );
-    },
+    createThread,
     createComment: async (_, { input }, { user }, info) => {
       const { text, threadId, parentId } = input;
       const isRoot = !parentId;
       const parent = isRoot ? undefined : { connect: { id: parentId } };
-      console.log(parent);
 
       return prisma.createComment(
         {
@@ -59,7 +63,7 @@ export default {
   Query: {
     thread: (_r, args, _c, info) => prisma.thread(args.where, info),
     threads: (_r, args, _c, info) => prisma.threads(args, info),
-    threadTags: async (_r, args, _c, info) => prisma.threadTags(args, info),
+    threadTags: async (_r, args, _c, info) => prisma.tags(args, info),
   },
 
   Thread: {
