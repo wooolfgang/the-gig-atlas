@@ -6,25 +6,59 @@ export default async () => {
   const threadTags = [
     {
       name: 'freelance',
+      category: {
+        connect: {
+          name: 'thread',
+        },
+      },
     },
     {
       name: 'design',
+      category: {
+        connect: {
+          name: 'thread',
+        },
+      },
     },
     {
       name: 'discuss',
+      category: {
+        connect: {
+          name: 'thread',
+        },
+      },
     },
     {
       name: 'webdev',
+      category: {
+        connect: {
+          name: 'thread',
+        },
+      },
     },
     {
       name: 'productivity',
+      category: {
+        connect: {
+          name: 'thread',
+        },
+      },
     },
   ];
 
   try {
-    const deleted = await prisma.deleteManyThreadTags();
+    const deleted = await prisma.deleteManyTags();
+
+    try {
+      await prisma.createTagCategory({
+        name: 'thread',
+      });
+    } catch (e) {
+      // Catch error if categoryTag "thread" already exists
+    }
+
     const newThreadTags = await Promise.all([
-      ...threadTags.map(tag => prisma.createThreadTag(tag)),
+      ...threadTags.map(tag => prisma.createTag(tag)),
     ]);
 
     console.log('\n>>> Seed on threadTags');
