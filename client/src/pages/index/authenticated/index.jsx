@@ -152,7 +152,7 @@ const Authenticated = ({ authenticatedUser }) => {
       skip: router.query.page ? router.query.page * pagination : 0,
     },
   });
-  const { data: threadTags } = useQuery(GET_THREAD_TAGS);
+  const { data: tags } = useQuery(GET_THREAD_TAGS);
   const {
     data: newestFreelancers,
     loading: newestFreelancersLoading,
@@ -174,8 +174,8 @@ const Authenticated = ({ authenticatedUser }) => {
                 Show All
               </OldSchoolLink>
             </Link>
-            {threadTags &&
-              threadTags.threadTags.map(tag => (
+            {tags &&
+              tags.tags.map(tag => (
                 <Link
                   href={{
                     pathname: '/',
