@@ -1,6 +1,9 @@
 import { createFragment } from '../utils/fragment';
 import prisma from '../../prisma';
-import { sortExistTags } from '../tag/util';
+import upvoteComment from './resolvers/upvoteComment';
+import upvoteThread from './resolvers/upvoteThread';
+import createComment from './resolvers/createComment';
+import createThread from './resolvers/createThread';
 
 function constructCommentTree(parents, nodes) {
   if (nodes && nodes.length === 0) {
@@ -24,40 +27,12 @@ function constructCommentTree(parents, nodes) {
   return constructCommentTree(newParents, remainingNodes, parents);
 }
 
-async function createThread(_, { input }, { user }, info) {
-  const { title, body, tags } = input;
-  const createOrConnect = await sortExistTags(tags);
-
-  return prisma.createThread(
-    {
-      title,
-      body,
-      tags: createOrConnect,
-      postedBy: { connect: { id: user.id } },
-    },
-    info,
-  );
-}
-
 export default {
   Mutation: {
     createThread,
-    createComment: async (_, { input }, { user }, info) => {
-      const { text, threadId, parentId } = input;
-      const isRoot = !parentId;
-      const parent = isRoot ? undefined : { connect: { id: parentId } };
-
-      return prisma.createComment(
-        {
-          text,
-          isRoot,
-          parent,
-          thread: { connect: { id: threadId } },
-          postedBy: { connect: { id: user.id } },
-        },
-        info,
-      );
-    },
+    createComment,
+    upvoteThread,
+    upvoteComment,
   },
 
   Query: {
@@ -75,6 +50,7 @@ export default {
         .$fragment(fragment);
     },
     tags: ({ id }) => prisma.thread({ id }).tags(),
+    votes: ({ id }) => prisma.thread({ id }).votes(),
     comments: (root, _a, _c, info) => {
       const fragment = createFragment(info, 'CommentsFromThread', 'Comment');
       return prisma
@@ -122,6 +98,7 @@ export default {
   },
 
   Comment: {
+    votes: ({ id }) => prisma.comment({ id }).votes(),
     parent: (root, _a, _c, info) => {
       const fragment = createFragment(info, 'ParentFromComment', 'Comment');
       return prisma
