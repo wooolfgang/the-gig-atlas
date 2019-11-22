@@ -1,7 +1,9 @@
 import { createFragment } from '../utils/fragment';
 import prisma from '../../prisma';
-import { sortExistTags } from '../tag/util';
-import { UPVOTE_VALUE, DOWNVOTE_VALUE } from './constants';
+import upvoteComment from './resolvers/upvoteComment';
+import upvoteThread from './resolvers/upvoteThread';
+import createComment from './resolvers/createComment';
+import createThread from './resolvers/createThread';
 
 function constructCommentTree(parents, nodes) {
   if (nodes && nodes.length === 0) {
@@ -23,130 +25,6 @@ function constructCommentTree(parents, nodes) {
   const newParentsIds = newParents.map(n => n.id);
   const remainingNodes = nodes.filter(n => !newParentsIds.includes(n.id));
   return constructCommentTree(newParents, remainingNodes, parents);
-}
-
-async function createThread(_, { input }, { user }, info) {
-  const { title, body, tags } = input;
-  const createOrConnect = await sortExistTags(tags);
-
-  return prisma.createThread(
-    {
-      title,
-      body,
-      tags: createOrConnect,
-      postedBy: { connect: { id: user.id } },
-    },
-    info,
-  );
-}
-
-async function createComment(_, { input }, { user }, info) {
-  const { text, threadId, parentId } = input;
-  const isRoot = !parentId;
-  const parent = isRoot ? undefined : { connect: { id: parentId } };
-
-  return prisma.createComment(
-    {
-      text,
-      isRoot,
-      parent,
-      thread: { connect: { id: threadId } },
-      postedBy: { connect: { id: user.id } },
-    },
-    info,
-  );
-}
-
-async function upvoteThread(_, { threadId }, { user }, info) {
-  const thread = await prisma.thread({ id: threadId });
-  const { upvoteCount, downvoteCount } = thread;
-  const [downvote] = await prisma.threadVotes({
-    where: {
-      user: {
-        id: user.id,
-      },
-      value: DOWNVOTE_VALUE,
-    },
-  });
-
-  const upsert = {
-    where: {
-      id: downvote ? downvote.id : '',
-    },
-    update: {
-      value: UPVOTE_VALUE,
-    },
-    create: {
-      value: UPVOTE_VALUE,
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
-    },
-  };
-
-  return prisma.updateThread(
-    {
-      where: {
-        id: threadId,
-      },
-      data: {
-        votes: {
-          upsert,
-        },
-        upvoteCount: upvoteCount + 1,
-        downvoteCount: downvote ? downvoteCount - 1 : downvoteCount,
-      },
-    },
-    info,
-  );
-}
-
-async function upvoteComment(_, { commentId }, { user }, info) {
-  const comment = await prisma.comment({ id: commentId });
-  const { upvoteCount, downvoteCount } = comment;
-  const [downvote] = await prisma.commentVotes({
-    where: {
-      user: {
-        id: user.id,
-      },
-      value: DOWNVOTE_VALUE,
-    },
-  });
-
-  const upsert = {
-    where: {
-      id: downvote ? downvote.id : '',
-    },
-    update: {
-      value: UPVOTE_VALUE,
-    },
-    create: {
-      value: UPVOTE_VALUE,
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
-    },
-  };
-
-  return prisma.updateComment(
-    {
-      where: {
-        id: commentId,
-      },
-      data: {
-        votes: {
-          upsert,
-        },
-        upvoteCount: upvoteCount + 1,
-        downvoteCount: downvote ? downvoteCount - 1 : downvoteCount,
-      },
-    },
-    info,
-  );
 }
 
 export default {
