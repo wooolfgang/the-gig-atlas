@@ -227,14 +227,16 @@ type Thread {
   id: ID! @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  
   title: String! 
   body: String!
-  viewCount: Int! @default(value: 0)
-  upvoteCount: Int! @default(value: 1)
-  tags: [Tag!]! @relation(name: "ThreadTag")
+  upvoteCount: Int! @default(value: 0)
+  downvoteCount: Int! @default(value: 0)
   
+  tags: [Tag!]! @relation(name: "ThreadTag")
   postedBy: User! @relation(name: "ThreadsByUser")
   comments: [Comment]! @relation(name: "ThreadComments", onDelete: "CASCADE")
+  votes: [ThreadVote!]! @relation(name: "ThreadVotes", link: TABLE, onDelete: "CASCADE")
 }
 
 type Comment {
@@ -243,14 +245,16 @@ type Comment {
   updatedAt: DateTime! @updatedAt
 
   text: String! 
-  upvoteCount: Int! @default(value: 1)
   isRoot: Boolean!
   isDeleted: Boolean @default(value: false)
+  upvoteCount: Int! @default(value: 0)
+  downvoteCount: Int! @default(value: 0)
 
   children: [Comment]! @relation(name: "CommentAsParent")
   parent: Comment @relation(name: "CommentAsParent", link: INLINE)
   thread: Thread! @relation(name: "ThreadComments")
   postedBy: User! @relation(name: "CommentsByUser")
+  votes: [CommentVote!]! @relation(name: "CommentVotes", link: TABLE, onDelete: "CASCADE")
 }
 
 # Use Type instead of Enum because an Enum (scalarList) type is not queryable
@@ -259,4 +263,22 @@ type Tag {
   id: ID! @id
   name: String @unique
   threads: [Thread] @relation(link: TABLE, name: "ThreadTag")
+}
+
+type ThreadVote {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  user: User! 
+  # Value should either be -1 (downvote) or 1 (upvote)
+  value : Int! 
+  thread: Thread! @relation(name: "ThreadVotes")
+}
+
+type CommentVote {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  user: User! 
+  # Value should either be -1 (downvote) or 1 (upvote)
+  value : Int! 
+  comment: Comment! @relation(name: "CommentVotes")
 }
