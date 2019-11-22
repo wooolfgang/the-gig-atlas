@@ -9,6 +9,7 @@ const { testUrl } = config;
 let normalUser;
 // const reqConfig = { headers: { Authorization: '' } };
 const createdThreadIds = [];
+const createdCommentIds = [];
 let debugPost;
 const tags = ['freelance', 'discuss', 'node', 'react'];
 
@@ -35,6 +36,7 @@ afterAll(async () => {
     await Promise.all([
       prisma.deleteUser({ id: normalUser.id }),
       prisma.deleteManyTags({ name_in: tags }),
+      prisma.deleteThreadVote({ user: { id: normalUser.id } }),
     ]);
   } catch (e) {
     console.log('fail gracefully');
@@ -126,6 +128,7 @@ describe('Test thread resolvers', () => {
     });
 
     const parentCommentRes = res.createComment;
+    createdCommentIds.push(parentCommentRes.id);
 
     expect(parentCommentRes.title).toBe(parentComment.title);
     expect(parentCommentRes.parent).toBeNull();
@@ -166,5 +169,71 @@ describe('Test thread resolvers', () => {
 
     expect(childrenCommentRes.parent.id).toBe(parentCommentRes.id);
     expect(parentChildren[0].id).toEqual(childrenCommentRes.id);
+  });
+
+  it('Should upvote thread should upvote correctly and only allow one upvote per use', async () => {
+    const [threadId] = createdThreadIds;
+    const upvoteThread = async () =>
+      debugPost({
+        query: `mutation ($threadId: ID!) {
+        upvoteThread (threadId: $threadId) {
+          upvoteCount
+          downvoteCount
+        }
+      }`,
+        variables: {
+          threadId,
+        },
+      });
+    let res;
+    try {
+      res = await upvoteThread();
+    } catch (e) {
+      res = e;
+    }
+    expect(res.upvoteThread.upvoteCount).toEqual(1);
+    expect(res.upvoteThread.downvoteCount).toEqual(0);
+
+    let res2;
+    try {
+      res2 = await debugPost();
+    } catch (e) {
+      res2 = 'An error occured';
+    }
+    expect(res2).toEqual('An error occured');
+  });
+
+  it('Should upvote comment correctly and only allow on upvote per user', async () => {
+    const [commentId] = createdCommentIds;
+
+    const upvoteComment = async () =>
+      debugPost({
+        query: `mutation ($commentId: ID!) {
+        upvoteComment (commentId: $commentId) {
+          upvoteCount
+          downvoteCount
+        }
+      }`,
+        variables: {
+          commentId,
+        },
+      });
+    let res;
+    try {
+      res = await upvoteComment();
+    } catch (e) {
+      console.log(JSON.stringify(e.response.data));
+      res = e;
+    }
+    expect(res.upvoteComment.upvoteCount).toEqual(1);
+    expect(res.upvoteComment.downvoteCount).toEqual(0);
+
+    let res2;
+    try {
+      res2 = await debugPost();
+    } catch (e) {
+      res2 = 'An error occured';
+    }
+    expect(res2).toEqual('An error occured');
   });
 });

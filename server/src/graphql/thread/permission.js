@@ -1,6 +1,24 @@
-import { allow, chain } from 'graphql-shield';
+import { allow, chain, rule } from 'graphql-shield';
 import { validation } from '@shared/common';
 import { isAuthenticated, validate, dompurify } from '../utils/rules';
+import prisma from '../../prisma';
+import { UPVOTE_VALUE } from './constants';
+
+const hasNotUpvoted = type =>
+  rule()(async (_, args, { user }) => {
+    const voted = await prisma.$exists[type]({
+      AND: {
+        value: UPVOTE_VALUE,
+        user: {
+          id: user.id,
+        },
+      },
+    });
+    return !voted;
+  });
+
+const hasNotUpvotedThread = hasNotUpvoted('threadVote');
+const hasNotUpvotedComment = hasNotUpvoted('commentVote');
 
 export default {
   Mutation: {
@@ -14,6 +32,8 @@ export default {
       dompurify('input.text'),
       isAuthenticated,
     ),
+    upvoteThread: chain(isAuthenticated, hasNotUpvotedThread),
+    upvoteComment: chain(isAuthenticated, hasNotUpvotedComment),
   },
   Query: {
     thread: allow,
