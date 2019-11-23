@@ -8,6 +8,7 @@ import Nav from '../../components/Nav';
 import { GET_THREAD } from '../../graphql/thread';
 import Comment from '../../components/Comment';
 import CommentTextArea from '../../components/CommentTextArea';
+import withAuthSync from '../../components/withAuthSync';
 
 const PageContainer = styled.div`
   min-height: calc(100vh - 67.5px);
@@ -94,7 +95,7 @@ ParentCommentTextArea.propTypes = {
   setParentComments: PropTypes.func.isRequired,
 };
 
-const Thread = () => {
+const Thread = ({ user }) => {
   const router = useRouter();
   const { threadId } = router.query;
   const { data } = useQuery(GET_THREAD, {
@@ -116,7 +117,7 @@ const Thread = () => {
 
   return (
     <>
-      <Nav type="AUTHENTICATED_FREELANCER" />
+      <Nav type="AUTHENTICATED_FREELANCER" user={user} />
       <PageContainer>
         <ThreadContainer>
           <Link href="/">
@@ -160,4 +161,4 @@ const Thread = () => {
   );
 };
 
-export default Thread;
+export default withAuthSync(Thread, 'all');
