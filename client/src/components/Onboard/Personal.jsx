@@ -34,7 +34,7 @@ const Personal = ({ user }) => {
     <Formik
       validationSchema={common.validation.onboardingPersonal}
       initialValues={{
-        avatarFileId: avatar ? avatar.id : null,
+        avatarFileId: avatar ? avatar.id : '',
         accountType,
         firstName: firstName || '',
         lastName: lastName || '',
@@ -55,7 +55,7 @@ const Personal = ({ user }) => {
           <Field
             name="avatarFileId"
             label="Avatar"
-            help="Your avatar will be shown in your gig posting"
+            help="A random avatar is generated if no image is given"
             type="avatarupload"
             component={CustomField}
           />
