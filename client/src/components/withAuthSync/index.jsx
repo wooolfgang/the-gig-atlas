@@ -101,11 +101,8 @@ export default withAuthSync;
 // utils
 
 function _handleOnboarding(ctx, user) {
-  const currentPath = ctx.pathname;
-  if (user && user.onboardingStep && !currentPath.startsWith('/onboard')) {
-    // => only with onboardingStep prop and path not directed to onboarding
+  if (user && user.onboardingStep) {
     const { onboardingStep } = user;
-
     if (onboardingStep === 'PERSONAL') {
       router.toPersonalOnboarding(ctx);
     } else if (onboardingStep === 'EMPLOYER') {
