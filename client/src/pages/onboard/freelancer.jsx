@@ -5,7 +5,6 @@ import OnboardingFreelancer from '../../components/Onboard/Container';
 import withAuthSync from '../../components/withAuthSync';
 import Portfolio from '../../components/Onboard/Freelancer';
 import Nav from '../../components/Nav';
-import router from '../../utils/router';
 
 const Freelancer = () => (
   <>
@@ -36,17 +35,5 @@ const Freelancer = () => (
     />
   </>
 );
-
-Freelancer.getInitialProps = async ctx => {
-  const { user } = ctx;
-
-  if (user.onboardingStep === 'PERSONAL') {
-    router.toPersonalOnboarding(ctx);
-  } else if (user.onboardingStep === 'EMPLOYER') {
-    router.toEmployerOnboarding(ctx);
-  }
-
-  return { user };
-};
 
 export default withAuthSync(Freelancer, 'MEMBER');

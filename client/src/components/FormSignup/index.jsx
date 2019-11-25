@@ -34,11 +34,7 @@ const SignupLocal = () => {
             }
 
             auth.setTokenCookie(data.signup.token);
-            if (values.accountType === 'FREELANCER') {
-              router.toFreelancerOnboarding();
-            } else if (values.accountType === 'EMPLOYER') {
-              router.toEmployerOnboarding();
-            }
+            router.toPersonalOnboarding();
           } catch (e) {
             /**
              * @todo: handle error
