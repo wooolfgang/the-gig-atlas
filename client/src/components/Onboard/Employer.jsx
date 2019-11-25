@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import common from '@shared/common';
 import { useMutation } from '@apollo/react-hooks';
@@ -14,8 +14,8 @@ const labelStyle = {
 };
 
 const Employer = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [onboardingEmployer] = useMutation(ONBOARDING_EMPLOYER);
-  let isFinished = false; // double click optimization
 
   return (
     <Formik
@@ -27,28 +27,24 @@ const Employer = () => {
         email: '',
         website: '',
       }}
-      onSubmit={async (values, action) => {
-        if (isFinished) {
-          action.setSubmitting(false);
-          return;
-        }
-
+      onSubmit={async values => {
         try {
-          const { data, errors } = await onboardingEmployer({
+          setIsSubmitting(true);
+          const { errors } = await onboardingEmployer({
             variables: { input: { ...values } },
           });
 
           if (errors) {
+            setIsSubmitting(false);
             throw errors;
           }
-          isFinished = true;
           router.toIndex();
         } catch (e) {
+          setIsSubmitting(false);
           console.error('on employer submit', e);
         }
-        action.setSubmitting(false);
       }}
-      render={({ isSubmitting }) => (
+      render={() => (
         <Form>
           <Field
             name="employerType"

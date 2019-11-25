@@ -8,6 +8,8 @@ import CustomField from '../../components/CustomField';
 import Nav from '../../components/Nav';
 import Button from '../../primitives/Button';
 import { CREATE_THREAD, GET_THREAD_TAGS } from '../../graphql/thread';
+import withAuthSync from '../../components/withAuthSync';
+import { propTypes } from '../../utils/globals';
 
 const Container = styled.div`
   height: calc(100vh - 67.5px);
@@ -21,13 +23,13 @@ const Main = styled.main`
   max-width: 95vw;
 `;
 
-const ThreadCreate = () => {
+const ThreadCreate = ({ user }) => {
   const [createThread] = useMutation(CREATE_THREAD);
   const { data: threadTags } = useQuery(GET_THREAD_TAGS);
   const [isSubmitting, setIsSubmitting] = useState(false);
   return (
     <div>
-      <Nav type="AUTHENTICATED_FREELANCER" />
+      <Nav type="AUTHENTICATED_FREELANCER" user={user} />
       <Container>
         <Main>
           <h1>
@@ -111,4 +113,8 @@ const ThreadCreate = () => {
   );
 };
 
-export default ThreadCreate;
+ThreadCreate.propTypes = {
+  user: propTypes.user.isRequired,
+};
+
+export default withAuthSync(ThreadCreate, 'all');
