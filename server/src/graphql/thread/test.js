@@ -69,7 +69,7 @@ describe('Test thread resolvers', () => {
     await Promise.all([
       prisma.createTag({
         name: 'react',
-        category: {
+        categories: {
           connect: {
             name: 'thread',
           },
@@ -77,7 +77,7 @@ describe('Test thread resolvers', () => {
       }),
       prisma.createTag({
         name: 'node',
-        category: {
+        categories: {
           connect: {
             name: 'thread',
           },

@@ -6,7 +6,7 @@ export default async () => {
   const threadTags = [
     {
       name: 'freelance',
-      category: {
+      categories: {
         connect: {
           name: 'thread',
         },
@@ -14,7 +14,7 @@ export default async () => {
     },
     {
       name: 'design',
-      category: {
+      categories: {
         connect: {
           name: 'thread',
         },
@@ -22,7 +22,7 @@ export default async () => {
     },
     {
       name: 'discuss',
-      category: {
+      categories: {
         connect: {
           name: 'thread',
         },
@@ -30,7 +30,7 @@ export default async () => {
     },
     {
       name: 'webdev',
-      category: {
+      categories: {
         connect: {
           name: 'thread',
         },
@@ -38,7 +38,7 @@ export default async () => {
     },
     {
       name: 'productivity',
-      category: {
+      categories: {
         connect: {
           name: 'thread',
         },
