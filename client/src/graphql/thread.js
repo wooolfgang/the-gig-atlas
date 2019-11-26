@@ -22,12 +22,34 @@ export const CREATE_COMMENT = gql`
     createComment(input: $input) {
       id
       text
+      upvoteCount
+      votes {
+        id
+        user {
+          id
+        }
+      }
       postedBy {
         id
         firstName
         avatar {
           id
           url
+        }
+      }
+    }
+  }
+`;
+
+export const UPVOTE_COMMENT = gql`
+  mutation UPVOTE_COMMENT($commentId: ID!) {
+    upvoteComment(commentId: $commentId) {
+      id
+      upvoteCount
+      votes {
+        id
+        user {
+          id
         }
       }
     }
@@ -106,13 +128,34 @@ export const GET_THREAD = gql`
     id
     text
     isRoot
+    upvoteCount
+    votes {
+      id
+      user {
+        id
+      }
+    }
     parent {
       id
       text
+      upvoteCount
+      votes {
+        id
+        user {
+          id
+        }
+      }
     }
     children {
       id
       text
+      upvoteCount
+      votes {
+        id
+        user {
+          id
+        }
+      }
     }
     postedBy {
       id

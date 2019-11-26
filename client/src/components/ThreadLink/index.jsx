@@ -1,6 +1,7 @@
 import React from 'react';
 import Router from 'next/router';
 import PropTypes from 'prop-types';
+import { useMutation } from '@apollo/react-hooks';
 import ArrowRightSimple from '../../icons/ArrowRightSimple';
 import {
   ThreadLinkContainer,
@@ -9,7 +10,25 @@ import {
   ArrowRightContainer,
 } from './style';
 import AvatarUserDropdown from '../AvatarUserDropdown';
-import UpvoteThread from '../UpvoteThread';
+import Upvote from '../Upvote';
+import { UPVOTE_THREAD } from '../../graphql/thread';
+
+// eslint-disable-next-line react/prop-types
+const UpvoteThread = ({ threadId, upvoteCount, hasUserUpvoted }) => {
+  const [upvoteThread] = useMutation(UPVOTE_THREAD, {
+    variables: {
+      threadId,
+    },
+  });
+  return (
+    <Upvote
+      onUpvote={upvoteThread}
+      threadId={threadId}
+      hasUserUpvoted={hasUserUpvoted}
+      upvoteCount={upvoteCount}
+    />
+  );
+};
 
 const ArrowRightSimpleAnimated = () => (
   <ArrowRightContainer id="arrow-right-animated">

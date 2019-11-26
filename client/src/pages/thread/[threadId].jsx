@@ -9,6 +9,7 @@ import { GET_THREAD } from '../../graphql/thread';
 import Comment from '../../components/Comment';
 import CommentTextArea from '../../components/CommentTextArea';
 import withAuthSync from '../../components/withAuthSync';
+import { propTypes } from '../../utils/globals';
 
 const PageContainer = styled.div`
   min-height: calc(100vh - 67.5px);
@@ -152,6 +153,7 @@ const Thread = ({ user }) => {
                   comment={comment}
                   threadId={threadId}
                   key={comment.id}
+                  userId={user.id}
                 />
               ))}
           </CommentTreeContainer>
@@ -159,6 +161,14 @@ const Thread = ({ user }) => {
       </PageContainer>
     </>
   );
+};
+
+Thread.propTypes = {
+  user: propTypes.user,
+};
+
+Thread.defaultProps = {
+  user: null,
 };
 
 export default withAuthSync(Thread, 'all');
