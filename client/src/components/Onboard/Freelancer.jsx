@@ -47,7 +47,7 @@ const Freelancer = () => {
     <Formik
       validationSchema={common.validation.freelancerPortfolioInput}
       initialValues={{
-        socials: [],
+        socials: socialList,
         portfolio: [],
         skills: [],
       }}
