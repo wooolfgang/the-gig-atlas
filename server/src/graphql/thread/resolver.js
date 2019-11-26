@@ -97,6 +97,10 @@ export default {
       ),
   },
 
+  ThreadVote: {
+    user: ({ id }) => prisma.threadVote({ id }).user(),
+  },
+
   Comment: {
     votes: ({ id }) => prisma.comment({ id }).votes(),
     parent: (root, _a, _c, info) => {
