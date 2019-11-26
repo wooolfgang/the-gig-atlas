@@ -15,6 +15,7 @@ export const projectTypeRegex = /^(GREENFIELD|MAINTENANCE|CONSULTING|TESTING)$/;
 // export const threadTagRegex = /^(freelance|design|discuss|webdev|productivity)$/;
 export const accountTypeRegex = /^(FREELANCER|EMPLOYER)$/;
 export const tagRegex = /^[a-z\d]+[a-z\d\s\.-]*[a-z\d]+$/; // => alphanumeric in first+ char, allow space, hypen, dot in middle, alphanumeric at last char
+export const imageRegex = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
 
 // Independent fields
 export const id = yup.string();
@@ -35,7 +36,7 @@ export const tags = yup
   .array()
   .of(tag)
   .nullable();
-
+export const imageName = yup.string().matches(imageRegex, 'File must be image');
 // user
 export const email = yup
   .string('Email must be a string')
