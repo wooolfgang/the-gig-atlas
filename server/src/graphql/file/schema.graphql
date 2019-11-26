@@ -1,3 +1,5 @@
+scalar Upload
+
 type Mutation {
   uploadImage (file: Upload!): File!
   createFile (file: FileInput!): File!
