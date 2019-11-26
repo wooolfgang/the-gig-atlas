@@ -56,10 +56,33 @@ describe('Test thread resolvers', () => {
       title: 'What is love?',
       body: "Baby don't hurt me, don't hurt me no more",
     };
+
+    try {
+      await prisma.createTagCategory({
+        name: 'thread',
+      });
+    } catch (e) {
+      // Fail gracefully in case tagCategory already exists
+    }
+
     // prepend initial tags to the database
     await Promise.all([
-      prisma.createTag({ name: 'react' }),
-      prisma.createTag({ name: 'node' }),
+      prisma.createTag({
+        name: 'react',
+        categories: {
+          connect: {
+            name: 'thread',
+          },
+        },
+      }),
+      prisma.createTag({
+        name: 'node',
+        categories: {
+          connect: {
+            name: 'thread',
+          },
+        },
+      }),
     ]);
     const res = await debugPost({
       query: `mutation ($input: ThreadInput!) {

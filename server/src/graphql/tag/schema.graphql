@@ -1,15 +1,27 @@
 type Query {
-  tag(id: ID): Tag  
+  tag(id: ID): Tag
+  tags(
+    where: TagWhereInput
+    orderBy: TagOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Tag]!
 }
-
-# type Muatation {
-  
-# }
 
 type Tag {
   id: ID
   name: String
   threads: [Thread]
+  category: TagCategory!
+}
+
+type TagCategory {
+  id: ID
+  name: String
+  tags: [Tag!]!
 }
 
 input TagInput {
