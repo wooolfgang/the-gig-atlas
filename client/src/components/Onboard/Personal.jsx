@@ -61,7 +61,7 @@ const Personal = ({ user }) => {
           />
           <Field
             name="accountType"
-            type="select"
+            type="switch"
             label="Account type"
             component={CustomField}
             options={[
