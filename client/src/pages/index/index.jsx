@@ -1,57 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Authenticated from './authenticated';
 import Landing from './landing';
-import auth from '../../utils/auth';
-import router from '../../utils/router';
-import { GET_AUTHENTICATED_USER } from '../../graphql/auth';
+import withAuthSync from '../../components/withAuthSync';
+import { propTypes } from '../../utils/globals';
 
-const Index = ({ authenticatedUser }) => {
-  if (authenticatedUser) {
-    return <Authenticated authenticatedUser={authenticatedUser} />;
+const Index = ({ user }) => {
+  if (user) {
+    return <Authenticated user={user} />;
   }
   return <Landing />;
 };
 
 Index.propTypes = {
-  authenticatedUser: PropTypes.shape({
-    id: PropTypes.string,
-    email: PropTypes.string,
-  }),
+  user: propTypes.user,
 };
 
 Index.defaultProps = {
-  authenticatedUser: null,
+  user: null,
 };
-
-Index.getInitialProps = async ctx => {
-  const { apolloClient } = ctx;
-  const token = auth.getToken(ctx);
-
-  if (token) {
-    const res = await apolloClient.query({
-      query: GET_AUTHENTICATED_USER,
-      fetchPolicy: 'network-only',
-    });
-
-    if (res.data.authenticatedUser) {
-      const { authenticatedUser } = res.data;
-
-      if (authenticatedUser.onboardingStep === 'PERSONAL') {
-        router.toPersonalOnboarding(ctx);
-      } else if (authenticatedUser.onboardingStep === 'EMPLOYER') {
-        router.toEmployerOnboarding(ctx);
-      } else if (authenticatedUser.onboardingStep === 'FREELANCER') {
-        router.toFreelancerOnboarding(ctx);
-      }
-
-      return {
-        authenticatedUser: res.data.authenticatedUser,
-      };
-    }
-  }
-
-  return {};
-};
-
-export default Index;
+export default withAuthSync(Index, 'all');

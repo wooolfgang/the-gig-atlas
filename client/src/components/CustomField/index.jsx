@@ -12,6 +12,7 @@ import {
   RadioCards,
   RadioButtons,
   Select,
+  Switch,
 } from '../../primitives';
 
 const CustomField = ({
@@ -40,6 +41,8 @@ const CustomField = ({
     InputComponent = AvatarUpload;
   } else if (type === 'texteditor') {
     InputComponent = TextEditor;
+  } else if (type === 'switch') {
+    InputComponent = Switch;
   } else {
     InputComponent = Input;
   }

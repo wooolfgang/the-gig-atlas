@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/react-hooks';
 import Nav from '../../../components/Nav';
@@ -14,6 +13,7 @@ import { color } from '../../../utils/theme';
 import ListEmpty from '../../../icons/ListEmpty';
 import Working from '../../../icons/Working';
 import media from '../../../utils/media';
+import { propTypes } from '../../../utils/globals';
 
 const Container = styled.div`
   box-sizing: border-box;
@@ -136,7 +136,7 @@ const ThreadCreateLink = styled.a`
   }
 `;
 
-const Authenticated = ({ authenticatedUser }) => {
+const Authenticated = ({ user }) => {
   const router = useRouter();
   const pagination = 8;
 
@@ -162,7 +162,7 @@ const Authenticated = ({ authenticatedUser }) => {
 
   return (
     <>
-      <Nav type="AUTHENTICATED_FREELANCER" user={authenticatedUser} />
+      <Nav type="AUTHENTICATED_FREELANCER" user={user} />
       <Container>
         <Main>
           <TagsContainer>
@@ -399,17 +399,7 @@ const Authenticated = ({ authenticatedUser }) => {
 };
 
 Authenticated.propTypes = {
-  authenticatedUser: PropTypes.shape({
-    id: PropTypes.string,
-    email: PropTypes.string,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    isEmailVerified: PropTypes.bool,
-    avatar: PropTypes.shape({
-      id: PropTypes.string,
-      url: PropTypes.string,
-    }),
-  }).isRequired,
+  user: propTypes.user.isRequired,
 };
 
 export default Authenticated;

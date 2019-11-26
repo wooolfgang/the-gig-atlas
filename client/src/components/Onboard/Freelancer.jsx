@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import common from '@shared/common';
 import { useMutation } from '@apollo/react-hooks';
@@ -40,8 +40,8 @@ const socialList = Object.keys(socialMap).map(key => ({
 }));
 
 const Freelancer = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [onboardingFreelancer] = useMutation(ONBOARDING_FREELANCER);
-  let isFinished = false;
 
   return (
     <Formik
@@ -51,35 +51,25 @@ const Freelancer = () => {
         portfolio: [],
         skills: [],
       }}
-      onSubmit={async (values, action) => {
-        if (isFinished) {
-          action.setSubmitting(false);
-          return;
-        }
+      onSubmit={async values => {
         try {
+          setIsSubmitting(true);
           const input = { ...values, socials: _trimSocials(values.socials) };
           const { errors } = await onboardingFreelancer({
             variables: { input },
           });
 
           if (errors) {
+            setIsSubmitting(false);
             throw errors;
           }
-          isFinished = true;
           router.toIndex();
         } catch (e) {
+          setIsSubmitting(false);
           console.error('On freelancer submit', e);
         }
-        action.setSubmitting(false);
       }}
-      render={({
-        values,
-        isSubmitting,
-        setFieldValue,
-        errors,
-        handleSubmit,
-        touched,
-      }) => (
+      render={({ values, setFieldValue, errors, handleSubmit, touched }) => (
         <Form>
           <Field
             name="skills"
