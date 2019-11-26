@@ -8,6 +8,15 @@ export const CREATE_THREAD = gql`
   }
 `;
 
+export const UPVOTE_THREAD = gql`
+  mutation UPVOTE_THREAD($threadId: ID!) {
+    upvoteThread(threadId: $threadId) {
+      id
+      upvoteCount
+    }
+  }
+`;
+
 export const CREATE_COMMENT = gql`
   mutation CREATE_COMMENT($input: CommentInput!) {
     createComment(input: $input) {
@@ -68,6 +77,12 @@ export const GET_THREADS = gql`
           url
         }
         asFreelancer {
+          id
+        }
+      }
+      votes {
+        id
+        user {
           id
         }
       }
