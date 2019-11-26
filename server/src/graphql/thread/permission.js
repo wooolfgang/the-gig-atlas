@@ -54,4 +54,5 @@ export default {
   ThreadVote: allow,
   Tag: allow,
   Comment: allow,
+  CommentVote: allow,
 };

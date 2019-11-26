@@ -63,20 +63,41 @@ export default {
         .commentsConnection({ where: { thread: { id } } })
         .aggregate()
         .count(),
-    commentTree: async ({ id }) => {
+    commentTree: async ({ id }, args, ctx, info) => {
       const comments = await prisma.comments({ where: { thread: { id } } })
         .$fragment(`
           fragment CommentTree on Comment {
             id
             text
             isRoot
+            upvoteCount
+            votes {
+              id
+              user {
+                id
+              }
+            }
             parent {
               id
               text
+              upvoteCount
+              votes {
+                id
+                user {
+                  id
+                }
+              }
             }
             children {
               id
               text
+              upvoteCount
+              votes {
+                id
+                user {
+                  id
+                }
+              }
             }
           }
         `);
@@ -131,5 +152,9 @@ export default {
         .thread()
         .$fragment(fragment);
     },
+  },
+
+  CommentVote: {
+    user: ({ id }) => prisma.commentVote({ id }).user(),
   },
 };
