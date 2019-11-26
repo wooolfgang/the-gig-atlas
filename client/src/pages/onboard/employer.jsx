@@ -5,7 +5,6 @@ import EmployerForm from '../../components/Onboard/Employer';
 import OnboardingContainer from '../../components/Onboard/Container';
 import withAuthSync from '../../components/withAuthSync';
 import Nav from '../../components/Nav';
-import router from '../../utils/router';
 
 const Employer = ({ user }) => (
   <>
@@ -29,17 +28,5 @@ const Employer = ({ user }) => (
     />
   </>
 );
-
-Employer.getInitialProps = async ctx => {
-  const { user } = ctx;
-
-  if (user.onboardingStep === 'PERSONAL') {
-    router.toPersonalOnboarding(ctx);
-  } else if (user.onboardingStep === 'FREELANCER') {
-    router.toFreelancerOnboarding(ctx);
-  }
-
-  return { user };
-};
 
 export default withAuthSync(Employer, 'MEMBER');

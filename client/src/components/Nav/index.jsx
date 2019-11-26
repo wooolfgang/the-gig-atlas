@@ -15,6 +15,7 @@ import auth from '../../utils/auth';
 import router from '../../utils/router';
 import SearchIcon from '../../icons/Search';
 import { color } from '../../utils/theme';
+import { propTypes } from '../../utils/globals';
 
 const NotAuthenticated = () => (
   <NavLinks>
@@ -51,25 +52,41 @@ const LoginSignup = () => (
 );
 
 const AuthenticatedFreelancer = withRouter(({ router: { route }, user }) => (
-  <NavLinks>
-    <Button
-      styleType={route === '/thread/create' ? 'default' : 'primary'}
-      style={{ padding: '.5rem .5rem', fontSize: '.9rem' }}
-      onClick={() => Router.push('/thread/create')}
-    >
-      Create Thread
-    </Button>
-    <div>
-      <Avatar
-        style={{ width: '38px', height: '38px', marginLeft: '1.5rem' }}
-        src={user && user.avatar && user.avatar.url}
-        onClick={() => {
-          auth.logout();
-          router.toIndex();
+  <>
+    <SearchContainer>
+      <Search type="search" placeholder="Find gigs for web development" />
+      <SearchIcon
+        width="18"
+        height="18"
+        viewBox="0 0 22 22"
+        fill={color.neutral40}
+        style={{
+          position: 'absolute',
+          top: '6px',
+          right: '10px',
         }}
       />
-    </div>
-  </NavLinks>
+    </SearchContainer>
+    <NavLinks>
+      <Button
+        styleType={route === '/thread/create' ? 'default' : 'primary'}
+        style={{ padding: '.5rem .5rem', fontSize: '.9rem' }}
+        onClick={() => Router.push('/thread/create')}
+      >
+        Create Thread
+      </Button>
+      <div>
+        <Avatar
+          style={{ width: '38px', height: '38px', marginLeft: '1.5rem' }}
+          src={user && user.avatar && user.avatar.url}
+          onClick={() => {
+            auth.logout();
+            router.toIndex();
+          }}
+        />
+      </div>
+    </NavLinks>
+  </>
 ));
 
 const NavType = {
@@ -99,25 +116,6 @@ const Nav = ({ type, user }) => {
               <Logo />
             </LogoContainer>
           </NavLink>
-          {type === 'AUTHENTICATED_FREELANCER' && (
-            <SearchContainer>
-              <Search
-                type="search"
-                placeholder="Find gigs for web development"
-              />
-              <SearchIcon
-                width="18"
-                height="18"
-                viewBox="0 0 22 22"
-                fill={color.neutral40}
-                style={{
-                  position: 'absolute',
-                  top: '6px',
-                  right: '10px',
-                }}
-              />
-            </SearchContainer>
-          )}
           {size === 'desktop' || size === 'giant' || !size ? (
             <NavContent user={user} />
           ) : (
@@ -131,17 +129,7 @@ const Nav = ({ type, user }) => {
 
 Nav.propTypes = {
   type: PropTypes.string.isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.string,
-    email: PropTypes.string,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    isEmailVerified: PropTypes.bool,
-    avatar: PropTypes.shape({
-      id: PropTypes.string,
-      url: PropTypes.string,
-    }),
-  }).isRequired,
+  user: propTypes.user.isRequired,
 };
 
 export default Nav;

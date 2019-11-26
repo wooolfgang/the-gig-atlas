@@ -34,11 +34,7 @@ const SignupLocal = () => {
             }
 
             auth.setTokenCookie(data.signup.token);
-            if (values.accountType === 'FREELANCER') {
-              router.toFreelancerOnboarding();
-            } else if (values.accountType === 'EMPLOYER') {
-              router.toEmployerOnboarding();
-            }
+            router.toPersonalOnboarding();
           } catch (e) {
             /**
              * @todo: handle error
@@ -48,7 +44,7 @@ const SignupLocal = () => {
           }
         }}
         initialValues={{
-          accountType: '',
+          accountType: 'FREELANCER',
           email: '',
           password: '',
           firstName: '',
@@ -62,7 +58,7 @@ const SignupLocal = () => {
             )}
             <Field
               name="accountType"
-              type="select"
+              type="switch"
               label="Account type"
               component={CustomField}
               options={[

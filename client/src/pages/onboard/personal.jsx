@@ -5,7 +5,6 @@ import PersonalForm from '../../components/Onboard/Personal';
 import OnboardContainer from '../../components/Onboard/Container';
 import withAuthSync from '../../components/withAuthSync';
 import Nav from '../../components/Nav';
-import router from '../../utils/router';
 
 const Personal = ({ user }) => (
   <>
@@ -29,17 +28,5 @@ const Personal = ({ user }) => (
     />
   </>
 );
-
-Personal.getInitialProps = async ctx => {
-  const { user } = ctx;
-
-  if (user.onboardingStep === 'FREELANCER') {
-    router.toFreelancerOnboarding(ctx);
-  } else if (user.onboardingStep === 'EMPLOYER') {
-    router.toEmployerOnboarding(ctx);
-  }
-
-  return { user };
-};
 
 export default withAuthSync(Personal, 'MEMBER');
