@@ -1,6 +1,8 @@
 type Mutation {
   createThread(input: ThreadInput!): Thread!
   createComment(input: CommentInput!): Comment!
+  upvoteThread(threadId: ID!): Thread!
+  upvoteComment(commentId: ID!): Comment!
 }
 
 type Query {
@@ -25,6 +27,7 @@ type Thread {
   body: String
   commentCount: Int
   upvoteCount: Int
+  downvoteCount: Int
   viewCount: Int
 
   tags: [Tag!]!
@@ -32,6 +35,7 @@ type Thread {
   comments: [Comment]!
   commentTree: [Comment]!
   posters: [User!]!
+  votes: [ThreadVote!]!
 }
 
 type Comment {
@@ -41,6 +45,7 @@ type Comment {
 
   text: String
   upvoteCount: Int
+  downvoteCount: Int
   isRoot: Boolean
   isDeleted: Boolean
 
@@ -48,6 +53,23 @@ type Comment {
   parent: Comment
   thread: Thread
   postedBy: User
+  votes: [CommentVote!]!
+}
+
+type ThreadVote {
+  id: ID
+  createdAt: DateTime
+  user: User
+  value: Int
+  thread: Thread
+}
+
+type CommentVote {
+  id: ID
+  createdAt: DateTime
+  user: User
+  value: Int
+  comment: Comment
 }
 
 input ThreadInput {
