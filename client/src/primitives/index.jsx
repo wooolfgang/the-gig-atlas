@@ -13,6 +13,7 @@ import Select from './Select';
 import Spinner from './Spinner';
 import Avatar from './Avatar';
 import OldSchoolLink from './OldSchoolLink';
+import Switch from './Switch';
 
 export {
   FieldError,
@@ -30,4 +31,5 @@ export {
   Spinner,
   Avatar,
   OldSchoolLink,
+  Switch,
 };
