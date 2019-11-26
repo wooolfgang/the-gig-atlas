@@ -44,7 +44,7 @@ const SignupLocal = () => {
           }
         }}
         initialValues={{
-          accountType: '',
+          accountType: 'FREELANCER',
           email: '',
           password: '',
           firstName: '',
@@ -58,7 +58,7 @@ const SignupLocal = () => {
             )}
             <Field
               name="accountType"
-              type="select"
+              type="switch"
               label="Account type"
               component={CustomField}
               options={[
