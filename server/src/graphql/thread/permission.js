@@ -48,7 +48,6 @@ export default {
   Query: {
     thread: allow,
     threads: allow,
-    threadTags: allow,
   },
   Thread: allow,
   ThreadVote: allow,

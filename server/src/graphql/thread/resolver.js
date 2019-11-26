@@ -38,7 +38,6 @@ export default {
   Query: {
     thread: (_r, args, _c, info) => prisma.thread(args.where, info),
     threads: (_r, args, _c, info) => prisma.threads(args, info),
-    threadTags: async (_r, args, _c, info) => prisma.tags(args, info),
   },
 
   Thread: {
