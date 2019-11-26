@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Router from 'next/router';
 import PropTypes from 'prop-types';
-import ArrowUp from '../../icons/ArrowUp';
 import ArrowRightSimple from '../../icons/ArrowRightSimple';
 import {
   ThreadLinkContainer,
@@ -9,8 +8,8 @@ import {
   UpvoteContainer,
   ArrowRightContainer,
 } from './style';
-import { color } from '../../utils/theme';
 import AvatarUserDropdown from '../AvatarUserDropdown';
+import UpvoteThread from '../UpvoteThread';
 
 const ArrowRightSimpleAnimated = () => (
   <ArrowRightContainer id="arrow-right-animated">
@@ -23,30 +22,6 @@ const ArrowRightSimpleAnimated = () => (
     />
   </ArrowRightContainer>
 );
-
-const ArrowUpButton = () => {
-  const [fill, setFill] = useState(color.neutral50);
-
-  const handleMouseEnter = () => {
-    setFill(color.neutral80);
-  };
-
-  const handleMouseLeave = () => {
-    setFill(color.neutral50);
-  };
-
-  return (
-    <ArrowUp
-      height="22"
-      width="22"
-      viewBox="0 0 22 22"
-      fill={fill}
-      style={{ cursor: 'pointer' }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    />
-  );
-};
 
 const ThreadLinkSkeleton = () => (
   <ThreadLinkContainerSkeleton>
@@ -64,17 +39,21 @@ const ThreadLinkSkeleton = () => (
   </ThreadLinkContainerSkeleton>
 );
 
-const ThreadLink = ({ thread, loading }) => {
+const ThreadLink = ({ thread, loading, userId }) => {
   if (loading) {
     return <ThreadLinkSkeleton />;
   }
 
   return (
     <ThreadLinkContainer key={thread.id}>
-      <UpvoteContainer>
-        <ArrowUpButton />
-        <div id="upvote-count">{thread.upvoteCount}</div>
-      </UpvoteContainer>
+      <UpvoteThread
+        threadId={thread.id}
+        upvoteCount={thread ? thread.upvoteCount : 0}
+        hasUserUpvoted={
+          thread.votes.filter(vote => vote.user.id && vote.user.id === userId)
+            .length > 0
+        }
+      />
       <div
         style={{ display: 'flex', flexDirection: 'column' }}
         onClick={() => Router.push(`/thread/${thread.id}`)}
@@ -119,12 +98,15 @@ ThreadLink.propTypes = {
     commentCount: PropTypes.number,
     upvoteCount: PropTypes.number,
     posters: PropTypes.array,
+    votes: PropTypes.array,
   }).isRequired,
   loading: PropTypes.bool,
+  userId: PropTypes.string,
 };
 
 ThreadLink.defaultProps = {
   loading: false,
+  userId: null,
 };
 
 export default ThreadLink;
