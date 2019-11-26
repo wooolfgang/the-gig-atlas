@@ -46,11 +46,11 @@ const CommentTextArea = ({ threadId, parentId, onSubmit, onError }) => {
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button
               type="submit"
-              styleType="secondary"
+              styleType={isSubmitting ? 'default' : 'secondary'}
               style={{ width: '100px' }}
               loading={isSubmitting}
             >
-              {isSubmitting ? 'Submitting' : 'Submit'}
+              Submit
             </Button>
           </div>
         </Form>

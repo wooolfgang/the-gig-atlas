@@ -229,7 +229,11 @@ const Authenticated = ({ user }) => {
             {threads && (
               <>
                 {threads.threads.map(thread => (
-                  <ThreadLink thread={thread} key={thread.id} />
+                  <ThreadLink
+                    thread={thread}
+                    key={thread.id}
+                    userId={user.id}
+                  />
                 ))}
                 {threads.threads.length < pagination && (
                   <Link href="/thread/create">
