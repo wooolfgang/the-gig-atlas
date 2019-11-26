@@ -21,7 +21,7 @@ const Employer = () => {
     <Formik
       validationSchema={common.validation.onboardingEmployer}
       initialValues={{
-        employerType: '',
+        employerType: 'COMPANY',
         displayName: '',
         introduction: '',
         email: '',
@@ -48,9 +48,8 @@ const Employer = () => {
         <Form>
           <Field
             name="employerType"
-            type="select"
+            type="switch"
             label="Employment"
-            value={null}
             component={CustomField}
             options={[
               { label: 'Company', value: 'COMPANY' },
