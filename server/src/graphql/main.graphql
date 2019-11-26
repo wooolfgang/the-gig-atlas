@@ -1,5 +1,4 @@
 scalar Date
-scalar Upload
 scalar DateTime
 
 # import * from '../generated/prisma-client/datamodel.graphql'
