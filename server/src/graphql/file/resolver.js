@@ -18,16 +18,17 @@ const cloudinaryUpload = file =>
     createReadStream(filename).pipe(uploadStream);
   });
 
+async function uploadImage(_r, { file }, _c, info) {
+  const { filename, type } = file;
+  const { url } = await cloudinaryUpload(file);
+  const createFile = { url, type, name: filename };
+
+  return prisma.createFile(createFile, info);
+}
+
 export default {
   Mutation: {
-    uploadImage: async (_r, args, _c, info) => {
-      const file = await args.file;
-      const { filename, type } = file;
-      const { url } = await cloudinaryUpload(file);
-      const createFile = { url, type, name: filename };
-
-      return prisma.createFile(createFile, info);
-    },
+    uploadImage,
     createFile: async (root, { file }, _c, info) =>
       prisma.createFile(file, info),
   },
