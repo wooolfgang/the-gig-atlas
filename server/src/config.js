@@ -33,6 +33,11 @@ const {
   SECRET_GOOGLE_OAUTH,
   ID_GITHUB_OAUTH,
   SECRET_GITHUB_OAUTH,
+  PG_USER,
+  PG_PASSWORD,
+  PG_HOST,
+  PG_DATABASE,
+  PG_PORT,
 } = process.env;
 
 const fromEnv = {
@@ -59,6 +64,13 @@ const fromEnv = {
     secret: SECRET_GITHUB_OAUTH,
     redirectURI: 'http://localhost:3000/auth/github',
   },
+  pg: {
+    user: PG_USER,
+    password: PG_PASSWORD,
+    host: PG_HOST,
+    database: PG_DATABASE,
+    port: parseInt(PG_PORT, 10),
+  }
 };
 
 /**
