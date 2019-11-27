@@ -19,7 +19,6 @@ const permissions = shield(
     fallbackRule: deny,
   },
 );
-
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
   permissions,
