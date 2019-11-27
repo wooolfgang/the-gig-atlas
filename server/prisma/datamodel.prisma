@@ -257,14 +257,6 @@ type Comment {
   votes: [CommentVote!]! @relation(name: "CommentVotes", link: TABLE, onDelete: "CASCADE")
 }
 
-# Use Type instead of Enum because an Enum (scalarList) type is not queryable
-# See -> https://github.com/prisma/prisma/issues/2930
-type Tag {
-  id: ID! @id
-  name: String @unique
-  threads: [Thread] @relation(link: TABLE, name: "ThreadTag")
-}
-
 type ThreadVote {
   id: ID! @id
   createdAt: DateTime! @createdAt
@@ -279,6 +271,20 @@ type CommentVote {
   createdAt: DateTime! @createdAt
   user: User! 
   # Value should either be -1 (downvote) or 1 (upvote)
-  value : Int! 
+  value : Int!
   comment: Comment! @relation(name: "CommentVotes")
+}
+
+type Tag {
+  id: ID! @id
+  name: String @unique
+  threads: [Thread!]! @relation(name: "ThreadsByTag", link: TABLE)
+  gigs: [Gig!]! @relation(name: "GigsByTag", link: TABLE)
+  categories: [TagCategory!]! @relation(name: "TagCategories")
+}
+
+type TagCategory {
+  id: ID! @id
+  name: String @unique
+  tags: [Tag!]! @relation(link: TABLE, name: "TagCategories")
 }

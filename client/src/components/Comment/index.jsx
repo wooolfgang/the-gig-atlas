@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+/* eslint-disable react/prop-types */
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useMutation } from '@apollo/react-hooks';
 import CommentTextArea from '../CommentTextArea';
 import Avatar from '../../primitives/Avatar';
+import Upvote from '../Upvote';
+import { UPVOTE_COMMENT } from '../../graphql/thread';
 
 const CommentContainer = styled.div`
   margin-left: ${props => `${props.nestLevel * 22}px`};
   margin-bottom: 12px;
+  display: flex;
 `;
 
 const CommentBoxContainer = styled.div`
@@ -34,49 +39,96 @@ const User = styled.span`
   color: ${props => props.theme.color.d3};
 `;
 
-const Comment = ({ comment, threadId, nestLevel = 0 }) => {
+const UpvoteComment = ({
+  commentId,
+  hasUserUpvoted,
+  upvoteCount,
+  setComment,
+}) => {
+  const [upvoteComment] = useMutation(UPVOTE_COMMENT, {
+    variables: {
+      commentId,
+    },
+  });
+  return (
+    <Upvote
+      onUpvote={async () => {
+        try {
+          const res = await upvoteComment();
+          if (res.data) {
+            setComment(comment => ({
+              ...comment,
+              upvoteCount: res.data.upvoteComment.upvoteCount,
+              votes: res.data.upvoteComment.votes,
+            }));
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }}
+      hasUserUpvoted={hasUserUpvoted}
+      upvoteCount={upvoteCount}
+    />
+  );
+};
+
+const Comment = ({ comment: _comment, threadId, nestLevel = 0, userId }) => {
   const [showTextArea, setShowTextArea] = useState(false);
+  const [comment, setComment] = useState(_comment);
   const [childrenComments, setChildrenComments] = useState(
-    comment.children || [],
+    (comment && comment.children) || [],
   );
 
   return (
     <>
       <CommentContainer nestLevel={nestLevel}>
-        <div>
-          {comment.postedBy && (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Avatar
-                src={comment.postedBy.avatar && comment.postedBy.avatar.url}
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  marginRight: '5px',
+        <UpvoteComment
+          commentId={comment.id}
+          upvoteCount={comment.upvoteCount}
+          hasUserUpvoted={
+            comment.votes.filter(vote => vote.user && vote.user.id === userId)
+              .length > 0
+          }
+          setComment={setComment}
+        />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div>
+            {comment.postedBy && (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Avatar
+                  src={comment.postedBy.avatar && comment.postedBy.avatar.url}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    marginRight: '5px',
+                  }}
+                />
+                <User>[-] {comment.postedBy.firstName}</User>
+              </div>
+            )}
+            <div dangerouslySetInnerHTML={{ __html: comment.text }} />
+          </div>
+          <div>
+            <ReplyButton
+              type="button"
+              onClick={() => setShowTextArea(!showTextArea)}
+            >
+              {showTextArea ? 'Hide' : 'Reply'}
+            </ReplyButton>
+          </div>
+          {showTextArea && (
+            <CommentBoxContainer>
+              <CommentTextArea
+                threadId={threadId}
+                parentId={comment.id}
+                onSubmit={newComment => {
+                  setChildrenComments(comments => [newComment, ...comments]);
+                  setShowTextArea(false);
                 }}
               />
-              <User>[-] {comment.postedBy.firstName}</User>
-            </div>
+            </CommentBoxContainer>
           )}
-          <div dangerouslySetInnerHTML={{ __html: comment.text }} />
         </div>
-        <ReplyButton
-          type="button"
-          onClick={() => setShowTextArea(!showTextArea)}
-        >
-          {showTextArea ? 'Hide' : 'Reply'}
-        </ReplyButton>
-        {showTextArea && (
-          <CommentBoxContainer>
-            <CommentTextArea
-              threadId={threadId}
-              parentId={comment.id}
-              onSubmit={newComment => {
-                setChildrenComments(comments => [newComment, ...comments]);
-                setShowTextArea(false);
-              }}
-            />
-          </CommentBoxContainer>
-        )}
       </CommentContainer>
       {childrenComments.map(child => (
         <Comment
@@ -84,6 +136,7 @@ const Comment = ({ comment, threadId, nestLevel = 0 }) => {
           threadId={threadId}
           key={child.id}
           nestLevel={nestLevel + 1}
+          userId={userId}
         />
       ))}
     </>
