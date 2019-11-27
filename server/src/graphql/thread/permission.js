@@ -6,13 +6,23 @@ import { UPVOTE_VALUE } from './constants';
 
 const hasNotUpvoted = type =>
   rule()(async (_, args, { user }) => {
-    const voted = await prisma.$exists[type]({
-      AND: {
-        value: UPVOTE_VALUE,
-        user: {
-          id: user.id,
-        },
+    const AND = {
+      value: UPVOTE_VALUE,
+      user: {
+        id: user.id,
       },
+    };
+
+    if (type === 'threadVote') {
+      AND.thread = { id: args.threadId };
+    } else if (type === 'commentVote') {
+      AND.comment = { id: args.commentId };
+    } else {
+      return new Error('Invalid type for hasNotUpvoted permission rule');
+    }
+
+    const voted = await prisma.$exists[type]({
+      AND,
     });
     return !voted;
   });
@@ -38,9 +48,10 @@ export default {
   Query: {
     thread: allow,
     threads: allow,
-    threadTags: allow,
   },
   Thread: allow,
+  ThreadVote: allow,
   Tag: allow,
   Comment: allow,
+  CommentVote: allow,
 };

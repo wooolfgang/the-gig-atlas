@@ -8,17 +8,48 @@ export const CREATE_THREAD = gql`
   }
 `;
 
+export const UPVOTE_THREAD = gql`
+  mutation UPVOTE_THREAD($threadId: ID!) {
+    upvoteThread(threadId: $threadId) {
+      id
+      upvoteCount
+    }
+  }
+`;
+
 export const CREATE_COMMENT = gql`
   mutation CREATE_COMMENT($input: CommentInput!) {
     createComment(input: $input) {
       id
       text
+      upvoteCount
+      votes {
+        id
+        user {
+          id
+        }
+      }
       postedBy {
         id
         firstName
         avatar {
           id
           url
+        }
+      }
+    }
+  }
+`;
+
+export const UPVOTE_COMMENT = gql`
+  mutation UPVOTE_COMMENT($commentId: ID!) {
+    upvoteComment(commentId: $commentId) {
+      id
+      upvoteCount
+      votes {
+        id
+        user {
+          id
         }
       }
     }
@@ -71,15 +102,25 @@ export const GET_THREADS = gql`
           id
         }
       }
+      votes {
+        id
+        user {
+          id
+        }
+      }
     }
   }
 `;
 
 export const GET_THREAD_TAGS = gql`
   query GET_THREAD_TAGS {
-    threadTags {
+    tags(where: { category: { name: "thread" } }) {
       id
       name
+      category {
+        id
+        name
+      }
     }
   }
 `;
@@ -91,13 +132,34 @@ export const GET_THREAD = gql`
     id
     text
     isRoot
+    upvoteCount
+    votes {
+      id
+      user {
+        id
+      }
+    }
     parent {
       id
       text
+      upvoteCount
+      votes {
+        id
+        user {
+          id
+        }
+      }
     }
     children {
       id
       text
+      upvoteCount
+      votes {
+        id
+        user {
+          id
+        }
+      }
     }
     postedBy {
       id
