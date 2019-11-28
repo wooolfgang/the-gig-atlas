@@ -12,6 +12,7 @@ export default {
   },
   Query: {
     gigsListLanding: allow,
+    searchGigs: allow,
   },
   Gig: allow,
 };

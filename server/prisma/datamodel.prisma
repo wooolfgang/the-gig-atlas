@@ -271,7 +271,7 @@ type CommentVote {
   createdAt: DateTime! @createdAt
   user: User! 
   # Value should either be -1 (downvote) or 1 (upvote)
-  value : Int! 
+  value : Int!
   comment: Comment! @relation(name: "CommentVotes")
 }
 
