@@ -1,82 +1,137 @@
-/* eslint-disable import/no-dynamic-require */
-/* eslint-disable global-require */
-/* eslint-disable arrow-parens */
-/* eslint-disable prettier/prettier */
-import { argv } from 'yargs';
 import fs from 'fs';
 import ensureDirectoryExists from './utils/ensureDirectoryExists';
-import getUrls from './utils/getWebsites';
+import getFilenamesFromDirectory from './utils/getFilenamesFromDirectory';
 
-const { limit = 5 } = argv;
+const DATA_RELATIVE_PATH = '/data';
+const SCRAPERS_RELATIVE_PATH = '/scrapers';
 
-(async () => {
-  /* Check if data folder exists, else create it */
-  await ensureDirectoryExists('/data');
+const Scraper = ({ limit = 5 } = {}) => {
+  const timeLimitInMs = parseInt(limit, 10) * 60 * 1000;
+  let _dataDirectoryExists = false;
+  let _urls = null;
 
-  /* Get urls to scrape based on process args */
-  const urls = await getUrls();
+  const setUrls = urls => {
+    _urls = urls;
+  };
+  const getUrls = () => _urls;
+  const isSubset = (superarray, innerarray) =>
+    innerarray.every(val => superarray.includes(val));
 
-  let readFilesPromises = [];
-  try {
-    readFilesPromises = await Promise.all(
-      urls.map((website) => {
-        const path = `src/data/${website}.json`;
+  async function ensureDataDirectoryExists() {
+    if (_dataDirectoryExists) {
+      return;
+    }
+
+    await ensureDirectoryExists(DATA_RELATIVE_PATH);
+    _dataDirectoryExists = true;
+  }
+
+  async function getUrlsFromScrapersDirectory() {
+    const filenames = await getFilenamesFromDirectory(SCRAPERS_RELATIVE_PATH);
+    return filenames
+      .filter(filename => filename.includes('.js'))
+      .map(filename => filename.replace('.js', ''));
+  }
+
+  async function getDataFromJSONStore() {
+    if (!getUrls()) {
+      setUrls(await getUrlsFromScrapersDirectory());
+    }
+
+    const data = await Promise.all(
+      getUrls().map(website => {
+        const path = `src${DATA_RELATIVE_PATH}/${website}.json`;
         if (fs.existsSync(path)) {
           return fs.promises.readFile(path);
         }
         return null;
       }),
     );
-  } catch (e) {
-    // fail gracefully
+
+    return data
+      .filter(file => file !== null)
+      .map(file => JSON.parse(file))
+      .reduce((acc, val) => ({ ...acc, [val.website]: val }), {});
   }
 
-  /* Read data from json store */
-  const dataFromJsonStore = readFilesPromises
-    .filter(file => file !== null)
-    .map(file => JSON.parse(file));
+  async function getValidDataFromJSONStore() {
+    const dataFromJSON = await getDataFromJSONStore();
+    return Object.keys(dataFromJSON).reduce((acc, key) => {
+      const d = dataFromJSON[key];
+      if (new Date(new Date(d.writtenAt) + timeLimitInMs) < new Date()) {
+        acc[key] = d;
+      }
 
-  /* Data that is still valid, not exceeding the time limit */
-  const data = dataFromJsonStore.filter(
-    d => new Date(new Date(d.writtenAt) + parseInt(limit, 10) * 60 * 1000) < new Date(),
-  );
-
-  /* Data that is not valid, scraped directly from the website */
-  const urlsToScrape = urls.filter(url => {
-    const fromStoreIndex = dataFromJsonStore.findIndex(d => d.website === url);
-    if (fromStoreIndex === -1) {
-      return true;
-    }
-
-    const d = dataFromJsonStore[fromStoreIndex];
-    if (new Date(new Date(d.writtenAt)
-    + parseInt(limit, 10) * 60 * 1000) >= new Date()) {
-      return true;
-    }
-
-    return false;
-  });
-
-  const scrapingPromises = urlsToScrape.map(website => {
-    const scraper = require(`./websites/${website}`).default;
-    return scraper();
-  });
-
-  /* Store the results scraped as json value */
-  const scrapeResults = await Promise.all(scrapingPromises);
-  const writeDataPromises = scrapeResults.reduce((acc, val) => {
-    const file = `src/data/${val.website}.json`;
-    const fileData = JSON.stringify(val);
-    return [...acc, fs.promises.writeFile(file, fileData)];
-  }, []);
-
-  try {
-    await Promise.all(writeDataPromises);
-    console.log('Sucessfully written files');
-  } catch (e) {
-    console.log('Error writing file', e);
-    process.exit(1);
+      return acc;
+    }, {});
   }
 
-  return [...data, ...scrapeResults];
-})();
+  async function getUrlsToScrape() {
+    if (!getUrls()) {
+      setUrls(await getUrlsFromScrapersDirectory());
+    }
+
+    const dataFromJSON = await getDataFromJSONStore();
+    return getUrls().filter(url => {
+      const data = dataFromJSON[url];
+      if (!data) {
+        return true;
+      }
+
+      if (new Date(new Date(data.writtenAt) + timeLimitInMs) >= new Date()) {
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  async function getDataFromScrapers() {
+    const urlsToScrape = await getUrlsToScrape();
+    const scrapingPromises = urlsToScrape.map(website => {
+      const scraper = require(`.${SCRAPERS_RELATIVE_PATH}/${website}`).default;
+      return scraper();
+    });
+    const scrapeResults = await Promise.all(scrapingPromises);
+    return scrapeResults.reduce(
+      (acc, val) => ({ ...acc, [val.website]: val }),
+      {},
+    );
+  }
+
+  async function writeDataToJSON(scrapeResults) {
+    const writeDataPromises = Object.keys(scrapeResults).reduce((acc, key) => {
+      const val = scrapeResults[key];
+      const file = `src${DATA_RELATIVE_PATH}/${val.website}.json`;
+      const fileData = JSON.stringify(val);
+      return [...acc, fs.promises.writeFile(file, fileData)];
+    }, []);
+    try {
+      await Promise.all(writeDataPromises);
+    } catch (e) {
+      throw new Error('Failed to write data');
+    }
+  }
+  return {
+    scrape: async function scrape(urls) {
+      const validUrls = await getUrlsFromScrapersDirectory();
+      if (urls && !isSubset(validUrls, urls)) {
+        throw new Error(
+          'Urls given are not valid! Run getValidWebsites to check',
+        );
+      }
+
+      setUrls(urls);
+      await ensureDataDirectoryExists();
+      const dataFromStorage = await getValidDataFromJSONStore();
+      const dataFromScrapers = await getDataFromScrapers();
+      await writeDataToJSON(dataFromScrapers);
+      return { ...dataFromStorage, ...dataFromScrapers };
+    },
+    getValidWebsites: async function getValidWebsites() {
+      return getUrlsFromScrapersDirectory();
+    },
+  };
+};
+
+export default Scraper;
