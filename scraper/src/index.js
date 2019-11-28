@@ -8,12 +8,7 @@ const SCRAPERS_RELATIVE_PATH = '/scrapers';
 const Scraper = ({ limit = 5 } = {}) => {
   const timeLimitInMs = parseInt(limit, 10) * 60 * 1000;
   let _dataDirectoryExists = false;
-  let _urls = null;
 
-  const setUrls = urls => {
-    _urls = urls;
-  };
-  const getUrls = () => _urls;
   const isSubset = (superarray, innerarray) =>
     innerarray.every(val => superarray.includes(val));
 
@@ -33,13 +28,9 @@ const Scraper = ({ limit = 5 } = {}) => {
       .map(filename => filename.replace('.js', ''));
   }
 
-  async function getDataFromJSONStore() {
-    if (!getUrls()) {
-      setUrls(await getUrlsFromScrapersDirectory());
-    }
-
+  async function getDataFromJSONStore(urls) {
     const data = await Promise.all(
-      getUrls().map(website => {
+      urls.map(website => {
         const path = `src${DATA_RELATIVE_PATH}/${website}.json`;
         if (fs.existsSync(path)) {
           return fs.promises.readFile(path);
@@ -54,8 +45,8 @@ const Scraper = ({ limit = 5 } = {}) => {
       .reduce((acc, val) => ({ ...acc, [val.website]: val }), {});
   }
 
-  async function getValidDataFromJSONStore() {
-    const dataFromJSON = await getDataFromJSONStore();
+  async function getValidDataFromJSONStore(urls) {
+    const dataFromJSON = await getDataFromJSONStore(urls);
     return Object.keys(dataFromJSON).reduce((acc, key) => {
       const d = dataFromJSON[key];
       if (new Date(new Date(d.writtenAt) + timeLimitInMs) < new Date()) {
@@ -66,13 +57,9 @@ const Scraper = ({ limit = 5 } = {}) => {
     }, {});
   }
 
-  async function getUrlsToScrape() {
-    if (!getUrls()) {
-      setUrls(await getUrlsFromScrapersDirectory());
-    }
-
-    const dataFromJSON = await getDataFromJSONStore();
-    return getUrls().filter(url => {
+  async function getUrlsToScrape(urls) {
+    const dataFromJSON = await getDataFromJSONStore(urls);
+    return urls.filter(url => {
       const data = dataFromJSON[url];
       if (!data) {
         return true;
@@ -86,8 +73,7 @@ const Scraper = ({ limit = 5 } = {}) => {
     });
   }
 
-  async function getDataFromScrapers() {
-    const urlsToScrape = await getUrlsToScrape();
+  async function getDataFromScrapers(urlsToScrape) {
     const scrapingPromises = urlsToScrape.map(website => {
       const scraper = require(`.${SCRAPERS_RELATIVE_PATH}/${website}`).default;
       return scraper();
@@ -120,14 +106,17 @@ const Scraper = ({ limit = 5 } = {}) => {
           'Urls given are not valid! Run getValidWebsites to check',
         );
       }
+      const websiteUrls = urls || validUrls;
 
-      setUrls(urls);
       await ensureDataDirectoryExists();
-      const dataFromStorage = await getValidDataFromJSONStore();
-      const dataFromScrapers = await getDataFromScrapers();
+      const dataFromStorage = await getValidDataFromJSONStore(websiteUrls);
+      const urlsToScrape = await getUrlsToScrape(websiteUrls);
+      const dataFromScrapers = await getDataFromScrapers(urlsToScrape);
       await writeDataToJSON(dataFromScrapers);
+
       return { ...dataFromStorage, ...dataFromScrapers };
     },
+
     getValidWebsites: async function getValidWebsites() {
       return getUrlsFromScrapersDirectory();
     },
