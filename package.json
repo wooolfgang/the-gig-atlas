@@ -51,6 +51,6 @@
     "common",
     "server",
     "client",
-    "scrapers"
+    "scraper"
   ]
 }

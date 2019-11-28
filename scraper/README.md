@@ -1,4 +1,4 @@
-# `scrapers`
+# `scraper`
 
 > TODO: description
 
