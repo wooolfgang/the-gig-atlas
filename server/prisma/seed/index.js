@@ -14,9 +14,9 @@ const seeds = {
   admin: require('./admin').default,
   plan: planModule.default,
   'test-plan': planModule.dailyTestPlan,
-  // product: require('./product').default,
   thread: require('./thread').default,
   threadTag: require('./threadTag').default,
+  'db-config': require('./db_config').default,
 };
 
 const toSeeds = [];
