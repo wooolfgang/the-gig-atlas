@@ -50,6 +50,7 @@
   "workspaces": [
     "common",
     "server",
-    "client"
+    "client",
+    "scraper"
   ]
 }
