@@ -31,7 +31,7 @@ const Scraper = ({ limit = 5 } = {}) => {
   async function getDataFromJSONStore(urls) {
     const data = await Promise.all(
       urls.map(website => {
-        const path = `src${DATA_RELATIVE_PATH}/${website}.json`;
+        const path = `${__dirname}${DATA_RELATIVE_PATH}/${website}.json`;
         if (fs.existsSync(path)) {
           return fs.promises.readFile(path);
         }
@@ -88,13 +88,14 @@ const Scraper = ({ limit = 5 } = {}) => {
   async function writeDataToJSON(scrapeResults) {
     const writeDataPromises = Object.keys(scrapeResults).reduce((acc, key) => {
       const val = scrapeResults[key];
-      const file = `src${DATA_RELATIVE_PATH}/${val.website}.json`;
+      const file = `${__dirname}${DATA_RELATIVE_PATH}/${val.website}.json`;
       const fileData = JSON.stringify(val);
       return [...acc, fs.promises.writeFile(file, fileData)];
     }, []);
     try {
       await Promise.all(writeDataPromises);
     } catch (e) {
+      console.log(e);
       throw new Error('Failed to write data');
     }
   }
