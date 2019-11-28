@@ -4,4 +4,4 @@ require('@babel/register')({
   rootMode: 'upward',
 });
 
-require('./src/index');
+require('./src/test');

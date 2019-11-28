@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 export default async function ensureDirectoryExists(relativePath) {
+  const filePath = path.dirname(__dirname) + relativePath;
   try {
-    const filePath = path.dirname(__dirname) + relativePath;
-    await fs.promises.mkdir(filePath, { recursive: true });
+    const res = await fs.promises.mkdir(filePath, { recursive: true });
+    return res;
   } catch (e) {
-    console.log(e);
-    process.exit(1);
+    throw new Error(`Error making directory at ${filePath}`);
   }
 }
