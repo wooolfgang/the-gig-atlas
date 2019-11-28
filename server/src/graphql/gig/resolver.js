@@ -12,6 +12,22 @@ export function transformGigInput(gigInput) {
     },
   };
 }
+
+/**
+ * Search gigs
+ * target fields: 1.titles, 2.tags, 3.employers
+ */
+// async function searchGigs(_r, { search }) {
+//   const qs = `
+//     SELECT id, title
+//     FROM Gigs
+//     WHERE 
+//   `;
+//   // prisma.$raw()
+
+//   return [];
+// }
+
 export default {
   Query: {
     gigs: (_, args) => prisma.gigs(args),
@@ -56,3 +72,14 @@ export default {
     employer: ({ id }) => prisma.gig({ id }).employer(),
   },
 };
+
+/**
+ * text query references
+ * full text SQL architecture: https://docs.microsoft.com/en-us/sql/relational-databases/search/full-text-search?view=sql-server-ver15
+ * postgres full text reference: https://www.postgresql.org/docs/9.5/textsearch.html
+ * using view: https://www.postgresql.org/docs/9.5/tutorial-views.html
+ *
+ * working example: https://stackoverflow.com/questions/45123689/can-a-view-of-multiple-tables-be-used-for-full-text-search
+ *
+ * import/export pg db: https://www.a2hosting.com/kb/developer-corner/postgresql/import-and-export-a-postgresql-database
+ */
