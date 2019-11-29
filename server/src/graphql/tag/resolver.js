@@ -1,4 +1,4 @@
-import prisma from '../../prisma';
+import prisma from '@thegigatlas/prisma';
 
 const tags = (_, args, _ctx, info) => prisma.tags(args, info);
 const tag = (_, { id }, _ctx, info) => prisma.tag({ id }, info);

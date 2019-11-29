@@ -1,7 +1,7 @@
 scalar Date
 scalar DateTime
 
-# import * from '../generated/prisma-client/datamodel.graphql'
+# import * from '../../../prisma/src/datamodel.graphql'
 
 # import Queries.*, Mutations.*, * from './user/schema.graphql'
 # import Queries.*, Mutations.*, * from './auth/schema.graphql'

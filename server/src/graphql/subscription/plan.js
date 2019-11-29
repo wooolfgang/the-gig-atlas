@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { prisma } from '../../generated/prisma-client';
+import prisma from '@thegigatlas/prisma';
 /**
  * Create plan obj
  * @typedef {Object} CreatePlan

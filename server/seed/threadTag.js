@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 // import cfg from '../../src/config';
-import { prisma } from '../../src/generated/prisma-client';
+import prisma from '@thegigatlas/prisma';
 
 export default async () => {
   const threadTags = [

@@ -5,8 +5,8 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { applyMiddleware } from 'graphql-middleware';
 import { shield, deny } from 'graphql-shield';
 import assign from 'assign-deep';
+import prisma from '@thegigatlas/prisma';
 import config from '../config';
-import { prisma } from '../generated/prisma-client';
 
 const typeDefs = importSchema(`${__dirname}/main.graphql`);
 const resolvers = fileLoader(`${__dirname}/**/resolver.js`, {

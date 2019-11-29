@@ -3,8 +3,7 @@ endpoint: ${env:PRISMA_ENDPOINT}
 datamodel: datamodel.prisma
 generate:
   - generator: javascript-client
-    output: ../src/generated/prisma-client/
+    output: ./src/prisma-client/
   - generator: graphql-schema
-    output: ../src/generated/prisma-client/datamodel.graphql
-# can sometimes cause AUTHORIZATION bug 
+    output: ./src/datamodel.graphql
 secret: ${env:SECRET_PRISMA}

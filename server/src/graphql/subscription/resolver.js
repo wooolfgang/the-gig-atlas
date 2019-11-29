@@ -1,5 +1,5 @@
+import prisma from '@thegigatlas/prisma';
 import paypalSubscription from '../../serverless/paypal/subscription';
-import prisma from '../../prisma';
 
 function queryPlan(_, { id }) {
   return prisma.plan({ id });

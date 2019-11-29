@@ -1,6 +1,6 @@
 import { validation } from '@shared/common';
+import prisma from '@thegigatlas/prisma';
 import config from '../../config';
-import { prisma } from '../../generated/prisma-client';
 import { createAuth, createUser } from '../auth/util';
 import { createDebugPost } from '../utils/req_debug';
 

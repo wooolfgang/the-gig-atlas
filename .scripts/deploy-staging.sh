@@ -21,13 +21,17 @@ sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no dev@167.179.102.140 <<EOF
   # Copy all the environment variables for staging
   cp server/.env.staging server/.env || exit 1
   cp client/.env.staging client/.env || exit 1
+  cp prisma/.env.staging prisma/.env || exit 1
 
   # Update prisma db to latest datamodel, generate prisma schema
-  npm run server:prisma || exit 1
-  npm run server:prisma-generate || exit 1
+  npm run prisma:apply || exit 1
+  npm run prisma:generate || exit 1
 
   # Building the common package
   npm run common:build || exit 1
+
+  # Building the scraper package
+  npm run scraper:build || exit 1
 
   # Building the server package
 
