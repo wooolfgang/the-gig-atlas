@@ -110,14 +110,14 @@ type Gig {
   id: ID! @id
   title: String!
   description: String!
-  technologies: [String!]! @scalarList(strategy: RELATION)
-  projectType: ProjectType!
-  paymentType: PaymentType!
-  minFee: Float!
-  maxFee: Float!
-  jobType: JobType!
+  technologies: [String!] @scalarList(strategy: RELATION)
+  projectType: ProjectType
+  paymentType: PaymentType
+  minFee: Float
+  maxFee: Float
+  jobType: JobType
   locationRestriction: String
-  employer: Employer! @relation(name: "GigsOfEmployer")
+  employer: Employer @relation(name: "GigsOfEmployer")
   createdAt: DateTime! @createdAt
   status: GigStatus! @default(value: SAVED)
   communicationType: GigCommunicationType! @default(value: EMAIL)
