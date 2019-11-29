@@ -1,8 +1,9 @@
 import axios from 'axios';
 import argon2 from 'argon2';
+import prisma from '@thegigatlas/prisma';
 import config from '../../config';
-import { prisma } from '../../generated/prisma-client';
-import { createAuth } from '../../graphql/auth/util';
+
+import { createAuth } from '../auth/util';
 
 const { testUrl } = config;
 

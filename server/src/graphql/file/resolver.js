@@ -1,5 +1,5 @@
+import prisma from '@thegigatlas/prisma';
 import cloudinary from '../../cloudinary';
-import prisma from '../../prisma';
 
 const cloudinaryUpload = file =>
   new Promise((res, rej) => {

@@ -1,6 +1,6 @@
+import prisma from '@thegigatlas/prisma';
 // eslint-disable-next-line import/no-cycle
 import { transformGigInput } from '../gig/resolver';
-import prisma from '../../prisma';
 
 export function transformEmployerInput({
   displayName,
