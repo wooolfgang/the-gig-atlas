@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "clean:slate": "npm run bootstrap && npm run common:build && cd server && npm run prisma:apply",
+    "clean:slate": "npm run bootstrap && npm run common:build && npm run prisma:apply && npm run prisma:generate",
     "client:dev": "cd client && npm run dev --scripts-prepend-node-path",
     "server:dev": "cd server && npm run dev --scripts-prepend-node-path",
     "server:test": "cd server && npm run test",
