@@ -14,8 +14,8 @@ jobs:
       - run: npm run bootstrap
       - run: npm run common:build
       - run: cd prisma/env.testing prisma/.env
-      - run: npm run prisma:generate
       - run: npm run prisma:apply
+      - run: npm run prisma:generate
       - run: cp server/.env.testing server/.env
       - run: npm run server:test
   
