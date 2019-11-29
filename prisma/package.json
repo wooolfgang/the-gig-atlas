@@ -30,6 +30,7 @@
     "prisma": "^1.34.10"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "prisma-binding": "^2.3.16",
     "prisma-client-lib": "^1.34.10"
   }
