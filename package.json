@@ -51,6 +51,7 @@
     "common",
     "server",
     "client",
-    "scraper"
+    "scraper",
+    "prisma"
   ]
 }
