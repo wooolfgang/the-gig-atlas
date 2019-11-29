@@ -14,7 +14,8 @@
     "prisma:generate": "cd prisma && npm run prisma:generate",
     "prisma:apply": "cd prisma && npm run prisma:login && npm run prisma:apply",
     "common:build": "cd common && npm run build",
-    "client:build": "cd client && npm run build"
+    "client:build": "cd client && npm run build",
+    "scraper:build": "cd scraper && npm run build"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",

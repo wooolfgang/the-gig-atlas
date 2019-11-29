@@ -30,6 +30,9 @@ sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no dev@167.179.102.140 <<EOF
   # Building the common package
   npm run common:build || exit 1
 
+  # Building the scraper package
+  npm run scraper:build || exit 1
+
   # Building the server package
 
   # Building the client package
