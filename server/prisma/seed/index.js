@@ -17,6 +17,7 @@ const seeds = {
   thread: require('./thread').default,
   threadTag: require('./threadTag').default,
   'db-config': require('./db_config').default,
+  gig: require('./gig').default,
 };
 
 const toSeeds = [];

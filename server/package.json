@@ -40,6 +40,7 @@
     "@types/yup": "^0.26.24",
     "babel-jest": "^24.9.0",
     "cz-conventional-changelog": "^3.0.2",
+    "faker": "^4.1.0",
     "jest": "^24.9.0",
     "jest-dev-server": "^4.3.0",
     "jest-environment-node": "^24.9.0",
