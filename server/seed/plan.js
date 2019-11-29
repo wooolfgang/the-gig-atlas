@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-console */
-import paypal from '../../src/serverless/paypal';
-import { createOrFindPlan as localCreateOrFindPlan } from '../../src/graphql/subscription/plan';
+import paypal from '../src/serverless/paypal';
+import { createOrFindPlan as localCreateOrFindPlan } from '../src/graphql/subscription/plan';
 
 const {
   product: { createOrFindProduct },

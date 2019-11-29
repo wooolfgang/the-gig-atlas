@@ -1,4 +1,4 @@
-import prisma from '../../prisma';
+import prisma from '@thegigatlas/prisma';
 
 /* eslint-disable arrow-body-style */
 const product = (_, { id }) => {
