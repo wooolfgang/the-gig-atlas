@@ -1,6 +1,6 @@
-import axios from 'axios';
+import prisma from '@thegigatlas/prisma';
 import config from '../../config';
-import prisma from '../../prisma';
+
 import debugReq from '../utils/req_debug';
 import { createUser } from '../auth/util';
 

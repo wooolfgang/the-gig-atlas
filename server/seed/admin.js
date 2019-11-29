@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import argon2 from 'argon2';
-import cfg from '../../src/config';
-import { prisma } from '../../src/generated/prisma-client';
+import prisma from '@thegigatlas/prisma';
+import cfg from '../src/config';
 
 const { admin } = cfg;
 

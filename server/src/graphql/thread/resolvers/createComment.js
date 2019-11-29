@@ -1,4 +1,4 @@
-import prisma from '../../../prisma';
+import prisma from '@thegigatlas/prisma';
 
 export default async function createComment(_, { input }, { user }, info) {
   const { text, threadId, parentId } = input;

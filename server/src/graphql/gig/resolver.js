@@ -1,8 +1,8 @@
 import uuidv4 from 'uuid/v4';
 import argon2 from 'argon2';
+import prisma from '@thegigatlas/prisma';
 // eslint-disable-next-line import/no-cycle
 import { transformEmployerInput } from '../employer/resolver';
-import prisma from '../../prisma';
 
 export function transformGigInput(gigInput) {
   return {
@@ -21,7 +21,7 @@ export function transformGigInput(gigInput) {
 //   const qs = `
 //     SELECT id, title
 //     FROM Gigs
-//     WHERE 
+//     WHERE
 //   `;
 //   // prisma.$raw()
 

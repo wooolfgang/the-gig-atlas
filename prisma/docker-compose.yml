@@ -1,4 +1,4 @@
-version: '4'
+version: '3.3'
 services:
   prisma:
     image: prismagraphql/prisma:1.34

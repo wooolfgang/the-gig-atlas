@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import uuidv4 from 'uuid/v4';
 import argon2 from 'argon2';
+import prisma from '@thegigatlas/prisma';
 import config from '../../config';
-import prisma from '../../prisma';
 
 /**
  * Async utility function to create new JWT

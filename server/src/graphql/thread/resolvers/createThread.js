@@ -1,4 +1,4 @@
-import prisma from '../../../prisma';
+import prisma from '@thegigatlas/prisma';
 import { sortExistTags } from '../../tag/util';
 
 export default async function createThread(_, { input }, { user }, info) {

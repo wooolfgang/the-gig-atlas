@@ -1,4 +1,4 @@
-import prisma from '../../prisma';
+import prisma from '@thegigatlas/prisma';
 import { createDebugPost } from '../utils/req_debug';
 import config from '../../config';
 import { createAuth } from '../auth/util';

@@ -1,5 +1,5 @@
+import prisma from '@thegigatlas/prisma';
 import { createFragment } from '../utils/fragment';
-import prisma from '../../prisma';
 import upvoteComment from './resolvers/upvoteComment';
 import upvoteThread from './resolvers/upvoteThread';
 import createComment from './resolvers/createComment';

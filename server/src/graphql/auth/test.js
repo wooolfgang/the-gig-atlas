@@ -1,6 +1,6 @@
 import axios from 'axios';
+import prisma from '@thegigatlas/prisma';
 import config from '../../config';
-import { prisma } from '../../generated/prisma-client';
 import { createDebugPost } from '../utils/req_debug';
 
 const { testUrl, admin } = config;
