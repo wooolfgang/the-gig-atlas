@@ -1,0 +1,290 @@
+type User {
+  id: ID! @id
+  firstName: String
+  lastName: String
+  email: String! @unique
+  password: String!
+  role: UserRole! @default(value: MEMBER)
+  accountType: AccountType
+  createdAt: DateTime! @createdAt
+  avatar: File
+  
+  asEmployer: Employer @unique @relation(name: "AsEmployer", link: INLINE, onDelete: CASCADE) #// cascade deltes also related employer
+  asFreelancer: Freelancer @unique @relation(name: "AsFreelancer", link: INLINE, onDelete: CASCADE)
+  
+  isEmailVerified: Boolean @default(value: false)
+  onboardingStep:  OnboardingStep @default(value: PERSONAL) #// set null if done
+
+  threads: [Thread]! @relation(name: "ThreadsByUser", onDelete: CASCADE)
+  comments: [Comment]! @relation(name: "CommentsByUser", onDelete: CASCADE)
+}
+
+enum OnboardingStep {
+  PERSONAL
+  EMPLOYER
+  FREELANCER
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+}
+
+enum AccountType {
+  FREELANCER
+  EMPLOYER
+}
+
+type Employer {
+  id: ID! @id
+  displayName: String!
+  employerType: EmployerType!
+  introduction: String
+  email: String #// serves as employers contact email
+  asUser: User @unique @relation(name: "AsEmployer")
+  gigs: [Gig]! @relation(name: "GigsOfEmployer", onDelete: CASCADE)
+  website: String
+  avatar: File
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+enum EmployerType {
+  PERSONAL
+  COMPANY
+}
+
+type Freelancer {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  asUser: User @unique @relation(name: "AsFreelancer")
+  bio: String
+  website: String
+  location: String
+  timezone: String
+  isPrivate: Boolean @default(value: false)
+  isForHire: Boolean @default(value: true)
+  skills: [String!]! @scalarList(strategy: RELATION)
+  socials: [Social!]! @relation(onDelete: CASCADE)
+  portfolio: [PortfolioProject!]! @relation(onDelete: CASCADE)
+}
+
+type PortfolioProject {
+  id: ID! @id
+  title: String!
+  description: String!
+  url: String
+  avatar: File @relation(name: "PortfolioAvatar")
+  images: [File]! @relation(name: "PortfolioImages")
+  freelancer: Freelancer! @relation(link: INLINE)
+}
+
+type Social {
+  id: ID! @id
+  type: SocialType!
+  url: String!
+  freelancer: Freelancer! @relation(link: INLINE)
+}
+
+enum SocialType {
+  UPWORK
+  GITHUB
+  LINKEDIN
+  TWITTER
+}
+
+enum GigCommunicationType {
+  EMAIL
+  WEBSITE
+  IN_APP
+}
+
+enum GigStatus {
+  SAVED #// status is saved but not posted
+  POSTED #// status currently posted
+  REMOVED #// soft-delete (temporary option)
+}
+
+type Gig {
+  id: ID! @id
+  title: String!
+  description: String!
+  technologies: [String!]! @scalarList(strategy: RELATION)
+  projectType: ProjectType!
+  paymentType: PaymentType!
+  minFee: Float!
+  maxFee: Float!
+  jobType: JobType!
+  locationRestriction: String
+  employer: Employer! @relation(name: "GigsOfEmployer")
+  createdAt: DateTime! @createdAt
+  status: GigStatus! @default(value: SAVED)
+  communicationType: GigCommunicationType! @default(value: EMAIL)
+  communicationEmail: String
+  communicationWebsite: String
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+}
+
+enum PaymentType {
+  HOURLY
+  FIXED
+} 
+
+enum ProjectType {
+  GREENFIELD
+  MAINTENANCE
+  CONSULTING
+  TESTING
+}
+
+type File {
+  id: ID! @id
+  createdAt: DateTime! @createdAt 
+  updatedAt: DateTime! @updatedAt
+  name: String
+  contentType: String
+  url: String
+}
+
+type Product {
+  id: ID! @id
+  name: String!
+  price: Float! #// price to refer for billing cyle in subscription or in order
+  codename: String! @unique #// to avoid dublication
+  description: String
+  createdAt: DateTime! @createdAt 
+  updatedAt: DateTime! @updatedAt
+}
+
+enum PaymentService {
+  PAYPAL
+  STRIPE
+}
+
+enum PaymentStatus {
+  CREATED,
+  COMPLETED,
+}
+
+type Order {
+  id: ID! @id
+  payer: User!
+  serviceRefId: String! @unique
+  service: PaymentService!
+  status: PaymentStatus!
+  cost: Float!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+
+enum PlanStatus { # // determines if plan is currently available or not
+  INACTIVE,
+  ACTIVE,
+}
+
+
+type Plan { # // Let the user choose the type of plan for their subscription
+  id: ID! @id
+  codename: String! @unique #// client's static reference rather than by using id
+  serviceId: String!
+  status: PlanStatus!
+  cyclePrice: Float!
+  description: String
+}
+
+enum SubscriptionStatus {
+  CREATED, #// status after created
+  APPROVED, #// status after user approved payment
+  ACTIVE, #// set to active after confirmed payment
+  SUSPENDED, #// says it all
+  CANCELLED,
+  EXPIRED,
+}
+
+type PlanSubscription {
+  id: ID! @id
+  subscriber: User! @relation(link: INLINE)
+  serviceId: String! @unique
+  service: PaymentService!
+  status: SubscriptionStatus!
+  gig: Gig! @relation(link: INLINE)
+  #// time reference when subscription is still active
+  #// shows the remaining time of use after cancelled subscription
+  #// endAt: DateTime!
+  plan: Plan! @relation(link: INLINE)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Thread {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  
+  title: String! 
+  body: String!
+  upvoteCount: Int! @default(value: 0)
+  downvoteCount: Int! @default(value: 0)
+  
+  tags: [Tag!]! @relation(name: "ThreadTag")
+  postedBy: User! @relation(name: "ThreadsByUser")
+  comments: [Comment]! @relation(name: "ThreadComments", onDelete: "CASCADE")
+  votes: [ThreadVote!]! @relation(name: "ThreadVotes", link: TABLE, onDelete: "CASCADE")
+}
+
+type Comment {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  text: String! 
+  isRoot: Boolean!
+  isDeleted: Boolean @default(value: false)
+  upvoteCount: Int! @default(value: 0)
+  downvoteCount: Int! @default(value: 0)
+
+  children: [Comment]! @relation(name: "CommentAsParent")
+  parent: Comment @relation(name: "CommentAsParent", link: INLINE)
+  thread: Thread! @relation(name: "ThreadComments")
+  postedBy: User! @relation(name: "CommentsByUser")
+  votes: [CommentVote!]! @relation(name: "CommentVotes", link: TABLE, onDelete: "CASCADE")
+}
+
+type ThreadVote {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  user: User! 
+  # Value should either be -1 (downvote) or 1 (upvote)
+  value : Int! 
+  thread: Thread! @relation(name: "ThreadVotes")
+}
+
+type CommentVote {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  user: User! 
+  # Value should either be -1 (downvote) or 1 (upvote)
+  value : Int!
+  comment: Comment! @relation(name: "CommentVotes")
+}
+
+type Tag {
+  id: ID! @id
+  name: String @unique
+  threads: [Thread!]! @relation(name: "ThreadsByTag", link: TABLE)
+  gigs: [Gig!]! @relation(name: "GigsByTag", link: TABLE)
+  categories: [TagCategory!]! @relation(name: "TagCategories")
+}
+
+type TagCategory {
+  id: ID! @id
+  name: String @unique
+  tags: [Tag!]! @relation(link: TABLE, name: "TagCategories")
+}
