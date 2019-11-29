@@ -66,12 +66,14 @@ function fromArr(count, create) {
 
 export default async () => {
   const password = await argon2.hash('password');
+  const usersCount = 10;
+  const gigsPerUser = 50;
 
-  const toProcess = fromArr(5, () => {
+  const toProcess = fromArr(usersCount, () => {
     // => create 5 users with 5 gigs
     const user = createUser(password);
     const employer = createEmployer();
-    const gigs = fromArr(5, createGig);
+    const gigs = fromArr(gigsPerUser, createGig);
     return prisma
       .createUser({
         ...user,

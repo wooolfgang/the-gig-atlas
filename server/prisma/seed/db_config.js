@@ -1,93 +1,23 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-import { client } from '../../src/serverless/postgres';
+import {
+  client,
+  setupSearch,
+  removeSearch,
+} from '../../src/serverless/postgres';
 
 const gigSearch = {
-  schemaName: 'default$default', // shcema made by prisma
-  tableName: '"default$default"."Gig"', // name of table by schema (made by prisma)
-  colName: 'title', // column for text search
-  idxColName: '_srch_idx', // name of col to store idx vector
-  tableIdx: 'gig_idx', // name of idx for gig table
-  tableIdxTrigger: 'gig_srch_trig', // name of trigger for idx col
-  configName: 'english', // vector ref config
+  table: 'Gig',
+  column: 'title',
+  tableIdx: 'gig_idx',
+  tableIdxTrigger: 'gig_srch_trig',
 };
-
-function setupGigSearch(pgClient) {
-  const {
-    schemaName,
-    tableName,
-    colName,
-    idxColName,
-    tableIdx,
-    tableIdxTrigger,
-    configName,
-  } = gigSearch;
-
-  const createSearchIdx = `
-    ALTER TABLE ${tableName}
-      ADD COLUMN ${idxColName} tsvector;
-    UPDATE ${tableName}
-      SET ${idxColName} = to_tsvector('${configName}', ${colName});
-    CREATE INDEX ${tableIdx}
-      ON ${tableName}
-      USING GIN (${idxColName});
-    CREATE TRIGGER ${tableIdxTrigger}
-      BEFORE INSERT OR UPDATE ON ${tableName}
-      FOR EACH ROW EXECUTE PROCEDURE
-        tsvector_update_trigger(${idxColName}, 'pg_catalog.${configName}', ${colName});
-  `;
-  const colExists = `
-    SELECT 1 FROM information_schema.columns
-      WHERE table_name='Gig' AND table_schema='${schemaName}' AND column_name='${idxColName}'
-  `;
-  const conditonal = `
-    DO
-    $do$
-    BEGIN
-    IF NOT EXISTS (${colExists})
-      THEN ${createSearchIdx}
-    END IF;
-    END
-    $do$
-  `;
-
-  return pgClient.query(conditonal);
-}
-
-// eslint-disable-next-line no-unused-vars
-function removeGigSearch(pgClient) {
-  const {
-    schemaName,
-    tableName,
-    // colName,
-    idxColName,
-    tableIdx,
-    tableIdxTrigger,
-    // configName,
-  } = gigSearch;
-
-  const removeSearchIdx = `
-    DROP INDEX "${schemaName}".${tableIdx};
-    DROP TRIGGER ${tableIdxTrigger} ON ${tableName};
-    ALTER TABLE ${tableName} DROP COLUMN ${idxColName};
-  `;
-  const colExists = `
-    SELECT 1 FROM information_schema.columns
-      WHERE table_name='Gig' AND table_schema='${schemaName}' AND column_name='${idxColName}'
-  `;
-  const conditonal = `
-    DO
-    $do$
-    BEGIN
-    IF EXISTS (${colExists})
-      THEN
-      ${removeSearchIdx}
-    END IF;
-    END
-    $do$
-  `;
-
-  return pgClient.query(conditonal);
-}
+const tagSearch = {
+  table: 'Tag',
+  column: 'name',
+  tableIdx: 'tag_idx',
+  tableIdxTrigger: 'tag_srch_trig',
+};
 
 export default async () => {
   /**
@@ -97,7 +27,10 @@ export default async () => {
   const pg = await client();
 
   try {
-    const res = await setupGigSearch(pg);
+    const res = await Promise.all([
+      setupSearch(pg, gigSearch),
+      setupSearch(pg, tagSearch),
+    ]);
 
     console.log('\n>>> Sucesful Gig Search idx initialization');
     pg.end();
