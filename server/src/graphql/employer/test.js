@@ -16,7 +16,7 @@ const userInput = {
 const inputGig = {
   title: 'Testing App',
   description: 'testing my app',
-  technologies: ['js', 'jest'],
+  tags: ['nodejs', 'react'],
   projectType: 'TESTING',
   paymentType: 'FIXED',
   minFee: 100.0,
@@ -77,7 +77,10 @@ describe('Employer crud operation', () => {
                 title
                 communicationType 
                 description
-                technologies 
+                tags {
+                  id
+                  name
+                } 
                 projectType
                 paymentType
                 minFee
@@ -95,7 +98,10 @@ describe('Employer crud operation', () => {
     const { id, ...insertedGig } = gigs[0];
 
     expect(employerType).toBe('PERSONAL');
-    expect(inputGig).toEqual(insertedGig);
+    expect(inputGig).toEqual({
+      ...insertedGig,
+      tags: insertedGig.tags.map(t => t.name),
+    });
   });
 
   it('queries user as employer with gig', async () => {
@@ -142,7 +148,10 @@ describe('Employer crud operation', () => {
                 title
                 communicationType
                 description
-                technologies
+                tags {
+                  id
+                  name
+                }
                 projectType
                 paymentType
                 minFee

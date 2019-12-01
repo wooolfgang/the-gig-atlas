@@ -11,7 +11,7 @@ let normalUser;
 const createdThreadIds = [];
 const createdCommentIds = [];
 let debugPost;
-const tags = ['freelance', 'discuss', 'node', 'react'];
+const tags = ['freelance', 'discuss'];
 
 beforeAll(async () => {
   const userInput = {
@@ -65,25 +65,6 @@ describe('Test thread resolvers', () => {
       // Fail gracefully in case tagCategory already exists
     }
 
-    // prepend initial tags to the database
-    await Promise.all([
-      prisma.createTag({
-        name: 'react',
-        categories: {
-          connect: {
-            name: 'thread',
-          },
-        },
-      }),
-      prisma.createTag({
-        name: 'node',
-        categories: {
-          connect: {
-            name: 'thread',
-          },
-        },
-      }),
-    ]);
     const res = await debugPost({
       query: `mutation ($input: ThreadInput!) {
           createThread(input: $input) {
