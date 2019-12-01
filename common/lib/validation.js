@@ -117,7 +117,7 @@ export const avatarFileId = yup.string('Avatar is required');
 export const gigInput = yup.object().shape({
   title,
   description,
-  technologies,
+  tags,
   projectType,
   paymentType,
   minFee,
