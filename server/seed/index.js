@@ -17,6 +17,7 @@ const seeds = {
   // product: require('./product').default,
   thread: require('./thread').default,
   threadTag: require('./threadTag').default,
+  technologyTag: require('./technologyTag').default,
 };
 
 const toSeeds = [];

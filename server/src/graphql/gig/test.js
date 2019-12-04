@@ -3,14 +3,12 @@ import argon2 from 'argon2';
 import prisma from '@thegigatlas/prisma';
 import config from '../../config';
 
-import { createAuth } from '../auth/util';
-
 const { testUrl } = config;
 
 const gig = {
   title: 'Testing App',
   description: 'testing my app',
-  technologies: ['js', 'jest'],
+  tags: ['nodejs', 'react'],
   projectType: 'TESTING',
   paymentType: 'FIXED',
   minFee: 100.0,
@@ -62,7 +60,7 @@ afterAll(async () => {
 });
 
 describe('Testing gig resolvers', () => {
-  it.only('Creates a new gig with populated employer, avatar and user', async () => {
+  it('Creates a new gig with populated employer, avatar and user', async () => {
     const res = await axios.post(testUrl, {
       query: `
         mutation($gig: GigInput!, $employer: EmployerInput!) {
@@ -71,7 +69,10 @@ describe('Testing gig resolvers', () => {
             communicationType
             communicationEmail
             description
-            technologies
+            tags {
+              id
+              name
+            }
             projectType
             paymentType
             minFee
@@ -94,7 +95,10 @@ describe('Testing gig resolvers', () => {
     });
 
     const { employer: employerResult, ...gigResult } = res.data.data.createGig;
-    expect(gigResult).toMatchObject(gig);
+    expect(gig).toMatchObject({
+      ...gigResult,
+      tags: gigResult.tags.map(t => t.name),
+    });
     expect(employerResult.email).toEqual(employer.email);
     expect(employerResult.avatar.id).toEqual(employer.avatarFileId);
     expect(employerResult.asUser.email).toEqual(employer.email);
@@ -118,7 +122,10 @@ describe('Testing gig resolvers', () => {
             communicationType
             communicationEmail
             description
-            technologies
+            tags {
+              id
+              name
+            }
             projectType
             paymentType
             minFee
@@ -142,7 +149,10 @@ describe('Testing gig resolvers', () => {
     });
 
     const { employer: employerResult, ...gigResult } = res.data.data.createGig;
-    expect(gigResult).toMatchObject(gig);
+    expect(gig).toMatchObject({
+      ...gigResult,
+      tags: gigResult.tags.map(t => t.name),
+    });
     expect(employerResult.email).toEqual(newEmployerData.email);
     expect(employerResult.avatar.id).toEqual(newEmployerData.avatarFileId);
     expect(employerResult.displayName).toEqual(newEmployerData.displayName);
@@ -166,7 +176,10 @@ describe('Testing gig resolvers', () => {
             communicationType
             communicationEmail
             description
-            technologies
+            tags {
+              id
+              name
+            }
             projectType
             paymentType
             minFee
@@ -189,7 +202,10 @@ describe('Testing gig resolvers', () => {
       variables: { employer: newEmployerData, gig },
     });
     const { employer: employerResult, ...gigResult } = res.data.data.createGig;
-    expect(gigResult).toMatchObject(gig);
+    expect(gig).toMatchObject({
+      ...gigResult,
+      tags: gigResult.tags.map(t => t.name),
+    });
     expect(employerResult.email).toEqual(newEmployerData.email);
     expect(employerResult.avatar.id).toEqual(newEmployerData.avatarFileId);
     expect(employerResult.displayName).toEqual(newEmployerData.displayName);
@@ -208,7 +224,7 @@ describe('Testing gig resolvers', () => {
     const gigTestXss = {
       title: 'Testing App',
       description: '<math><mi//xlink:href="data:x,<script>alert(4)</script>">',
-      technologies: ['js', 'jest'],
+      tags: ['nodejs', 'react'],
       projectType: 'TESTING',
       paymentType: 'FIXED',
       minFee: 100.0,

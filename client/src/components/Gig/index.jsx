@@ -43,9 +43,9 @@ const Gig = ({ employer: _employer, gig: _gig, preview }) => {
           {gig.projectType} | {gig.locationRestriction}
         </div>
         <div style={{ display: 'flex', marginBottom: '1.5rem' }}>
-          {gig.technologies &&
-            gig.technologies.map &&
-            gig.technologies.map(tech => <Tech key={tech}>{tech}</Tech>)}
+          {gig.tags &&
+            gig.tags.map &&
+            gig.tags.map(tech => <Tech key={tech.id}>{tech.name}</Tech>)}
         </div>
         <div
           style={{ marginBottom: '2rem' }}
@@ -71,7 +71,12 @@ Gig.propTypes = {
   gig: PropTypes.shape({
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    technologies: PropTypes.arrayOf(PropTypes.string).isRequired,
+    tags: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+      }),
+    ).isRequired,
     projectType: PropTypes.string.isRequired,
     minFee: PropTypes.number,
     maxFee: PropTypes.number,

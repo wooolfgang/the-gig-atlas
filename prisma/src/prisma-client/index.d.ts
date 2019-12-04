@@ -812,6 +812,10 @@ export type ThreadOrderByInput =
 export type GigOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
   | "title_ASC"
   | "title_DESC"
   | "description_ASC"
@@ -828,8 +832,6 @@ export type GigOrderByInput =
   | "jobType_DESC"
   | "locationRestriction_ASC"
   | "locationRestriction_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
   | "status_ASC"
   | "status_DESC"
   | "communicationType_ASC"
@@ -1260,6 +1262,22 @@ export interface GigWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
   title?: Maybe<String>;
   title_not?: Maybe<String>;
   title_in?: Maybe<String[] | String>;
@@ -1288,6 +1306,9 @@ export interface GigWhereInput {
   description_not_starts_with?: Maybe<String>;
   description_ends_with?: Maybe<String>;
   description_not_ends_with?: Maybe<String>;
+  tags_every?: Maybe<TagWhereInput>;
+  tags_some?: Maybe<TagWhereInput>;
+  tags_none?: Maybe<TagWhereInput>;
   projectType?: Maybe<ProjectType>;
   projectType_not?: Maybe<ProjectType>;
   projectType_in?: Maybe<ProjectType[] | ProjectType>;
@@ -1331,14 +1352,6 @@ export interface GigWhereInput {
   locationRestriction_ends_with?: Maybe<String>;
   locationRestriction_not_ends_with?: Maybe<String>;
   employer?: Maybe<EmployerWhereInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
   status?: Maybe<GigStatus>;
   status_not?: Maybe<GigStatus>;
   status_in?: Maybe<GigStatus[] | GigStatus>;
@@ -1377,6 +1390,7 @@ export interface GigWhereInput {
   communicationWebsite_not_starts_with?: Maybe<String>;
   communicationWebsite_ends_with?: Maybe<String>;
   communicationWebsite_not_ends_with?: Maybe<String>;
+  media?: Maybe<FileWhereInput>;
   AND?: Maybe<GigWhereInput[] | GigWhereInput>;
   OR?: Maybe<GigWhereInput[] | GigWhereInput>;
   NOT?: Maybe<GigWhereInput[] | GigWhereInput>;
@@ -2407,35 +2421,31 @@ export interface TagCreateManyWithoutThreadsInput {
 export interface TagCreateWithoutThreadsInput {
   id?: Maybe<ID_Input>;
   name?: Maybe<String>;
-  gigs?: Maybe<GigCreateManyInput>;
+  gigs?: Maybe<GigCreateManyWithoutTagsInput>;
   categories?: Maybe<TagCategoryCreateManyWithoutTagsInput>;
 }
 
-export interface GigCreateManyInput {
-  create?: Maybe<GigCreateInput[] | GigCreateInput>;
+export interface GigCreateManyWithoutTagsInput {
+  create?: Maybe<GigCreateWithoutTagsInput[] | GigCreateWithoutTagsInput>;
   connect?: Maybe<GigWhereUniqueInput[] | GigWhereUniqueInput>;
 }
 
-export interface GigCreateInput {
+export interface GigCreateWithoutTagsInput {
   id?: Maybe<ID_Input>;
   title: String;
   description: String;
-  technologies?: Maybe<GigCreatetechnologiesInput>;
-  projectType: ProjectType;
-  paymentType: PaymentType;
-  minFee: Float;
-  maxFee: Float;
-  jobType: JobType;
+  projectType?: Maybe<ProjectType>;
+  paymentType?: Maybe<PaymentType>;
+  minFee?: Maybe<Float>;
+  maxFee?: Maybe<Float>;
+  jobType?: Maybe<JobType>;
   locationRestriction?: Maybe<String>;
-  employer: EmployerCreateOneWithoutGigsInput;
+  employer?: Maybe<EmployerCreateOneWithoutGigsInput>;
   status?: Maybe<GigStatus>;
   communicationType?: Maybe<GigCommunicationType>;
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
-}
-
-export interface GigCreatetechnologiesInput {
-  set?: Maybe<String[] | String>;
+  media?: Maybe<FileCreateOneInput>;
 }
 
 export interface EmployerCreateOneWithoutGigsInput {
@@ -2650,17 +2660,87 @@ export interface GigCreateWithoutEmployerInput {
   id?: Maybe<ID_Input>;
   title: String;
   description: String;
-  technologies?: Maybe<GigCreatetechnologiesInput>;
-  projectType: ProjectType;
-  paymentType: PaymentType;
-  minFee: Float;
-  maxFee: Float;
-  jobType: JobType;
+  tags?: Maybe<TagCreateManyWithoutGigsInput>;
+  projectType?: Maybe<ProjectType>;
+  paymentType?: Maybe<PaymentType>;
+  minFee?: Maybe<Float>;
+  maxFee?: Maybe<Float>;
+  jobType?: Maybe<JobType>;
   locationRestriction?: Maybe<String>;
   status?: Maybe<GigStatus>;
   communicationType?: Maybe<GigCommunicationType>;
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
+  media?: Maybe<FileCreateOneInput>;
+}
+
+export interface TagCreateManyWithoutGigsInput {
+  create?: Maybe<TagCreateWithoutGigsInput[] | TagCreateWithoutGigsInput>;
+  connect?: Maybe<TagWhereUniqueInput[] | TagWhereUniqueInput>;
+}
+
+export interface TagCreateWithoutGigsInput {
+  id?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  threads?: Maybe<ThreadCreateManyWithoutTagsInput>;
+  categories?: Maybe<TagCategoryCreateManyWithoutTagsInput>;
+}
+
+export interface ThreadCreateManyWithoutTagsInput {
+  create?: Maybe<ThreadCreateWithoutTagsInput[] | ThreadCreateWithoutTagsInput>;
+  connect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+}
+
+export interface ThreadCreateWithoutTagsInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  body: String;
+  upvoteCount?: Maybe<Int>;
+  downvoteCount?: Maybe<Int>;
+  postedBy: UserCreateOneWithoutThreadsInput;
+  comments?: Maybe<CommentCreateManyWithoutThreadInput>;
+  votes?: Maybe<ThreadVoteCreateManyWithoutThreadInput>;
+}
+
+export interface UserCreateOneWithoutThreadsInput {
+  create?: Maybe<UserCreateWithoutThreadsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutThreadsInput {
+  id?: Maybe<ID_Input>;
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  email: String;
+  password: String;
+  role?: Maybe<UserRole>;
+  accountType?: Maybe<AccountType>;
+  avatar?: Maybe<FileCreateOneInput>;
+  asEmployer?: Maybe<EmployerCreateOneWithoutAsUserInput>;
+  asFreelancer?: Maybe<FreelancerCreateOneWithoutAsUserInput>;
+  isEmailVerified?: Maybe<Boolean>;
+  onboardingStep?: Maybe<OnboardingStep>;
+  comments?: Maybe<CommentCreateManyWithoutPostedByInput>;
+}
+
+export interface CommentCreateManyWithoutPostedByInput {
+  create?: Maybe<
+    CommentCreateWithoutPostedByInput[] | CommentCreateWithoutPostedByInput
+  >;
+  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+}
+
+export interface CommentCreateWithoutPostedByInput {
+  id?: Maybe<ID_Input>;
+  text: String;
+  isRoot: Boolean;
+  isDeleted?: Maybe<Boolean>;
+  upvoteCount?: Maybe<Int>;
+  downvoteCount?: Maybe<Int>;
+  children?: Maybe<CommentCreateManyWithoutParentInput>;
+  parent?: Maybe<CommentCreateOneWithoutChildrenInput>;
+  thread: ThreadCreateOneWithoutCommentsInput;
+  votes?: Maybe<CommentVoteCreateManyWithoutCommentInput>;
 }
 
 export interface CommentVoteCreateManyWithoutCommentInput {
@@ -2699,26 +2779,6 @@ export interface UserCreateInput {
   comments?: Maybe<CommentCreateManyWithoutPostedByInput>;
 }
 
-export interface CommentCreateManyWithoutPostedByInput {
-  create?: Maybe<
-    CommentCreateWithoutPostedByInput[] | CommentCreateWithoutPostedByInput
-  >;
-  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-}
-
-export interface CommentCreateWithoutPostedByInput {
-  id?: Maybe<ID_Input>;
-  text: String;
-  isRoot: Boolean;
-  isDeleted?: Maybe<Boolean>;
-  upvoteCount?: Maybe<Int>;
-  downvoteCount?: Maybe<Int>;
-  children?: Maybe<CommentCreateManyWithoutParentInput>;
-  parent?: Maybe<CommentCreateOneWithoutChildrenInput>;
-  thread: ThreadCreateOneWithoutCommentsInput;
-  votes?: Maybe<CommentVoteCreateManyWithoutCommentInput>;
-}
-
 export interface ThreadVoteCreateManyWithoutThreadInput {
   create?: Maybe<
     ThreadVoteCreateWithoutThreadInput[] | ThreadVoteCreateWithoutThreadInput
@@ -2742,27 +2802,6 @@ export interface TagCategoryCreateManyWithoutTagsInput {
 export interface TagCategoryCreateWithoutTagsInput {
   id?: Maybe<ID_Input>;
   name?: Maybe<String>;
-}
-
-export interface UserCreateOneWithoutThreadsInput {
-  create?: Maybe<UserCreateWithoutThreadsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserCreateWithoutThreadsInput {
-  id?: Maybe<ID_Input>;
-  firstName?: Maybe<String>;
-  lastName?: Maybe<String>;
-  email: String;
-  password: String;
-  role?: Maybe<UserRole>;
-  accountType?: Maybe<AccountType>;
-  avatar?: Maybe<FileCreateOneInput>;
-  asEmployer?: Maybe<EmployerCreateOneWithoutAsUserInput>;
-  asFreelancer?: Maybe<FreelancerCreateOneWithoutAsUserInput>;
-  isEmailVerified?: Maybe<Boolean>;
-  onboardingStep?: Maybe<OnboardingStep>;
-  comments?: Maybe<CommentCreateManyWithoutPostedByInput>;
 }
 
 export interface CommentUpdateInput {
@@ -2862,58 +2901,58 @@ export interface TagUpdateWithWhereUniqueWithoutThreadsInput {
 
 export interface TagUpdateWithoutThreadsDataInput {
   name?: Maybe<String>;
-  gigs?: Maybe<GigUpdateManyInput>;
+  gigs?: Maybe<GigUpdateManyWithoutTagsInput>;
   categories?: Maybe<TagCategoryUpdateManyWithoutTagsInput>;
 }
 
-export interface GigUpdateManyInput {
-  create?: Maybe<GigCreateInput[] | GigCreateInput>;
-  update?: Maybe<
-    GigUpdateWithWhereUniqueNestedInput[] | GigUpdateWithWhereUniqueNestedInput
-  >;
-  upsert?: Maybe<
-    GigUpsertWithWhereUniqueNestedInput[] | GigUpsertWithWhereUniqueNestedInput
-  >;
+export interface GigUpdateManyWithoutTagsInput {
+  create?: Maybe<GigCreateWithoutTagsInput[] | GigCreateWithoutTagsInput>;
   delete?: Maybe<GigWhereUniqueInput[] | GigWhereUniqueInput>;
   connect?: Maybe<GigWhereUniqueInput[] | GigWhereUniqueInput>;
   set?: Maybe<GigWhereUniqueInput[] | GigWhereUniqueInput>;
   disconnect?: Maybe<GigWhereUniqueInput[] | GigWhereUniqueInput>;
+  update?: Maybe<
+    | GigUpdateWithWhereUniqueWithoutTagsInput[]
+    | GigUpdateWithWhereUniqueWithoutTagsInput
+  >;
+  upsert?: Maybe<
+    | GigUpsertWithWhereUniqueWithoutTagsInput[]
+    | GigUpsertWithWhereUniqueWithoutTagsInput
+  >;
   deleteMany?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
   updateMany?: Maybe<
     GigUpdateManyWithWhereNestedInput[] | GigUpdateManyWithWhereNestedInput
   >;
 }
 
-export interface GigUpdateWithWhereUniqueNestedInput {
+export interface GigUpdateWithWhereUniqueWithoutTagsInput {
   where: GigWhereUniqueInput;
-  data: GigUpdateDataInput;
+  data: GigUpdateWithoutTagsDataInput;
 }
 
-export interface GigUpdateDataInput {
+export interface GigUpdateWithoutTagsDataInput {
   title?: Maybe<String>;
   description?: Maybe<String>;
-  technologies?: Maybe<GigUpdatetechnologiesInput>;
   projectType?: Maybe<ProjectType>;
   paymentType?: Maybe<PaymentType>;
   minFee?: Maybe<Float>;
   maxFee?: Maybe<Float>;
   jobType?: Maybe<JobType>;
   locationRestriction?: Maybe<String>;
-  employer?: Maybe<EmployerUpdateOneRequiredWithoutGigsInput>;
+  employer?: Maybe<EmployerUpdateOneWithoutGigsInput>;
   status?: Maybe<GigStatus>;
   communicationType?: Maybe<GigCommunicationType>;
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
+  media?: Maybe<FileUpdateOneInput>;
 }
 
-export interface GigUpdatetechnologiesInput {
-  set?: Maybe<String[] | String>;
-}
-
-export interface EmployerUpdateOneRequiredWithoutGigsInput {
+export interface EmployerUpdateOneWithoutGigsInput {
   create?: Maybe<EmployerCreateWithoutGigsInput>;
   update?: Maybe<EmployerUpdateWithoutGigsDataInput>;
   upsert?: Maybe<EmployerUpsertWithoutGigsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
   connect?: Maybe<EmployerWhereUniqueInput>;
 }
 
@@ -3510,7 +3549,7 @@ export interface GigUpdateWithWhereUniqueWithoutEmployerInput {
 export interface GigUpdateWithoutEmployerDataInput {
   title?: Maybe<String>;
   description?: Maybe<String>;
-  technologies?: Maybe<GigUpdatetechnologiesInput>;
+  tags?: Maybe<TagUpdateManyWithoutGigsInput>;
   projectType?: Maybe<ProjectType>;
   paymentType?: Maybe<PaymentType>;
   minFee?: Maybe<Float>;
@@ -3521,179 +3560,136 @@ export interface GigUpdateWithoutEmployerDataInput {
   communicationType?: Maybe<GigCommunicationType>;
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
+  media?: Maybe<FileUpdateOneInput>;
 }
 
-export interface GigUpsertWithWhereUniqueWithoutEmployerInput {
-  where: GigWhereUniqueInput;
-  update: GigUpdateWithoutEmployerDataInput;
-  create: GigCreateWithoutEmployerInput;
-}
-
-export interface GigScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  projectType?: Maybe<ProjectType>;
-  projectType_not?: Maybe<ProjectType>;
-  projectType_in?: Maybe<ProjectType[] | ProjectType>;
-  projectType_not_in?: Maybe<ProjectType[] | ProjectType>;
-  paymentType?: Maybe<PaymentType>;
-  paymentType_not?: Maybe<PaymentType>;
-  paymentType_in?: Maybe<PaymentType[] | PaymentType>;
-  paymentType_not_in?: Maybe<PaymentType[] | PaymentType>;
-  minFee?: Maybe<Float>;
-  minFee_not?: Maybe<Float>;
-  minFee_in?: Maybe<Float[] | Float>;
-  minFee_not_in?: Maybe<Float[] | Float>;
-  minFee_lt?: Maybe<Float>;
-  minFee_lte?: Maybe<Float>;
-  minFee_gt?: Maybe<Float>;
-  minFee_gte?: Maybe<Float>;
-  maxFee?: Maybe<Float>;
-  maxFee_not?: Maybe<Float>;
-  maxFee_in?: Maybe<Float[] | Float>;
-  maxFee_not_in?: Maybe<Float[] | Float>;
-  maxFee_lt?: Maybe<Float>;
-  maxFee_lte?: Maybe<Float>;
-  maxFee_gt?: Maybe<Float>;
-  maxFee_gte?: Maybe<Float>;
-  jobType?: Maybe<JobType>;
-  jobType_not?: Maybe<JobType>;
-  jobType_in?: Maybe<JobType[] | JobType>;
-  jobType_not_in?: Maybe<JobType[] | JobType>;
-  locationRestriction?: Maybe<String>;
-  locationRestriction_not?: Maybe<String>;
-  locationRestriction_in?: Maybe<String[] | String>;
-  locationRestriction_not_in?: Maybe<String[] | String>;
-  locationRestriction_lt?: Maybe<String>;
-  locationRestriction_lte?: Maybe<String>;
-  locationRestriction_gt?: Maybe<String>;
-  locationRestriction_gte?: Maybe<String>;
-  locationRestriction_contains?: Maybe<String>;
-  locationRestriction_not_contains?: Maybe<String>;
-  locationRestriction_starts_with?: Maybe<String>;
-  locationRestriction_not_starts_with?: Maybe<String>;
-  locationRestriction_ends_with?: Maybe<String>;
-  locationRestriction_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  status?: Maybe<GigStatus>;
-  status_not?: Maybe<GigStatus>;
-  status_in?: Maybe<GigStatus[] | GigStatus>;
-  status_not_in?: Maybe<GigStatus[] | GigStatus>;
-  communicationType?: Maybe<GigCommunicationType>;
-  communicationType_not?: Maybe<GigCommunicationType>;
-  communicationType_in?: Maybe<GigCommunicationType[] | GigCommunicationType>;
-  communicationType_not_in?: Maybe<
-    GigCommunicationType[] | GigCommunicationType
+export interface TagUpdateManyWithoutGigsInput {
+  create?: Maybe<TagCreateWithoutGigsInput[] | TagCreateWithoutGigsInput>;
+  delete?: Maybe<TagWhereUniqueInput[] | TagWhereUniqueInput>;
+  connect?: Maybe<TagWhereUniqueInput[] | TagWhereUniqueInput>;
+  set?: Maybe<TagWhereUniqueInput[] | TagWhereUniqueInput>;
+  disconnect?: Maybe<TagWhereUniqueInput[] | TagWhereUniqueInput>;
+  update?: Maybe<
+    | TagUpdateWithWhereUniqueWithoutGigsInput[]
+    | TagUpdateWithWhereUniqueWithoutGigsInput
   >;
-  communicationEmail?: Maybe<String>;
-  communicationEmail_not?: Maybe<String>;
-  communicationEmail_in?: Maybe<String[] | String>;
-  communicationEmail_not_in?: Maybe<String[] | String>;
-  communicationEmail_lt?: Maybe<String>;
-  communicationEmail_lte?: Maybe<String>;
-  communicationEmail_gt?: Maybe<String>;
-  communicationEmail_gte?: Maybe<String>;
-  communicationEmail_contains?: Maybe<String>;
-  communicationEmail_not_contains?: Maybe<String>;
-  communicationEmail_starts_with?: Maybe<String>;
-  communicationEmail_not_starts_with?: Maybe<String>;
-  communicationEmail_ends_with?: Maybe<String>;
-  communicationEmail_not_ends_with?: Maybe<String>;
-  communicationWebsite?: Maybe<String>;
-  communicationWebsite_not?: Maybe<String>;
-  communicationWebsite_in?: Maybe<String[] | String>;
-  communicationWebsite_not_in?: Maybe<String[] | String>;
-  communicationWebsite_lt?: Maybe<String>;
-  communicationWebsite_lte?: Maybe<String>;
-  communicationWebsite_gt?: Maybe<String>;
-  communicationWebsite_gte?: Maybe<String>;
-  communicationWebsite_contains?: Maybe<String>;
-  communicationWebsite_not_contains?: Maybe<String>;
-  communicationWebsite_starts_with?: Maybe<String>;
-  communicationWebsite_not_starts_with?: Maybe<String>;
-  communicationWebsite_ends_with?: Maybe<String>;
-  communicationWebsite_not_ends_with?: Maybe<String>;
-  AND?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
-  OR?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
-  NOT?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
+  upsert?: Maybe<
+    | TagUpsertWithWhereUniqueWithoutGigsInput[]
+    | TagUpsertWithWhereUniqueWithoutGigsInput
+  >;
+  deleteMany?: Maybe<TagScalarWhereInput[] | TagScalarWhereInput>;
+  updateMany?: Maybe<
+    TagUpdateManyWithWhereNestedInput[] | TagUpdateManyWithWhereNestedInput
+  >;
 }
 
-export interface GigUpdateManyWithWhereNestedInput {
-  where: GigScalarWhereInput;
-  data: GigUpdateManyDataInput;
+export interface TagUpdateWithWhereUniqueWithoutGigsInput {
+  where: TagWhereUniqueInput;
+  data: TagUpdateWithoutGigsDataInput;
 }
 
-export interface GigUpdateManyDataInput {
+export interface TagUpdateWithoutGigsDataInput {
+  name?: Maybe<String>;
+  threads?: Maybe<ThreadUpdateManyWithoutTagsInput>;
+  categories?: Maybe<TagCategoryUpdateManyWithoutTagsInput>;
+}
+
+export interface ThreadUpdateManyWithoutTagsInput {
+  create?: Maybe<ThreadCreateWithoutTagsInput[] | ThreadCreateWithoutTagsInput>;
+  delete?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+  connect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+  set?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+  disconnect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+  update?: Maybe<
+    | ThreadUpdateWithWhereUniqueWithoutTagsInput[]
+    | ThreadUpdateWithWhereUniqueWithoutTagsInput
+  >;
+  upsert?: Maybe<
+    | ThreadUpsertWithWhereUniqueWithoutTagsInput[]
+    | ThreadUpsertWithWhereUniqueWithoutTagsInput
+  >;
+  deleteMany?: Maybe<ThreadScalarWhereInput[] | ThreadScalarWhereInput>;
+  updateMany?: Maybe<
+    | ThreadUpdateManyWithWhereNestedInput[]
+    | ThreadUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ThreadUpdateWithWhereUniqueWithoutTagsInput {
+  where: ThreadWhereUniqueInput;
+  data: ThreadUpdateWithoutTagsDataInput;
+}
+
+export interface ThreadUpdateWithoutTagsDataInput {
   title?: Maybe<String>;
-  description?: Maybe<String>;
-  technologies?: Maybe<GigUpdatetechnologiesInput>;
-  projectType?: Maybe<ProjectType>;
-  paymentType?: Maybe<PaymentType>;
-  minFee?: Maybe<Float>;
-  maxFee?: Maybe<Float>;
-  jobType?: Maybe<JobType>;
-  locationRestriction?: Maybe<String>;
-  status?: Maybe<GigStatus>;
-  communicationType?: Maybe<GigCommunicationType>;
-  communicationEmail?: Maybe<String>;
-  communicationWebsite?: Maybe<String>;
+  body?: Maybe<String>;
+  upvoteCount?: Maybe<Int>;
+  downvoteCount?: Maybe<Int>;
+  postedBy?: Maybe<UserUpdateOneRequiredWithoutThreadsInput>;
+  comments?: Maybe<CommentUpdateManyWithoutThreadInput>;
+  votes?: Maybe<ThreadVoteUpdateManyWithoutThreadInput>;
 }
 
-export interface EmployerUpsertWithoutAsUserInput {
-  update: EmployerUpdateWithoutAsUserDataInput;
-  create: EmployerCreateWithoutAsUserInput;
+export interface UserUpdateOneRequiredWithoutThreadsInput {
+  create?: Maybe<UserCreateWithoutThreadsInput>;
+  update?: Maybe<UserUpdateWithoutThreadsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutThreadsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserUpsertWithoutCommentsInput {
-  update: UserUpdateWithoutCommentsDataInput;
-  create: UserCreateWithoutCommentsInput;
+export interface UserUpdateWithoutThreadsDataInput {
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  role?: Maybe<UserRole>;
+  accountType?: Maybe<AccountType>;
+  avatar?: Maybe<FileUpdateOneInput>;
+  asEmployer?: Maybe<EmployerUpdateOneWithoutAsUserInput>;
+  asFreelancer?: Maybe<FreelancerUpdateOneWithoutAsUserInput>;
+  isEmailVerified?: Maybe<Boolean>;
+  onboardingStep?: Maybe<OnboardingStep>;
+  comments?: Maybe<CommentUpdateManyWithoutPostedByInput>;
+}
+
+export interface CommentUpdateManyWithoutPostedByInput {
+  create?: Maybe<
+    CommentCreateWithoutPostedByInput[] | CommentCreateWithoutPostedByInput
+  >;
+  delete?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  set?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  disconnect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  update?: Maybe<
+    | CommentUpdateWithWhereUniqueWithoutPostedByInput[]
+    | CommentUpdateWithWhereUniqueWithoutPostedByInput
+  >;
+  upsert?: Maybe<
+    | CommentUpsertWithWhereUniqueWithoutPostedByInput[]
+    | CommentUpsertWithWhereUniqueWithoutPostedByInput
+  >;
+  deleteMany?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
+  updateMany?: Maybe<
+    | CommentUpdateManyWithWhereNestedInput[]
+    | CommentUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutPostedByInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutPostedByDataInput;
+}
+
+export interface CommentUpdateWithoutPostedByDataInput {
+  text?: Maybe<String>;
+  isRoot?: Maybe<Boolean>;
+  isDeleted?: Maybe<Boolean>;
+  upvoteCount?: Maybe<Int>;
+  downvoteCount?: Maybe<Int>;
+  children?: Maybe<CommentUpdateManyWithoutParentInput>;
+  parent?: Maybe<CommentUpdateOneWithoutChildrenInput>;
+  thread?: Maybe<ThreadUpdateOneRequiredWithoutCommentsInput>;
+  votes?: Maybe<CommentVoteUpdateManyWithoutCommentInput>;
 }
 
 export interface CommentVoteUpdateManyWithoutCommentInput {
@@ -3757,44 +3753,60 @@ export interface UserUpdateDataInput {
   comments?: Maybe<CommentUpdateManyWithoutPostedByInput>;
 }
 
-export interface CommentUpdateManyWithoutPostedByInput {
-  create?: Maybe<
-    CommentCreateWithoutPostedByInput[] | CommentCreateWithoutPostedByInput
-  >;
-  delete?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  set?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  disconnect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
-  update?: Maybe<
-    | CommentUpdateWithWhereUniqueWithoutPostedByInput[]
-    | CommentUpdateWithWhereUniqueWithoutPostedByInput
-  >;
-  upsert?: Maybe<
-    | CommentUpsertWithWhereUniqueWithoutPostedByInput[]
-    | CommentUpsertWithWhereUniqueWithoutPostedByInput
-  >;
-  deleteMany?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
-  updateMany?: Maybe<
-    | CommentUpdateManyWithWhereNestedInput[]
-    | CommentUpdateManyWithWhereNestedInput
-  >;
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
 }
 
-export interface CommentUpdateWithWhereUniqueWithoutPostedByInput {
-  where: CommentWhereUniqueInput;
-  data: CommentUpdateWithoutPostedByDataInput;
+export interface CommentVoteUpsertWithWhereUniqueWithoutCommentInput {
+  where: CommentVoteWhereUniqueInput;
+  update: CommentVoteUpdateWithoutCommentDataInput;
+  create: CommentVoteCreateWithoutCommentInput;
 }
 
-export interface CommentUpdateWithoutPostedByDataInput {
-  text?: Maybe<String>;
-  isRoot?: Maybe<Boolean>;
-  isDeleted?: Maybe<Boolean>;
-  upvoteCount?: Maybe<Int>;
-  downvoteCount?: Maybe<Int>;
-  children?: Maybe<CommentUpdateManyWithoutParentInput>;
-  parent?: Maybe<CommentUpdateOneWithoutChildrenInput>;
-  thread?: Maybe<ThreadUpdateOneRequiredWithoutCommentsInput>;
-  votes?: Maybe<CommentVoteUpdateManyWithoutCommentInput>;
+export interface CommentVoteScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  value?: Maybe<Int>;
+  value_not?: Maybe<Int>;
+  value_in?: Maybe<Int[] | Int>;
+  value_not_in?: Maybe<Int[] | Int>;
+  value_lt?: Maybe<Int>;
+  value_lte?: Maybe<Int>;
+  value_gt?: Maybe<Int>;
+  value_gte?: Maybe<Int>;
+  AND?: Maybe<CommentVoteScalarWhereInput[] | CommentVoteScalarWhereInput>;
+  OR?: Maybe<CommentVoteScalarWhereInput[] | CommentVoteScalarWhereInput>;
+  NOT?: Maybe<CommentVoteScalarWhereInput[] | CommentVoteScalarWhereInput>;
+}
+
+export interface CommentVoteUpdateManyWithWhereNestedInput {
+  where: CommentVoteScalarWhereInput;
+  data: CommentVoteUpdateManyDataInput;
+}
+
+export interface CommentVoteUpdateManyDataInput {
+  value?: Maybe<Int>;
 }
 
 export interface CommentUpsertWithWhereUniqueWithoutPostedByInput {
@@ -3886,71 +3898,9 @@ export interface CommentUpdateManyDataInput {
   downvoteCount?: Maybe<Int>;
 }
 
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
-}
-
-export interface CommentVoteUpsertWithWhereUniqueWithoutCommentInput {
-  where: CommentVoteWhereUniqueInput;
-  update: CommentVoteUpdateWithoutCommentDataInput;
-  create: CommentVoteCreateWithoutCommentInput;
-}
-
-export interface CommentVoteScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  value?: Maybe<Int>;
-  value_not?: Maybe<Int>;
-  value_in?: Maybe<Int[] | Int>;
-  value_not_in?: Maybe<Int[] | Int>;
-  value_lt?: Maybe<Int>;
-  value_lte?: Maybe<Int>;
-  value_gt?: Maybe<Int>;
-  value_gte?: Maybe<Int>;
-  AND?: Maybe<CommentVoteScalarWhereInput[] | CommentVoteScalarWhereInput>;
-  OR?: Maybe<CommentVoteScalarWhereInput[] | CommentVoteScalarWhereInput>;
-  NOT?: Maybe<CommentVoteScalarWhereInput[] | CommentVoteScalarWhereInput>;
-}
-
-export interface CommentVoteUpdateManyWithWhereNestedInput {
-  where: CommentVoteScalarWhereInput;
-  data: CommentVoteUpdateManyDataInput;
-}
-
-export interface CommentVoteUpdateManyDataInput {
-  value?: Maybe<Int>;
-}
-
-export interface CommentUpsertWithoutChildrenInput {
-  update: CommentUpdateWithoutChildrenDataInput;
-  create: CommentCreateWithoutChildrenInput;
-}
-
-export interface CommentUpsertWithWhereUniqueWithoutThreadInput {
-  where: CommentWhereUniqueInput;
-  update: CommentUpdateWithoutThreadDataInput;
-  create: CommentCreateWithoutThreadInput;
+export interface UserUpsertWithoutThreadsInput {
+  update: UserUpdateWithoutThreadsDataInput;
+  create: UserCreateWithoutThreadsInput;
 }
 
 export interface ThreadVoteUpdateManyWithoutThreadInput {
@@ -4037,10 +3987,10 @@ export interface ThreadVoteUpdateManyDataInput {
   value?: Maybe<Int>;
 }
 
-export interface ThreadUpsertWithWhereUniqueWithoutPostedByInput {
+export interface ThreadUpsertWithWhereUniqueWithoutTagsInput {
   where: ThreadWhereUniqueInput;
-  update: ThreadUpdateWithoutPostedByDataInput;
-  create: ThreadCreateWithoutPostedByInput;
+  update: ThreadUpdateWithoutTagsDataInput;
+  create: ThreadCreateWithoutTagsInput;
 }
 
 export interface ThreadScalarWhereInput {
@@ -4135,22 +4085,6 @@ export interface ThreadUpdateManyDataInput {
   downvoteCount?: Maybe<Int>;
 }
 
-export interface UserUpsertWithoutAsEmployerInput {
-  update: UserUpdateWithoutAsEmployerDataInput;
-  create: UserCreateWithoutAsEmployerInput;
-}
-
-export interface EmployerUpsertWithoutGigsInput {
-  update: EmployerUpdateWithoutGigsDataInput;
-  create: EmployerCreateWithoutGigsInput;
-}
-
-export interface GigUpsertWithWhereUniqueNestedInput {
-  where: GigWhereUniqueInput;
-  update: GigUpdateDataInput;
-  create: GigCreateInput;
-}
-
 export interface TagCategoryUpdateManyWithoutTagsInput {
   create?: Maybe<
     TagCategoryCreateWithoutTagsInput[] | TagCategoryCreateWithoutTagsInput
@@ -4236,10 +4170,10 @@ export interface TagCategoryUpdateManyDataInput {
   name?: Maybe<String>;
 }
 
-export interface TagUpsertWithWhereUniqueWithoutThreadsInput {
+export interface TagUpsertWithWhereUniqueWithoutGigsInput {
   where: TagWhereUniqueInput;
-  update: TagUpdateWithoutThreadsDataInput;
-  create: TagCreateWithoutThreadsInput;
+  update: TagUpdateWithoutGigsDataInput;
+  create: TagCreateWithoutGigsInput;
 }
 
 export interface TagScalarWhereInput {
@@ -4285,31 +4219,223 @@ export interface TagUpdateManyDataInput {
   name?: Maybe<String>;
 }
 
-export interface UserUpdateOneRequiredWithoutThreadsInput {
-  create?: Maybe<UserCreateWithoutThreadsInput>;
-  update?: Maybe<UserUpdateWithoutThreadsDataInput>;
-  upsert?: Maybe<UserUpsertWithoutThreadsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
+export interface GigUpsertWithWhereUniqueWithoutEmployerInput {
+  where: GigWhereUniqueInput;
+  update: GigUpdateWithoutEmployerDataInput;
+  create: GigCreateWithoutEmployerInput;
 }
 
-export interface UserUpdateWithoutThreadsDataInput {
-  firstName?: Maybe<String>;
-  lastName?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  role?: Maybe<UserRole>;
-  accountType?: Maybe<AccountType>;
-  avatar?: Maybe<FileUpdateOneInput>;
-  asEmployer?: Maybe<EmployerUpdateOneWithoutAsUserInput>;
-  asFreelancer?: Maybe<FreelancerUpdateOneWithoutAsUserInput>;
-  isEmailVerified?: Maybe<Boolean>;
-  onboardingStep?: Maybe<OnboardingStep>;
-  comments?: Maybe<CommentUpdateManyWithoutPostedByInput>;
+export interface GigScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  projectType?: Maybe<ProjectType>;
+  projectType_not?: Maybe<ProjectType>;
+  projectType_in?: Maybe<ProjectType[] | ProjectType>;
+  projectType_not_in?: Maybe<ProjectType[] | ProjectType>;
+  paymentType?: Maybe<PaymentType>;
+  paymentType_not?: Maybe<PaymentType>;
+  paymentType_in?: Maybe<PaymentType[] | PaymentType>;
+  paymentType_not_in?: Maybe<PaymentType[] | PaymentType>;
+  minFee?: Maybe<Float>;
+  minFee_not?: Maybe<Float>;
+  minFee_in?: Maybe<Float[] | Float>;
+  minFee_not_in?: Maybe<Float[] | Float>;
+  minFee_lt?: Maybe<Float>;
+  minFee_lte?: Maybe<Float>;
+  minFee_gt?: Maybe<Float>;
+  minFee_gte?: Maybe<Float>;
+  maxFee?: Maybe<Float>;
+  maxFee_not?: Maybe<Float>;
+  maxFee_in?: Maybe<Float[] | Float>;
+  maxFee_not_in?: Maybe<Float[] | Float>;
+  maxFee_lt?: Maybe<Float>;
+  maxFee_lte?: Maybe<Float>;
+  maxFee_gt?: Maybe<Float>;
+  maxFee_gte?: Maybe<Float>;
+  jobType?: Maybe<JobType>;
+  jobType_not?: Maybe<JobType>;
+  jobType_in?: Maybe<JobType[] | JobType>;
+  jobType_not_in?: Maybe<JobType[] | JobType>;
+  locationRestriction?: Maybe<String>;
+  locationRestriction_not?: Maybe<String>;
+  locationRestriction_in?: Maybe<String[] | String>;
+  locationRestriction_not_in?: Maybe<String[] | String>;
+  locationRestriction_lt?: Maybe<String>;
+  locationRestriction_lte?: Maybe<String>;
+  locationRestriction_gt?: Maybe<String>;
+  locationRestriction_gte?: Maybe<String>;
+  locationRestriction_contains?: Maybe<String>;
+  locationRestriction_not_contains?: Maybe<String>;
+  locationRestriction_starts_with?: Maybe<String>;
+  locationRestriction_not_starts_with?: Maybe<String>;
+  locationRestriction_ends_with?: Maybe<String>;
+  locationRestriction_not_ends_with?: Maybe<String>;
+  status?: Maybe<GigStatus>;
+  status_not?: Maybe<GigStatus>;
+  status_in?: Maybe<GigStatus[] | GigStatus>;
+  status_not_in?: Maybe<GigStatus[] | GigStatus>;
+  communicationType?: Maybe<GigCommunicationType>;
+  communicationType_not?: Maybe<GigCommunicationType>;
+  communicationType_in?: Maybe<GigCommunicationType[] | GigCommunicationType>;
+  communicationType_not_in?: Maybe<
+    GigCommunicationType[] | GigCommunicationType
+  >;
+  communicationEmail?: Maybe<String>;
+  communicationEmail_not?: Maybe<String>;
+  communicationEmail_in?: Maybe<String[] | String>;
+  communicationEmail_not_in?: Maybe<String[] | String>;
+  communicationEmail_lt?: Maybe<String>;
+  communicationEmail_lte?: Maybe<String>;
+  communicationEmail_gt?: Maybe<String>;
+  communicationEmail_gte?: Maybe<String>;
+  communicationEmail_contains?: Maybe<String>;
+  communicationEmail_not_contains?: Maybe<String>;
+  communicationEmail_starts_with?: Maybe<String>;
+  communicationEmail_not_starts_with?: Maybe<String>;
+  communicationEmail_ends_with?: Maybe<String>;
+  communicationEmail_not_ends_with?: Maybe<String>;
+  communicationWebsite?: Maybe<String>;
+  communicationWebsite_not?: Maybe<String>;
+  communicationWebsite_in?: Maybe<String[] | String>;
+  communicationWebsite_not_in?: Maybe<String[] | String>;
+  communicationWebsite_lt?: Maybe<String>;
+  communicationWebsite_lte?: Maybe<String>;
+  communicationWebsite_gt?: Maybe<String>;
+  communicationWebsite_gte?: Maybe<String>;
+  communicationWebsite_contains?: Maybe<String>;
+  communicationWebsite_not_contains?: Maybe<String>;
+  communicationWebsite_starts_with?: Maybe<String>;
+  communicationWebsite_not_starts_with?: Maybe<String>;
+  communicationWebsite_ends_with?: Maybe<String>;
+  communicationWebsite_not_ends_with?: Maybe<String>;
+  AND?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
+  OR?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
+  NOT?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
 }
 
-export interface UserUpsertWithoutThreadsInput {
-  update: UserUpdateWithoutThreadsDataInput;
-  create: UserCreateWithoutThreadsInput;
+export interface GigUpdateManyWithWhereNestedInput {
+  where: GigScalarWhereInput;
+  data: GigUpdateManyDataInput;
+}
+
+export interface GigUpdateManyDataInput {
+  title?: Maybe<String>;
+  description?: Maybe<String>;
+  projectType?: Maybe<ProjectType>;
+  paymentType?: Maybe<PaymentType>;
+  minFee?: Maybe<Float>;
+  maxFee?: Maybe<Float>;
+  jobType?: Maybe<JobType>;
+  locationRestriction?: Maybe<String>;
+  status?: Maybe<GigStatus>;
+  communicationType?: Maybe<GigCommunicationType>;
+  communicationEmail?: Maybe<String>;
+  communicationWebsite?: Maybe<String>;
+}
+
+export interface EmployerUpsertWithoutAsUserInput {
+  update: EmployerUpdateWithoutAsUserDataInput;
+  create: EmployerCreateWithoutAsUserInput;
+}
+
+export interface UserUpsertWithoutCommentsInput {
+  update: UserUpdateWithoutCommentsDataInput;
+  create: UserCreateWithoutCommentsInput;
+}
+
+export interface CommentUpsertWithoutChildrenInput {
+  update: CommentUpdateWithoutChildrenDataInput;
+  create: CommentCreateWithoutChildrenInput;
+}
+
+export interface CommentUpsertWithWhereUniqueWithoutThreadInput {
+  where: CommentWhereUniqueInput;
+  update: CommentUpdateWithoutThreadDataInput;
+  create: CommentCreateWithoutThreadInput;
+}
+
+export interface ThreadUpsertWithWhereUniqueWithoutPostedByInput {
+  where: ThreadWhereUniqueInput;
+  update: ThreadUpdateWithoutPostedByDataInput;
+  create: ThreadCreateWithoutPostedByInput;
+}
+
+export interface UserUpsertWithoutAsEmployerInput {
+  update: UserUpdateWithoutAsEmployerDataInput;
+  create: UserCreateWithoutAsEmployerInput;
+}
+
+export interface EmployerUpsertWithoutGigsInput {
+  update: EmployerUpdateWithoutGigsDataInput;
+  create: EmployerCreateWithoutGigsInput;
+}
+
+export interface GigUpsertWithWhereUniqueWithoutTagsInput {
+  where: GigWhereUniqueInput;
+  update: GigUpdateWithoutTagsDataInput;
+  create: GigCreateWithoutTagsInput;
+}
+
+export interface TagUpsertWithWhereUniqueWithoutThreadsInput {
+  where: TagWhereUniqueInput;
+  update: TagUpdateWithoutThreadsDataInput;
+  create: TagCreateWithoutThreadsInput;
 }
 
 export interface ThreadUpsertWithoutCommentsInput {
@@ -4520,27 +4646,46 @@ export interface FreelancerUpdateManyMutationInput {
   skills?: Maybe<FreelancerUpdateskillsInput>;
 }
 
-export interface GigUpdateInput {
-  title?: Maybe<String>;
-  description?: Maybe<String>;
-  technologies?: Maybe<GigUpdatetechnologiesInput>;
+export interface GigCreateInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  description: String;
+  tags?: Maybe<TagCreateManyWithoutGigsInput>;
   projectType?: Maybe<ProjectType>;
   paymentType?: Maybe<PaymentType>;
   minFee?: Maybe<Float>;
   maxFee?: Maybe<Float>;
   jobType?: Maybe<JobType>;
   locationRestriction?: Maybe<String>;
-  employer?: Maybe<EmployerUpdateOneRequiredWithoutGigsInput>;
+  employer?: Maybe<EmployerCreateOneWithoutGigsInput>;
   status?: Maybe<GigStatus>;
   communicationType?: Maybe<GigCommunicationType>;
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
+  media?: Maybe<FileCreateOneInput>;
+}
+
+export interface GigUpdateInput {
+  title?: Maybe<String>;
+  description?: Maybe<String>;
+  tags?: Maybe<TagUpdateManyWithoutGigsInput>;
+  projectType?: Maybe<ProjectType>;
+  paymentType?: Maybe<PaymentType>;
+  minFee?: Maybe<Float>;
+  maxFee?: Maybe<Float>;
+  jobType?: Maybe<JobType>;
+  locationRestriction?: Maybe<String>;
+  employer?: Maybe<EmployerUpdateOneWithoutGigsInput>;
+  status?: Maybe<GigStatus>;
+  communicationType?: Maybe<GigCommunicationType>;
+  communicationEmail?: Maybe<String>;
+  communicationWebsite?: Maybe<String>;
+  media?: Maybe<FileUpdateOneInput>;
 }
 
 export interface GigUpdateManyMutationInput {
   title?: Maybe<String>;
   description?: Maybe<String>;
-  technologies?: Maybe<GigUpdatetechnologiesInput>;
   projectType?: Maybe<ProjectType>;
   paymentType?: Maybe<PaymentType>;
   minFee?: Maybe<Float>;
@@ -4636,6 +4781,24 @@ export interface GigUpdateOneRequiredInput {
   update?: Maybe<GigUpdateDataInput>;
   upsert?: Maybe<GigUpsertNestedInput>;
   connect?: Maybe<GigWhereUniqueInput>;
+}
+
+export interface GigUpdateDataInput {
+  title?: Maybe<String>;
+  description?: Maybe<String>;
+  tags?: Maybe<TagUpdateManyWithoutGigsInput>;
+  projectType?: Maybe<ProjectType>;
+  paymentType?: Maybe<PaymentType>;
+  minFee?: Maybe<Float>;
+  maxFee?: Maybe<Float>;
+  jobType?: Maybe<JobType>;
+  locationRestriction?: Maybe<String>;
+  employer?: Maybe<EmployerUpdateOneWithoutGigsInput>;
+  status?: Maybe<GigStatus>;
+  communicationType?: Maybe<GigCommunicationType>;
+  communicationEmail?: Maybe<String>;
+  communicationWebsite?: Maybe<String>;
+  media?: Maybe<FileUpdateOneInput>;
 }
 
 export interface GigUpsertNestedInput {
@@ -4822,73 +4985,15 @@ export interface TagCreateInput {
   id?: Maybe<ID_Input>;
   name?: Maybe<String>;
   threads?: Maybe<ThreadCreateManyWithoutTagsInput>;
-  gigs?: Maybe<GigCreateManyInput>;
+  gigs?: Maybe<GigCreateManyWithoutTagsInput>;
   categories?: Maybe<TagCategoryCreateManyWithoutTagsInput>;
-}
-
-export interface ThreadCreateManyWithoutTagsInput {
-  create?: Maybe<ThreadCreateWithoutTagsInput[] | ThreadCreateWithoutTagsInput>;
-  connect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
-}
-
-export interface ThreadCreateWithoutTagsInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  body: String;
-  upvoteCount?: Maybe<Int>;
-  downvoteCount?: Maybe<Int>;
-  postedBy: UserCreateOneWithoutThreadsInput;
-  comments?: Maybe<CommentCreateManyWithoutThreadInput>;
-  votes?: Maybe<ThreadVoteCreateManyWithoutThreadInput>;
 }
 
 export interface TagUpdateInput {
   name?: Maybe<String>;
   threads?: Maybe<ThreadUpdateManyWithoutTagsInput>;
-  gigs?: Maybe<GigUpdateManyInput>;
+  gigs?: Maybe<GigUpdateManyWithoutTagsInput>;
   categories?: Maybe<TagCategoryUpdateManyWithoutTagsInput>;
-}
-
-export interface ThreadUpdateManyWithoutTagsInput {
-  create?: Maybe<ThreadCreateWithoutTagsInput[] | ThreadCreateWithoutTagsInput>;
-  delete?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
-  connect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
-  set?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
-  disconnect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
-  update?: Maybe<
-    | ThreadUpdateWithWhereUniqueWithoutTagsInput[]
-    | ThreadUpdateWithWhereUniqueWithoutTagsInput
-  >;
-  upsert?: Maybe<
-    | ThreadUpsertWithWhereUniqueWithoutTagsInput[]
-    | ThreadUpsertWithWhereUniqueWithoutTagsInput
-  >;
-  deleteMany?: Maybe<ThreadScalarWhereInput[] | ThreadScalarWhereInput>;
-  updateMany?: Maybe<
-    | ThreadUpdateManyWithWhereNestedInput[]
-    | ThreadUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface ThreadUpdateWithWhereUniqueWithoutTagsInput {
-  where: ThreadWhereUniqueInput;
-  data: ThreadUpdateWithoutTagsDataInput;
-}
-
-export interface ThreadUpdateWithoutTagsDataInput {
-  title?: Maybe<String>;
-  body?: Maybe<String>;
-  upvoteCount?: Maybe<Int>;
-  downvoteCount?: Maybe<Int>;
-  postedBy?: Maybe<UserUpdateOneRequiredWithoutThreadsInput>;
-  comments?: Maybe<CommentUpdateManyWithoutThreadInput>;
-  votes?: Maybe<ThreadVoteUpdateManyWithoutThreadInput>;
-}
-
-export interface ThreadUpsertWithWhereUniqueWithoutTagsInput {
-  where: ThreadWhereUniqueInput;
-  update: ThreadUpdateWithoutTagsDataInput;
-  create: ThreadCreateWithoutTagsInput;
 }
 
 export interface TagUpdateManyMutationInput {
@@ -4912,7 +5017,7 @@ export interface TagCreateWithoutCategoriesInput {
   id?: Maybe<ID_Input>;
   name?: Maybe<String>;
   threads?: Maybe<ThreadCreateManyWithoutTagsInput>;
-  gigs?: Maybe<GigCreateManyInput>;
+  gigs?: Maybe<GigCreateManyWithoutTagsInput>;
 }
 
 export interface TagCategoryUpdateInput {
@@ -4950,7 +5055,7 @@ export interface TagUpdateWithWhereUniqueWithoutCategoriesInput {
 export interface TagUpdateWithoutCategoriesDataInput {
   name?: Maybe<String>;
   threads?: Maybe<ThreadUpdateManyWithoutTagsInput>;
-  gigs?: Maybe<GigUpdateManyInput>;
+  gigs?: Maybe<GigUpdateManyWithoutTagsInput>;
 }
 
 export interface TagUpsertWithWhereUniqueWithoutCategoriesInput {
@@ -5645,27 +5750,37 @@ export interface TagNullablePromise extends Promise<Tag | null>, Fragmentable {
 
 export interface Gig {
   id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
   title: String;
   description: String;
-  technologies: String[];
-  projectType: ProjectType;
-  paymentType: PaymentType;
-  minFee: Float;
-  maxFee: Float;
-  jobType: JobType;
+  projectType?: ProjectType;
+  paymentType?: PaymentType;
+  minFee?: Float;
+  maxFee?: Float;
+  jobType?: JobType;
   locationRestriction?: String;
-  createdAt: DateTimeOutput;
-  status: GigStatus;
-  communicationType: GigCommunicationType;
+  status?: GigStatus;
+  communicationType?: GigCommunicationType;
   communicationEmail?: String;
   communicationWebsite?: String;
 }
 
 export interface GigPromise extends Promise<Gig>, Fragmentable {
   id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
   description: () => Promise<String>;
-  technologies: () => Promise<String[]>;
+  tags: <T = FragmentableArray<Tag>>(args?: {
+    where?: TagWhereInput;
+    orderBy?: TagOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   projectType: () => Promise<ProjectType>;
   paymentType: () => Promise<PaymentType>;
   minFee: () => Promise<Float>;
@@ -5673,20 +5788,30 @@ export interface GigPromise extends Promise<Gig>, Fragmentable {
   jobType: () => Promise<JobType>;
   locationRestriction: () => Promise<String>;
   employer: <T = EmployerPromise>() => T;
-  createdAt: () => Promise<DateTimeOutput>;
   status: () => Promise<GigStatus>;
   communicationType: () => Promise<GigCommunicationType>;
   communicationEmail: () => Promise<String>;
   communicationWebsite: () => Promise<String>;
+  media: <T = FilePromise>() => T;
 }
 
 export interface GigSubscription
   extends Promise<AsyncIterator<Gig>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   title: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
-  technologies: () => Promise<AsyncIterator<String[]>>;
+  tags: <T = Promise<AsyncIterator<TagSubscription>>>(args?: {
+    where?: TagWhereInput;
+    orderBy?: TagOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   projectType: () => Promise<AsyncIterator<ProjectType>>;
   paymentType: () => Promise<AsyncIterator<PaymentType>>;
   minFee: () => Promise<AsyncIterator<Float>>;
@@ -5694,18 +5819,28 @@ export interface GigSubscription
   jobType: () => Promise<AsyncIterator<JobType>>;
   locationRestriction: () => Promise<AsyncIterator<String>>;
   employer: <T = EmployerSubscription>() => T;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   status: () => Promise<AsyncIterator<GigStatus>>;
   communicationType: () => Promise<AsyncIterator<GigCommunicationType>>;
   communicationEmail: () => Promise<AsyncIterator<String>>;
   communicationWebsite: () => Promise<AsyncIterator<String>>;
+  media: <T = FileSubscription>() => T;
 }
 
 export interface GigNullablePromise extends Promise<Gig | null>, Fragmentable {
   id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
   description: () => Promise<String>;
-  technologies: () => Promise<String[]>;
+  tags: <T = FragmentableArray<Tag>>(args?: {
+    where?: TagWhereInput;
+    orderBy?: TagOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   projectType: () => Promise<ProjectType>;
   paymentType: () => Promise<PaymentType>;
   minFee: () => Promise<Float>;
@@ -5713,11 +5848,11 @@ export interface GigNullablePromise extends Promise<Gig | null>, Fragmentable {
   jobType: () => Promise<JobType>;
   locationRestriction: () => Promise<String>;
   employer: <T = EmployerPromise>() => T;
-  createdAt: () => Promise<DateTimeOutput>;
   status: () => Promise<GigStatus>;
   communicationType: () => Promise<GigCommunicationType>;
   communicationEmail: () => Promise<String>;
   communicationWebsite: () => Promise<String>;
+  media: <T = FilePromise>() => T;
 }
 
 export interface Employer {
@@ -7765,18 +7900,18 @@ export interface GigSubscriptionPayloadSubscription
 
 export interface GigPreviousValues {
   id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
   title: String;
   description: String;
-  technologies: String[];
-  projectType: ProjectType;
-  paymentType: PaymentType;
-  minFee: Float;
-  maxFee: Float;
-  jobType: JobType;
+  projectType?: ProjectType;
+  paymentType?: PaymentType;
+  minFee?: Float;
+  maxFee?: Float;
+  jobType?: JobType;
   locationRestriction?: String;
-  createdAt: DateTimeOutput;
-  status: GigStatus;
-  communicationType: GigCommunicationType;
+  status?: GigStatus;
+  communicationType?: GigCommunicationType;
   communicationEmail?: String;
   communicationWebsite?: String;
 }
@@ -7785,16 +7920,16 @@ export interface GigPreviousValuesPromise
   extends Promise<GigPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
   description: () => Promise<String>;
-  technologies: () => Promise<String[]>;
   projectType: () => Promise<ProjectType>;
   paymentType: () => Promise<PaymentType>;
   minFee: () => Promise<Float>;
   maxFee: () => Promise<Float>;
   jobType: () => Promise<JobType>;
   locationRestriction: () => Promise<String>;
-  createdAt: () => Promise<DateTimeOutput>;
   status: () => Promise<GigStatus>;
   communicationType: () => Promise<GigCommunicationType>;
   communicationEmail: () => Promise<String>;
@@ -7805,16 +7940,16 @@ export interface GigPreviousValuesSubscription
   extends Promise<AsyncIterator<GigPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   title: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
-  technologies: () => Promise<AsyncIterator<String[]>>;
   projectType: () => Promise<AsyncIterator<ProjectType>>;
   paymentType: () => Promise<AsyncIterator<PaymentType>>;
   minFee: () => Promise<AsyncIterator<Float>>;
   maxFee: () => Promise<AsyncIterator<Float>>;
   jobType: () => Promise<AsyncIterator<JobType>>;
   locationRestriction: () => Promise<AsyncIterator<String>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   status: () => Promise<AsyncIterator<GigStatus>>;
   communicationType: () => Promise<AsyncIterator<GigCommunicationType>>;
   communicationEmail: () => Promise<AsyncIterator<String>>;

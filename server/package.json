@@ -15,8 +15,8 @@
     "test:paypal": "NODE_ENV=dev jest serverless/paypal/test.js --watch",
     "test:subscribe": "NODE_ENV=dev jest src/graphql/subscription/test.js",
     "seed": "NODE_ENV=dev node ./seed/index.js",
-    "seed:default": "yarn run seed admin plan threadTag",
-    "seed:test": "NODE_ENV=test node ./seed/index.js admin threadTag",
+    "seed:default": "yarn run seed admin plan threadTag technologyTag",
+    "seed:test": "NODE_ENV=test node ./seed/index.js admin threadTag technologyTag",
     "nodemon:clear": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"
   },
   "devDependencies": {
