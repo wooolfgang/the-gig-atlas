@@ -110,7 +110,7 @@ type Gig {
   id: ID! @id
   title: String!
   description: String!
-  technologies: [String!] @scalarList(strategy: RELATION)
+  tags: [Tag] @relation(name: "GigsByTag")
   projectType: ProjectType
   paymentType: PaymentType
   minFee: Float
@@ -279,7 +279,7 @@ type Tag {
   id: ID! @id
   name: String @unique
   threads: [Thread!]! @relation(name: "ThreadsByTag", link: TABLE)
-  gigs: [Gig!]! @relation(name: "GigsByTag", link: TABLE)
+  gigs: [Gig]! @relation(name: "GigsByTag", link: TABLE)
   categories: [TagCategory!]! @relation(name: "TagCategories")
 }
 

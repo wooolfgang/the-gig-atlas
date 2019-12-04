@@ -35,23 +35,7 @@ export function pool() {
   return pgPool;
 }
 
-/**
- * Search inding config data
- * @typedef {Object} SearchConfig
- * @property {string} [schema="default$default"] - shcema name made by prisma
- * @property {string} [idxCol="_srch_idx"] - name of column to store vector tokens
- * @property {string} [config="english"] -  index config name for postgres reference
- * @property {string} table - name of table made by prisma
- * @property {string} column - name of target column to index
- * @property {string} tableIdx - name of index for table
- * @property {string} tableIdxTrigger - name trigger to in table
- */
 
-const defaultCfg = {
-  schema: 'default$default', // shcema made by prisma
-  idxCol: '_srch_idx', // name of col to store idx vector
-  config: 'english', // vector ref config
-};
 
 /**
  * Setup full text search to specified table and column
@@ -66,7 +50,7 @@ export function setupSearch(pgClient, cfgData) {
   // => we need to use var "schemaTable" instead of var "table" as specified by prisma
   const schemaTable = `"${schema}"."${table}"`;
 
-  const createSearchIdx = `
+  const createSearchIdx = /* sql */ `
     ALTER TABLE ${schemaTable}
       ADD COLUMN ${idxCol} tsvector;
     UPDATE ${schemaTable}
@@ -79,11 +63,11 @@ export function setupSearch(pgClient, cfgData) {
       FOR EACH ROW EXECUTE PROCEDURE
         tsvector_update_trigger(${idxCol}, 'pg_catalog.${config}', ${column});
   `;
-  const colExists = `
+  const colExists = /* sql */ `
     SELECT 1 FROM information_schema.columns
       WHERE table_name='${table}' AND table_schema='${schema}' AND column_name='${idxCol}'
   `;
-  const conditonal = `
+  const conditonal = /* sql */ `
     DO
     $do$
     BEGIN
@@ -109,16 +93,16 @@ export function removeSearch(pgClient, cfgData) {
   };
   const schemaTable = `"${schema}"."${table}"`;
 
-  const removeSearchIdx = `
+  const removeSearchIdx = /* sql */ `
     DROP INDEX "${schema}".${tableIdx};
     DROP TRIGGER ${tableIdxTrigger} ON ${schemaTable};
     ALTER TABLE ${schemaTable} DROP COLUMN ${idxCol};
   `;
-  const colExists = `
+  const colExists = /* sql */ `
     SELECT 1 FROM information_schema.columns
       WHERE table_name='${table}' AND table_schema='${schema}' AND column_name='${idxCol}'
   `;
-  const conditonal = `
+  const conditonal = /* sql */ `
     DO
     $do$
     BEGIN
@@ -132,3 +116,18 @@ export function removeSearch(pgClient, cfgData) {
 
   return pgClient.query(conditonal);
 }
+
+/**
+ * convert string to or query by replace spaces with "|"
+ * @param {string} txt - text to convert to or query
+ */
+export function toOrQuery(txt) {
+  return txt.trim().replace(/\s+/g, '|');
+}
+
+export function toAndQuery(txt) {
+  return txt.trim().replace(/\s+/g, '&');
+}
+
+// export function searchGigs(txt, skip, count) {
+// }
