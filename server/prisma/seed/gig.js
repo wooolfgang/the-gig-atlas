@@ -5,6 +5,7 @@ import faker from 'faker';
 import argon2 from 'argon2';
 import prisma from '../../src/prisma';
 import { fullDisplay } from './utils';
+import { tags } from './tag';
 
 function createUser(password) {
   return {
@@ -24,15 +25,33 @@ function createEmployer() {
   };
 }
 
-// const progLangs = ['js', 'python', 'rust', 'java', 'C', 'C++', 'C#', 'html', 'css', 'es6', 'typescript', 'go', 'dart'];
-// const techs = ['react', 'vue', 'yue', 'aws', 'graphql', 'node', 'webassembly', 'android', 'linux'];
-// const engineering = ['configuration', 'devops', 'architecture', 'software design', 'microservices'];
+function randomN(min, max) {
+  return Math.round(Math.random() * (max - min) + min);
+}
+
+function gigRandStatus() {
+  return ['POSTED', 'SAVED'][randomN(0, 1)];
+}
+
+function randomTags(count) {
+  const stags = [...tags];
+  const rtags = [];
+
+  for (let i = 0; i < count; i++) {
+    const index = randomN(0, stags.length - 1);
+    rtags.push({ name: stags[index] });
+    stags.splice(index, 1);
+  }
+
+  return rtags;
+}
 
 function createGig() {
   return {
     title: faker.name.jobTitle(),
     description: faker.lorem.paragraph(),
-    status: 'POSTED',
+    status: gigRandStatus(),
+    tags: { connect: randomTags(15) },
   };
 }
 
@@ -50,6 +69,10 @@ const frag = `
         id
         title
         description
+        tags {
+          id
+          name
+        }
       }
     }
   }
@@ -89,14 +112,14 @@ export default async () => {
 
   try {
     const res = await Promise.all(toProcess);
-
+    // const res = randomTags(5)
     console.log('\n>>> Sucesful Seed on employer user with gigs');
     console.log('Results\n');
     fullDisplay(res);
   } catch (e) {
     console.error('error on inserting user employers with gigs\n');
     if (e.result) {
-      console.log(e.result.errors);
+      fullDisplay(e.result.errors);
     } else {
       console.log(e);
     }
