@@ -1,0 +1,39 @@
+{
+  "name": "@thegigatlas/scraper",
+  "version": "0.0.1",
+  "description": "> TODO: description",
+  "author": "Li Arolf Rey <liarolfrrey@gmail.com>",
+  "homepage": "https://github.com/wooolfgang/the-gig-atlas#readme",
+  "license": "ISC",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "babel src -d build"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wooolfgang/the-gig-atlas.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wooolfgang/the-gig-atlas/issues"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.7.4",
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^2.0.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.7.4",
+    "rss-to-json": "^1.0.5",
+    "scraper": "^0.0.9",
+    "yargs": "^15.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

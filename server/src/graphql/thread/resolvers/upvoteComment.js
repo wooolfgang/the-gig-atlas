@@ -1,4 +1,4 @@
-import prisma from '../../../prisma';
+import prisma from '@thegigatlas/prisma';
 import { DOWNVOTE_VALUE, UPVOTE_VALUE } from '../constants';
 
 export default async function upvoteComment(_, { commentId }, { user }, info) {

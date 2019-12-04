@@ -1,7 +1,7 @@
 import { allow, chain, rule } from 'graphql-shield';
 import { validation } from '@shared/common';
+import prisma from '@thegigatlas/prisma';
 import { isAuthenticated, validate, dompurify } from '../utils/rules';
-import prisma from '../../prisma';
 import { UPVOTE_VALUE } from './constants';
 
 const hasNotUpvoted = type =>

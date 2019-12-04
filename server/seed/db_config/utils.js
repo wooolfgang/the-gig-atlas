@@ -2,12 +2,12 @@
  * Search indexing config data
  * @typedef {Object} SearchConfig
  * @property {string} [schema="default$default"] - shcema name made by prisma
- * @property {string} [idxCol="_srch_idx"] - name of column to store vector tokens
+ * @property {string} [idxCol="_srch_idx"] - name of column to store vector tokens (custom)
  * @property {string} [config="english"] -  index config name for postgres reference
- * @property {string} table - name of table made by prisma
- * @property {string} column - name of target column to index
- * @property {string} tableIdx - name of index for table
- * @property {string} tableIdxTrigger - name trigger to in table
+ * @property {string} table - name of table made by prisma, referenced from datamode.prisma
+ * @property {string} column - name of target column to index (custom)
+ * @property {string} tableIdx - name of index for table (custom)
+ * @property {string} tableIdxTrigger - name trigger to in table (custom)
  */
 
 const defaultCfg = {
@@ -59,8 +59,6 @@ export function setupSearch(pgClient, cfgData) {
 
   return pgClient.query(conditonal);
 }
-
-
 
 /**
  * Remove full text search to specified table and column

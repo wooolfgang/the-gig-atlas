@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-import cfg from '../../src/config';
-import { prisma } from '../../src/generated/prisma-client';
+import prisma from '@thegigatlas/prisma';
+import cfg from '../src/config';
 import { fullDisplay } from './utils';
 
 export const categories = ['programming language', 'technologies', 'engineering'];

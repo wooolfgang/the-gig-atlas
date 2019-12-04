@@ -1,9 +1,9 @@
 import { header } from '@shared/common';
+import prisma from '@thegigatlas/prisma';
 import google from '../../serverless/google';
 import github from '../../serverless/github';
 import { verifyToken } from '../utils/rules';
 import { createAuth, createUser, loginUser } from './util';
-import prisma from '../../prisma';
 
 /**
  * Resolver for handling user password

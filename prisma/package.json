@@ -1,0 +1,37 @@
+{
+  "name": "@thegigatlas/prisma",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "author": "Li Arolf Rey <liarolfrrey@gmail.com>",
+  "license": "ISC",
+  "main": "src/index.js",
+  "scripts": {
+    "compose:dev": "sudo docker-compose --file docker-compose.yml up -d",
+    "prisma:generate": "prisma generate",
+    "prisma:apply": "prisma deploy --force",
+    "prisma:login": "prisma login --key $(grep PRISMA_CLOUD_SESSION_KEY .env | cut -d '=' -f2)"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wooolfgang/the-gig-atlas.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wooolfgang/the-gig-atlas/issues"
+  },
+  "homepage": "https://github.com/wooolfgang/the-gig-atlas#readme",
+  "devDependencies": {
+    "prisma": "^1.34.10"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "prisma-binding": "^2.3.16",
+    "prisma-client-lib": "^1.34.10"
+  }
+}

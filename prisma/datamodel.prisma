@@ -108,9 +108,11 @@ enum GigStatus {
 
 type Gig {
   id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
   title: String!
   description: String!
-  tags: [Tag] @relation(name: "GigsByTag")
+  tags: [Tag!]! @relation(name: "GigTags")
   projectType: ProjectType
   paymentType: PaymentType
   minFee: Float
@@ -118,11 +120,11 @@ type Gig {
   jobType: JobType
   locationRestriction: String
   employer: Employer @relation(name: "GigsOfEmployer")
-  createdAt: DateTime! @createdAt
-  status: GigStatus! @default(value: SAVED)
-  communicationType: GigCommunicationType! @default(value: EMAIL)
+  status: GigStatus @default(value: SAVED)
+  communicationType: GigCommunicationType @default(value: EMAIL)
   communicationEmail: String
   communicationWebsite: String
+  media: File
 }
 
 enum JobType {

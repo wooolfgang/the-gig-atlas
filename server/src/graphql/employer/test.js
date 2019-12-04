@@ -1,6 +1,6 @@
-import axios from 'axios';
+import prisma from '@thegigatlas/prisma';
 import config from '../../config';
-import prisma from '../../prisma';
+
 import debugReq from '../utils/req_debug';
 import { createUser } from '../auth/util';
 
@@ -16,7 +16,7 @@ const userInput = {
 const inputGig = {
   title: 'Testing App',
   description: 'testing my app',
-  technologies: ['js', 'jest'],
+  tags: ['nodejs', 'react'],
   projectType: 'TESTING',
   paymentType: 'FIXED',
   minFee: 100.0,
@@ -50,18 +50,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  try {
-    await prisma.deleteUser({ email: userInput.email });
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
-  }
-  try {
-    await prisma.deleteFile({ id: fileId });
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
-  }
+  await prisma.deleteUser({ email: userInput.email }).catch(console.error);
+  await prisma.deleteFile({ id: fileId }).catch(console.error);
 });
 
 describe('Employer crud operation', () => {
@@ -77,7 +67,10 @@ describe('Employer crud operation', () => {
                 title
                 communicationType 
                 description
-                technologies 
+                tags {
+                  id
+                  name
+                } 
                 projectType
                 paymentType
                 minFee
@@ -95,7 +88,10 @@ describe('Employer crud operation', () => {
     const { id, ...insertedGig } = gigs[0];
 
     expect(employerType).toBe('PERSONAL');
-    expect(inputGig).toEqual(insertedGig);
+    expect(inputGig).toEqual({
+      ...insertedGig,
+      tags: insertedGig.tags.map(t => t.name),
+    });
   });
 
   it('queries user as employer with gig', async () => {
@@ -142,7 +138,10 @@ describe('Employer crud operation', () => {
                 title
                 communicationType
                 description
-                technologies
+                tags {
+                  id
+                  name
+                }
                 projectType
                 paymentType
                 minFee

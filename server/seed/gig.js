@@ -3,7 +3,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker';
 import argon2 from 'argon2';
-import prisma from '../../src/prisma';
+import prisma from '@thegigatlas/prisma';
 import { fullDisplay } from './utils';
 import { tags } from './tag';
 

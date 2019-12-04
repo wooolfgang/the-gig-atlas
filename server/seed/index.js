@@ -19,6 +19,7 @@ const seeds = {
   'db-config': require('./db_config').default,
   gig: require('./gig').default,
   tag: require('./tag').default,
+  technologyTag: require('./technologyTag').default,
 };
 
 const toSeeds = [];
