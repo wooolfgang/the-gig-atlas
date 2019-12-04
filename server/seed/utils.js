@@ -2,5 +2,5 @@
 const util = require('util');
 
 export function fullDisplay(obj) {
-  console.log(util.inspect(obj, false, null, true /* enable colors */));
+  console.log(util.inspect(obj, false, null, /* enable colors */ true));
 }

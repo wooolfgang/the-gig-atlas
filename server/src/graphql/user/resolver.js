@@ -1,5 +1,5 @@
+import prisma from '@thegigatlas/prisma';
 import { createFragment } from '../utils/fragment';
-import prisma from '../../prisma';
 
 const onboardingResFrag = `
   fragment EmpOnbdRes on User {

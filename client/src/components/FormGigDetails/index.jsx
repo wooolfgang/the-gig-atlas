@@ -103,8 +103,8 @@ const FormContainer = ({ initialValues, loading, onSubmit }) => (
             ]}
           />
           <Field
-            label="Technologies"
-            name="technologies"
+            label="Tags"
+            name="tags"
             type="asyncselect"
             component={CustomField}
           />
@@ -275,7 +275,7 @@ const FormGigDetails = ({ next }) => {
               title: '',
               description: '',
               projectType: '',
-              technologies: [],
+              tags: [],
               paymentType: '',
               minFee: '',
               maxFee: '',

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-import { client } from '../../../src/serverless/postgres';
+import { client } from '../../src/serverless/postgres';
 import {
   createGigSearchFunction,
   setupSearch,
@@ -38,7 +38,7 @@ export default async () => {
       setupSearch(pg, gigSearch),
       setupSearch(pg, tagSearch),
       // setupSearch(pg, employerNameSearch),
-      removeGigSearchFunction(pg),
+      // removeGigSearchFunction(pg), // remove if exist (for updating only)
       createGigSearchFunction(pg),
     ]);
 

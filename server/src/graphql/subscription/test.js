@@ -1,8 +1,8 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-console */
 import axios from 'axios';
+import prisma from '@thegigatlas/prisma';
 import config from '../../config';
-import prisma from '../../prisma';
 import paypal from '../../serverless/paypal';
 import { createAuth } from '../auth/util';
 
@@ -49,7 +49,7 @@ beforeAll(async () => {
   await _catchError(prisma.createUser(subscriber), 'error on user create')
     .then(user => createAuth(user.id, user.role))
     .then(auth => {
-      console.log('user:', auth );
+      console.log('user:', auth);
       token = auth.token;
     });
   await _catchError(

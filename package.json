@@ -7,14 +7,15 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "clean:slate": "npm run bootstrap && npm run common:build && cd server && npm run prisma:apply",
+    "clean:slate": "npm run bootstrap && npm run common:build && npm run prisma:apply && npm run prisma:generate",
     "client:dev": "cd client && npm run dev --scripts-prepend-node-path",
     "server:dev": "cd server && npm run dev --scripts-prepend-node-path",
-    "server:prisma-generate": "cd server && npm run prisma:generate",
-    "server:prisma": "cd server && npm run prisma:login && npm run prisma:apply",
     "server:test": "cd server && npm run test",
+    "prisma:generate": "cd prisma && npm run prisma:generate",
+    "prisma:apply": "cd prisma && npm run prisma:login && npm run prisma:apply",
     "common:build": "cd common && npm run build",
-    "client:build": "cd client && npm run build"
+    "client:build": "cd client && npm run build",
+    "scraper:build": "cd scraper && npm run build"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",
@@ -50,6 +51,8 @@
   "workspaces": [
     "common",
     "server",
-    "client"
+    "client",
+    "scraper",
+    "prisma"
   ]
 }

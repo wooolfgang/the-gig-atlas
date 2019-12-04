@@ -24,7 +24,7 @@ const GigCard = ({
   isMobile,
   gig: {
     title,
-    technologies,
+    tags,
     createdAt,
     projectType,
     locationRestriction,
@@ -66,10 +66,7 @@ const GigCard = ({
             >
               {projectType && projectType.toLowerCase()}
             </span>
-            <div>
-              {technologies &&
-                technologies.map((t, i) => <Tech key={i}>{t}</Tech>)}
-            </div>
+            <div>{tags && tags.map(t => <Tech key={t.id}>{t.name}</Tech>)}</div>
           </>
         </ThirdRow>
       )}
@@ -85,8 +82,8 @@ const GigCard = ({
         </small>
         <span style={{ marginBottom: '4px' }}>{projectType}</span>
         <div style={{ overflow: 'hidden' }}>
-          {technologies.map((t, i) => (
-            <Tech key={i}>{t}</Tech>
+          {tags.map(t => (
+            <Tech key={t.id}>{t.name}</Tech>
           ))}
         </div>
       </Centered>
@@ -99,7 +96,12 @@ GigCard.propTypes = {
   isMobile: PropTypes.bool,
   gig: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    technologies: PropTypes.array.isRequired,
+    tags: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+      }),
+    ).isRequired,
     createdAt: PropTypes.string.isRequired,
     projectType: PropTypes.string.isRequired,
     jobType: PropTypes.string.isRequired,
@@ -119,7 +121,7 @@ GigCard.defaultProps = {
   margin: '0px',
   isMobile: false,
   gig: {
-    technologies: [],
+    tags: [],
   },
 };
 

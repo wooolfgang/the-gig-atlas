@@ -1,5 +1,5 @@
+import prisma from '@thegigatlas/prisma';
 import paypal from '../../serverless/paypal/order';
-import prisma from '../../prisma';
 
 function isProductsValid(ids, products) {
   return ids.every(id => products.some(product => product.id === id));

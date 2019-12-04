@@ -1,14 +1,14 @@
 import uuidv4 from 'uuid/v4';
 import argon2 from 'argon2';
+import prisma from '@thegigatlas/prisma';
 // eslint-disable-next-line import/no-cycle
 import { transformEmployerInput } from '../employer/resolver';
-import prisma from '../../prisma';
 
 export function transformGigInput(gigInput) {
   return {
     ...gigInput,
-    technologies: {
-      set: gigInput.technologies || [],
+    tags: {
+      connect: gigInput.tags.map(tag => ({ name: tag })),
     },
   };
 }
@@ -21,7 +21,7 @@ export function transformGigInput(gigInput) {
 //   const qs = `
 //     SELECT id, title
 //     FROM Gigs
-//     WHERE 
+//     WHERE
 //   `;
 //   // prisma.$raw()
 
@@ -70,6 +70,7 @@ export default {
   },
   Gig: {
     employer: ({ id }) => prisma.gig({ id }).employer(),
+    tags: ({ id }) => prisma.gig({ id }).tags(),
   },
 };
 
