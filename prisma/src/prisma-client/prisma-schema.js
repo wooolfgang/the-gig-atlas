@@ -939,17 +939,19 @@ input EmployerUpdateManyMutationInput {
   website: String
 }
 
-input EmployerUpdateOneRequiredWithoutGigsInput {
-  create: EmployerCreateWithoutGigsInput
-  update: EmployerUpdateWithoutGigsDataInput
-  upsert: EmployerUpsertWithoutGigsInput
-  connect: EmployerWhereUniqueInput
-}
-
 input EmployerUpdateOneWithoutAsUserInput {
   create: EmployerCreateWithoutAsUserInput
   update: EmployerUpdateWithoutAsUserDataInput
   upsert: EmployerUpsertWithoutAsUserInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: EmployerWhereUniqueInput
+}
+
+input EmployerUpdateOneWithoutGigsInput {
+  create: EmployerCreateWithoutGigsInput
+  update: EmployerUpdateWithoutGigsDataInput
+  upsert: EmployerUpsertWithoutGigsInput
   delete: Boolean
   disconnect: Boolean
   connect: EmployerWhereUniqueInput
@@ -1756,21 +1758,23 @@ input FreelancerWhereUniqueInput {
 
 type Gig {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   description: String!
-  technologies: [String!]!
-  projectType: ProjectType!
-  paymentType: PaymentType!
-  minFee: Float!
-  maxFee: Float!
-  jobType: JobType!
+  tags(where: TagWhereInput, orderBy: TagOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Tag!]
+  projectType: ProjectType
+  paymentType: PaymentType
+  minFee: Float
+  maxFee: Float
+  jobType: JobType
   locationRestriction: String
-  employer: Employer!
-  createdAt: DateTime!
-  status: GigStatus!
-  communicationType: GigCommunicationType!
+  employer: Employer
+  status: GigStatus
+  communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
+  media: File
 }
 
 enum GigCommunicationType {
@@ -1789,27 +1793,28 @@ input GigCreateInput {
   id: ID
   title: String!
   description: String!
-  technologies: GigCreatetechnologiesInput
-  projectType: ProjectType!
-  paymentType: PaymentType!
-  minFee: Float!
-  maxFee: Float!
-  jobType: JobType!
+  tags: TagCreateManyWithoutGigsInput
+  projectType: ProjectType
+  paymentType: PaymentType
+  minFee: Float
+  maxFee: Float
+  jobType: JobType
   locationRestriction: String
-  employer: EmployerCreateOneWithoutGigsInput!
+  employer: EmployerCreateOneWithoutGigsInput
   status: GigStatus
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
-}
-
-input GigCreateManyInput {
-  create: [GigCreateInput!]
-  connect: [GigWhereUniqueInput!]
+  media: FileCreateOneInput
 }
 
 input GigCreateManyWithoutEmployerInput {
   create: [GigCreateWithoutEmployerInput!]
+  connect: [GigWhereUniqueInput!]
+}
+
+input GigCreateManyWithoutTagsInput {
+  create: [GigCreateWithoutTagsInput!]
   connect: [GigWhereUniqueInput!]
 }
 
@@ -1818,25 +1823,40 @@ input GigCreateOneInput {
   connect: GigWhereUniqueInput
 }
 
-input GigCreatetechnologiesInput {
-  set: [String!]
-}
-
 input GigCreateWithoutEmployerInput {
   id: ID
   title: String!
   description: String!
-  technologies: GigCreatetechnologiesInput
-  projectType: ProjectType!
-  paymentType: PaymentType!
-  minFee: Float!
-  maxFee: Float!
-  jobType: JobType!
+  tags: TagCreateManyWithoutGigsInput
+  projectType: ProjectType
+  paymentType: PaymentType
+  minFee: Float
+  maxFee: Float
+  jobType: JobType
   locationRestriction: String
   status: GigStatus
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
+  media: FileCreateOneInput
+}
+
+input GigCreateWithoutTagsInput {
+  id: ID
+  title: String!
+  description: String!
+  projectType: ProjectType
+  paymentType: PaymentType
+  minFee: Float
+  maxFee: Float
+  jobType: JobType
+  locationRestriction: String
+  employer: EmployerCreateOneWithoutGigsInput
+  status: GigStatus
+  communicationType: GigCommunicationType
+  communicationEmail: String
+  communicationWebsite: String
+  media: FileCreateOneInput
 }
 
 type GigEdge {
@@ -1847,6 +1867,10 @@ type GigEdge {
 enum GigOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   title_ASC
   title_DESC
   description_ASC
@@ -1863,8 +1887,6 @@ enum GigOrderByInput {
   jobType_DESC
   locationRestriction_ASC
   locationRestriction_DESC
-  createdAt_ASC
-  createdAt_DESC
   status_ASC
   status_DESC
   communicationType_ASC
@@ -1877,18 +1899,18 @@ enum GigOrderByInput {
 
 type GigPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   description: String!
-  technologies: [String!]!
-  projectType: ProjectType!
-  paymentType: PaymentType!
-  minFee: Float!
-  maxFee: Float!
-  jobType: JobType!
+  projectType: ProjectType
+  paymentType: PaymentType
+  minFee: Float
+  maxFee: Float
+  jobType: JobType
   locationRestriction: String
-  createdAt: DateTime!
-  status: GigStatus!
-  communicationType: GigCommunicationType!
+  status: GigStatus
+  communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
 }
@@ -1908,6 +1930,22 @@ input GigScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
   title: String
   title_not: String
   title_in: [String!]
@@ -1978,14 +2016,6 @@ input GigScalarWhereInput {
   locationRestriction_not_starts_with: String
   locationRestriction_ends_with: String
   locationRestriction_not_ends_with: String
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
   status: GigStatus
   status_not: GigStatus
   status_in: [GigStatus!]
@@ -2054,41 +2084,42 @@ input GigSubscriptionWhereInput {
 input GigUpdateDataInput {
   title: String
   description: String
-  technologies: GigUpdatetechnologiesInput
+  tags: TagUpdateManyWithoutGigsInput
   projectType: ProjectType
   paymentType: PaymentType
   minFee: Float
   maxFee: Float
   jobType: JobType
   locationRestriction: String
-  employer: EmployerUpdateOneRequiredWithoutGigsInput
+  employer: EmployerUpdateOneWithoutGigsInput
   status: GigStatus
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
+  media: FileUpdateOneInput
 }
 
 input GigUpdateInput {
   title: String
   description: String
-  technologies: GigUpdatetechnologiesInput
+  tags: TagUpdateManyWithoutGigsInput
   projectType: ProjectType
   paymentType: PaymentType
   minFee: Float
   maxFee: Float
   jobType: JobType
   locationRestriction: String
-  employer: EmployerUpdateOneRequiredWithoutGigsInput
+  employer: EmployerUpdateOneWithoutGigsInput
   status: GigStatus
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
+  media: FileUpdateOneInput
 }
 
 input GigUpdateManyDataInput {
   title: String
   description: String
-  technologies: GigUpdatetechnologiesInput
   projectType: ProjectType
   paymentType: PaymentType
   minFee: Float
@@ -2101,22 +2132,9 @@ input GigUpdateManyDataInput {
   communicationWebsite: String
 }
 
-input GigUpdateManyInput {
-  create: [GigCreateInput!]
-  update: [GigUpdateWithWhereUniqueNestedInput!]
-  upsert: [GigUpsertWithWhereUniqueNestedInput!]
-  delete: [GigWhereUniqueInput!]
-  connect: [GigWhereUniqueInput!]
-  set: [GigWhereUniqueInput!]
-  disconnect: [GigWhereUniqueInput!]
-  deleteMany: [GigScalarWhereInput!]
-  updateMany: [GigUpdateManyWithWhereNestedInput!]
-}
-
 input GigUpdateManyMutationInput {
   title: String
   description: String
-  technologies: GigUpdatetechnologiesInput
   projectType: ProjectType
   paymentType: PaymentType
   minFee: Float
@@ -2141,6 +2159,18 @@ input GigUpdateManyWithoutEmployerInput {
   updateMany: [GigUpdateManyWithWhereNestedInput!]
 }
 
+input GigUpdateManyWithoutTagsInput {
+  create: [GigCreateWithoutTagsInput!]
+  delete: [GigWhereUniqueInput!]
+  connect: [GigWhereUniqueInput!]
+  set: [GigWhereUniqueInput!]
+  disconnect: [GigWhereUniqueInput!]
+  update: [GigUpdateWithWhereUniqueWithoutTagsInput!]
+  upsert: [GigUpsertWithWhereUniqueWithoutTagsInput!]
+  deleteMany: [GigScalarWhereInput!]
+  updateMany: [GigUpdateManyWithWhereNestedInput!]
+}
+
 input GigUpdateManyWithWhereNestedInput {
   where: GigScalarWhereInput!
   data: GigUpdateManyDataInput!
@@ -2153,14 +2183,10 @@ input GigUpdateOneRequiredInput {
   connect: GigWhereUniqueInput
 }
 
-input GigUpdatetechnologiesInput {
-  set: [String!]
-}
-
 input GigUpdateWithoutEmployerDataInput {
   title: String
   description: String
-  technologies: GigUpdatetechnologiesInput
+  tags: TagUpdateManyWithoutGigsInput
   projectType: ProjectType
   paymentType: PaymentType
   minFee: Float
@@ -2171,11 +2197,24 @@ input GigUpdateWithoutEmployerDataInput {
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
+  media: FileUpdateOneInput
 }
 
-input GigUpdateWithWhereUniqueNestedInput {
-  where: GigWhereUniqueInput!
-  data: GigUpdateDataInput!
+input GigUpdateWithoutTagsDataInput {
+  title: String
+  description: String
+  projectType: ProjectType
+  paymentType: PaymentType
+  minFee: Float
+  maxFee: Float
+  jobType: JobType
+  locationRestriction: String
+  employer: EmployerUpdateOneWithoutGigsInput
+  status: GigStatus
+  communicationType: GigCommunicationType
+  communicationEmail: String
+  communicationWebsite: String
+  media: FileUpdateOneInput
 }
 
 input GigUpdateWithWhereUniqueWithoutEmployerInput {
@@ -2183,13 +2222,12 @@ input GigUpdateWithWhereUniqueWithoutEmployerInput {
   data: GigUpdateWithoutEmployerDataInput!
 }
 
-input GigUpsertNestedInput {
-  update: GigUpdateDataInput!
-  create: GigCreateInput!
+input GigUpdateWithWhereUniqueWithoutTagsInput {
+  where: GigWhereUniqueInput!
+  data: GigUpdateWithoutTagsDataInput!
 }
 
-input GigUpsertWithWhereUniqueNestedInput {
-  where: GigWhereUniqueInput!
+input GigUpsertNestedInput {
   update: GigUpdateDataInput!
   create: GigCreateInput!
 }
@@ -2198,6 +2236,12 @@ input GigUpsertWithWhereUniqueWithoutEmployerInput {
   where: GigWhereUniqueInput!
   update: GigUpdateWithoutEmployerDataInput!
   create: GigCreateWithoutEmployerInput!
+}
+
+input GigUpsertWithWhereUniqueWithoutTagsInput {
+  where: GigWhereUniqueInput!
+  update: GigUpdateWithoutTagsDataInput!
+  create: GigCreateWithoutTagsInput!
 }
 
 input GigWhereInput {
@@ -2215,6 +2259,22 @@ input GigWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
   title: String
   title_not: String
   title_in: [String!]
@@ -2243,6 +2303,9 @@ input GigWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
+  tags_every: TagWhereInput
+  tags_some: TagWhereInput
+  tags_none: TagWhereInput
   projectType: ProjectType
   projectType_not: ProjectType
   projectType_in: [ProjectType!]
@@ -2286,14 +2349,6 @@ input GigWhereInput {
   locationRestriction_ends_with: String
   locationRestriction_not_ends_with: String
   employer: EmployerWhereInput
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
   status: GigStatus
   status_not: GigStatus
   status_in: [GigStatus!]
@@ -2330,6 +2385,7 @@ input GigWhereInput {
   communicationWebsite_not_starts_with: String
   communicationWebsite_ends_with: String
   communicationWebsite_not_ends_with: String
+  media: FileWhereInput
   AND: [GigWhereInput!]
   OR: [GigWhereInput!]
   NOT: [GigWhereInput!]
@@ -3943,12 +3999,17 @@ input TagCreateInput {
   id: ID
   name: String
   threads: ThreadCreateManyWithoutTagsInput
-  gigs: GigCreateManyInput
+  gigs: GigCreateManyWithoutTagsInput
   categories: TagCategoryCreateManyWithoutTagsInput
 }
 
 input TagCreateManyWithoutCategoriesInput {
   create: [TagCreateWithoutCategoriesInput!]
+  connect: [TagWhereUniqueInput!]
+}
+
+input TagCreateManyWithoutGigsInput {
+  create: [TagCreateWithoutGigsInput!]
   connect: [TagWhereUniqueInput!]
 }
 
@@ -3961,13 +4022,20 @@ input TagCreateWithoutCategoriesInput {
   id: ID
   name: String
   threads: ThreadCreateManyWithoutTagsInput
-  gigs: GigCreateManyInput
+  gigs: GigCreateManyWithoutTagsInput
+}
+
+input TagCreateWithoutGigsInput {
+  id: ID
+  name: String
+  threads: ThreadCreateManyWithoutTagsInput
+  categories: TagCategoryCreateManyWithoutTagsInput
 }
 
 input TagCreateWithoutThreadsInput {
   id: ID
   name: String
-  gigs: GigCreateManyInput
+  gigs: GigCreateManyWithoutTagsInput
   categories: TagCategoryCreateManyWithoutTagsInput
 }
 
@@ -4043,7 +4111,7 @@ input TagSubscriptionWhereInput {
 input TagUpdateInput {
   name: String
   threads: ThreadUpdateManyWithoutTagsInput
-  gigs: GigUpdateManyInput
+  gigs: GigUpdateManyWithoutTagsInput
   categories: TagCategoryUpdateManyWithoutTagsInput
 }
 
@@ -4063,6 +4131,18 @@ input TagUpdateManyWithoutCategoriesInput {
   disconnect: [TagWhereUniqueInput!]
   update: [TagUpdateWithWhereUniqueWithoutCategoriesInput!]
   upsert: [TagUpsertWithWhereUniqueWithoutCategoriesInput!]
+  deleteMany: [TagScalarWhereInput!]
+  updateMany: [TagUpdateManyWithWhereNestedInput!]
+}
+
+input TagUpdateManyWithoutGigsInput {
+  create: [TagCreateWithoutGigsInput!]
+  delete: [TagWhereUniqueInput!]
+  connect: [TagWhereUniqueInput!]
+  set: [TagWhereUniqueInput!]
+  disconnect: [TagWhereUniqueInput!]
+  update: [TagUpdateWithWhereUniqueWithoutGigsInput!]
+  upsert: [TagUpsertWithWhereUniqueWithoutGigsInput!]
   deleteMany: [TagScalarWhereInput!]
   updateMany: [TagUpdateManyWithWhereNestedInput!]
 }
@@ -4087,18 +4167,29 @@ input TagUpdateManyWithWhereNestedInput {
 input TagUpdateWithoutCategoriesDataInput {
   name: String
   threads: ThreadUpdateManyWithoutTagsInput
-  gigs: GigUpdateManyInput
+  gigs: GigUpdateManyWithoutTagsInput
+}
+
+input TagUpdateWithoutGigsDataInput {
+  name: String
+  threads: ThreadUpdateManyWithoutTagsInput
+  categories: TagCategoryUpdateManyWithoutTagsInput
 }
 
 input TagUpdateWithoutThreadsDataInput {
   name: String
-  gigs: GigUpdateManyInput
+  gigs: GigUpdateManyWithoutTagsInput
   categories: TagCategoryUpdateManyWithoutTagsInput
 }
 
 input TagUpdateWithWhereUniqueWithoutCategoriesInput {
   where: TagWhereUniqueInput!
   data: TagUpdateWithoutCategoriesDataInput!
+}
+
+input TagUpdateWithWhereUniqueWithoutGigsInput {
+  where: TagWhereUniqueInput!
+  data: TagUpdateWithoutGigsDataInput!
 }
 
 input TagUpdateWithWhereUniqueWithoutThreadsInput {
@@ -4110,6 +4201,12 @@ input TagUpsertWithWhereUniqueWithoutCategoriesInput {
   where: TagWhereUniqueInput!
   update: TagUpdateWithoutCategoriesDataInput!
   create: TagCreateWithoutCategoriesInput!
+}
+
+input TagUpsertWithWhereUniqueWithoutGigsInput {
+  where: TagWhereUniqueInput!
+  update: TagUpdateWithoutGigsDataInput!
+  create: TagCreateWithoutGigsInput!
 }
 
 input TagUpsertWithWhereUniqueWithoutThreadsInput {

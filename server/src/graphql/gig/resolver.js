@@ -7,8 +7,8 @@ import { transformEmployerInput } from '../employer/resolver';
 export function transformGigInput(gigInput) {
   return {
     ...gigInput,
-    technologies: {
-      set: gigInput.technologies || [],
+    tags: {
+      connect: gigInput.tags.map(tag => ({ name: tag })),
     },
   };
 }
@@ -70,6 +70,7 @@ export default {
   },
   Gig: {
     employer: ({ id }) => prisma.gig({ id }).employer(),
+    tags: ({ id }) => prisma.gig({ id }).tags(),
   },
 };
 

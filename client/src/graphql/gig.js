@@ -20,7 +20,7 @@ export const GET_GIG_DETAILS = gql`
     gigData @client {
       title
       description
-      technologies
+      tags
       projectType
       paymentType
       minFee
@@ -51,7 +51,10 @@ export const GET_GIGS_LIST_FOR_LANDING = gql`
       title
       createdAt
       description
-      technologies
+      tags {
+        id
+        name
+      }
       projectType
       paymentType
       minFee
