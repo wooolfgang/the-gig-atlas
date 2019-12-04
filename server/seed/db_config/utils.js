@@ -110,7 +110,7 @@ export function createGigSearchFunction(db) {
   // take gig ids by joining with tags from text match
   const gigTagsQuery = /* sql */ `
     SELECT mid."A" AS gid
-      FROM "default$default"."_GigsByTag" AS mid
+      FROM "default$default"."_GigTags" AS mid
       INNER JOIN "default$default"."Tag" AS tag
         ON mid."B" = tag.id
         WHERE tag._srch_idx @@ to_tsquery('english', or_query)

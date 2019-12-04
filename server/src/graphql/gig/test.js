@@ -2,6 +2,7 @@ import axios from 'axios';
 import argon2 from 'argon2';
 import prisma from '@thegigatlas/prisma';
 import config from '../../config';
+import { createDebugPost } from '../utils/req_debug';
 
 const { testUrl } = config;
 
@@ -62,7 +63,7 @@ afterAll(async () => {
 describe('Testing gig resolvers', () => {
   it('Creates a new gig with populated employer, avatar and user', async () => {
     const res = await axios.post(testUrl, {
-      query: `
+      query: /* graphql */ `
         mutation($gig: GigInput!, $employer: EmployerInput!) {
           createGig(gig: $gig, employer: $employer) {
             title
@@ -115,7 +116,7 @@ describe('Testing gig resolvers', () => {
       avatarFileId: testFile2,
     };
     const res = await axios.post(testUrl, {
-      query: `
+      query: /* graphql */ `
         mutation($gig: GigInput!, $employer: EmployerInput!) {
           createGig(gig: $gig, employer: $employer) {
             title
@@ -169,7 +170,7 @@ describe('Testing gig resolvers', () => {
       avatarFileId: testFile2,
     };
     const res = await axios.post(testUrl, {
-      query: `
+      query: /* graphql */ `
         mutation($gig: GigInput!, $employer: EmployerInput!) {
           createGig(gig: $gig, employer: $employer) {
             title
@@ -242,7 +243,7 @@ describe('Testing gig resolvers', () => {
       avatarFileId: testFile2,
     };
     const res = await axios.post(testUrl, {
-      query: `
+      query: /* graphql */ `
         mutation($gig: GigInput!, $employer: EmployerInput!) {
           createGig(gig: $gig, employer: $employer) {
             description
@@ -260,5 +261,24 @@ describe('Testing gig resolvers', () => {
       '<table><tbody><tr><td>HELLO</td></tr></tbody></table>',
     );
     expect(gigResult.description).toBe('<math><mi></mi></math>');
+  });
+
+  it('searches gig by title and tags', async () => {
+    const post = createDebugPost(testUrl);
+
+    const search = 'engineer';
+    const query = /* graphql */ `
+      query {
+        searchGigs(search: "${search}") {
+          id
+          title
+          p
+        }
+      }
+    `;
+
+    const res = await post({ query });
+    console.log('results: ');
+    console.log(res);
   });
 });
