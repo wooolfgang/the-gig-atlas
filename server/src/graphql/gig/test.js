@@ -263,7 +263,7 @@ describe('Testing gig resolvers', () => {
     expect(gigResult.description).toBe('<math><mi></mi></math>');
   });
 
-  it('searches gig by title and tags', async () => {
+  it.skip('searches gig by title and tags', async () => {
     const post = createDebugPost(testUrl);
 
     const search = 'engineer';
