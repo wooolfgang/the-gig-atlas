@@ -7,6 +7,7 @@ import { shield, deny } from 'graphql-shield';
 import assign from 'assign-deep';
 import prisma from '@thegigatlas/prisma';
 import config from '../config';
+import { pool } from '../serverless/postgres';
 
 const typeDefs = importSchema(`${__dirname}/main.graphql`);
 const resolvers = fileLoader(`${__dirname}/**/resolver.js`, {
@@ -24,9 +25,11 @@ const schema = applyMiddleware(
   permissions,
 );
 
+const pg = pool();
+
 const middleware = graphHttp(req => ({
   schema,
-  context: { req, config, prisma },
+  context: { req, config, prisma, pg },
   graphiql: !!config.hasGraphiQl,
   customFormatErrorFn: config.gqlDebugger,
 }));

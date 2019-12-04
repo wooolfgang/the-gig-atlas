@@ -235,7 +235,7 @@ type Thread {
   upvoteCount: Int! @default(value: 0)
   downvoteCount: Int! @default(value: 0)
   
-  tags: [Tag!]! @relation(name: "ThreadTag")
+  tags: [Tag!]! @relation(name: "ThreadTags")
   postedBy: User! @relation(name: "ThreadsByUser")
   comments: [Comment]! @relation(name: "ThreadComments", onDelete: "CASCADE")
   votes: [ThreadVote!]! @relation(name: "ThreadVotes", link: TABLE, onDelete: "CASCADE")
@@ -280,8 +280,8 @@ type CommentVote {
 type Tag {
   id: ID! @id
   name: String @unique
-  threads: [Thread!]! @relation(name: "ThreadsByTag", link: TABLE)
-  gigs: [Gig]! @relation(name: "GigsByTag", link: TABLE)
+  threads: [Thread!]! @relation(name: "ThreadTags", link: TABLE)
+  gigs: [Gig]! @relation(name: "GigTags", link: TABLE)
   categories: [TagCategory!]! @relation(name: "TagCategories")
 }
 
