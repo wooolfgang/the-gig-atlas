@@ -11,7 +11,7 @@ let normalUser;
 const createdThreadIds = [];
 const createdCommentIds = [];
 let debugPost;
-const testTags = ['tt-freelance', 'tt-discuss'];
+const tags = ['freelance', 'discuss'];
 
 beforeAll(async () => {
   const userInput = {
@@ -22,7 +22,6 @@ beforeAll(async () => {
   try {
     const user = await createUser(userInput);
     const auth = await createAuth(user.id, 'MEMBER');
-    await Promise.all(testTags.map(t => prisma.createTag({ name: t })));
     normalUser = auth;
     // reqConfig.headers.Authorization = `Bearer ${auth.token}`;
     debugPost = createDebugPost.withAuth(testUrl, auth);
@@ -33,11 +32,15 @@ beforeAll(async () => {
 
 afterAll(async () => {
   // No need to delete threads, as it cascade deletes on user delete
-  await Promise.all([
-    prisma.deleteUser({ id: normalUser.id }),
-    prisma.deleteManyTags({ name_in: testTags }),
-    // prisma.deleteThreadVote({ user: { id: normalUser.id } }),
-  ]).catch(console.error);
+  try {
+    await Promise.all([
+      prisma.deleteUser({ id: normalUser.id }),
+      prisma.deleteManyTags({ name_in: tags }),
+      prisma.deleteThreadVote({ user: { id: normalUser.id } }),
+    ]);
+  } catch (e) {
+    console.log('fail gracefully');
+  }
 });
 
 describe('Test thread resolvers', () => {
@@ -49,22 +52,21 @@ describe('Test thread resolvers', () => {
 
   it('createThread properly connecting relations and doing validations', async () => {
     const thread = {
-      tags: testTags,
+      tags,
       title: 'What is love?',
       body: "Baby don't hurt me, don't hurt me no more",
     };
 
-    // try {
-    //   await prisma.createTagCategory({
-    //     name: 'thread',
-    //   });
-    // } catch (e) {
-    //   // Fail gracefully in case tagCategory already exists
-    // }
+    try {
+      await prisma.createTagCategory({
+        name: 'thread',
+      });
+    } catch (e) {
+      // Fail gracefully in case tagCategory already exists
+    }
 
     const res = await debugPost({
-      query: /* graphql */ `
-        mutation ($input: ThreadInput!) {
+      query: `mutation ($input: ThreadInput!) {
           createThread(input: $input) {
             id
             title
@@ -107,8 +109,7 @@ describe('Test thread resolvers', () => {
     // Create root comment
 
     const res = await debugPost({
-      query: /* graphql */ `
-        mutation ($input: CommentInput!) {
+      query: `mutation ($input: CommentInput!) {
           createComment(input: $input) {
             id
             isRoot
@@ -147,20 +148,19 @@ describe('Test thread resolvers', () => {
 
     // Create child comment from root comment
     const childRes = await debugPost({
-      query: /* graphql */ `
-        mutation ($input: CommentInput!) {
-          createComment(input: $input) {
-            id
-            text
-            parent {
+      query: `mutation ($input: CommentInput!) {
+            createComment(input: $input) {
               id
-            }
-            children {
-              id
+              text
+              parent {
+                id
+              }
+              children {
+                id
+              }
             }
           }
-        }
-      `,
+        `,
       variables: {
         input: childrenComment,
       },
@@ -179,13 +179,12 @@ describe('Test thread resolvers', () => {
     const [threadId] = createdThreadIds;
     const upvoteThread = async () =>
       debugPost({
-        query: /* graphql */ `
-        mutation ($threadId: ID!) {
-          upvoteThread (threadId: $threadId) {
-            upvoteCount
-            downvoteCount
-          }
-        }`,
+        query: `mutation ($threadId: ID!) {
+        upvoteThread (threadId: $threadId) {
+          upvoteCount
+          downvoteCount
+        }
+      }`,
         variables: {
           threadId,
         },
@@ -208,18 +207,17 @@ describe('Test thread resolvers', () => {
     expect(res2).toEqual('An error occured');
   });
 
-  it('Should upvote comment correctly and only allow one upvote per user', async () => {
+  it('Should upvote comment correctly and only allow on upvote per user', async () => {
     const [commentId] = createdCommentIds;
 
     const upvoteComment = async () =>
       debugPost({
-        query: /* graphql */ `
-        mutation ($commentId: ID!) {
-          upvoteComment (commentId: $commentId) {
-            upvoteCount
-            downvoteCount
-          }
-        }`,
+        query: `mutation ($commentId: ID!) {
+        upvoteComment (commentId: $commentId) {
+          upvoteCount
+          downvoteCount
+        }
+      }`,
         variables: {
           commentId,
         },

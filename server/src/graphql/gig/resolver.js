@@ -59,7 +59,6 @@ export default {
           },
         },
       };
-
       return prisma.createGig(createGigInput);
     },
     deleteGig: async (_, args) => {
