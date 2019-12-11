@@ -34,17 +34,17 @@ export async function createAuth(id, role) {
   };
 }
 
-export async function createUser(input) {
+export async function createUser(input, role = 'MEMBER') {
   const password = input.password || uuidv4();
   const hash = await argon2.hash(password);
 
   const create = {
     ...input,
+    role,
     password: hash,
-    role: 'MEMBER',
   };
 
-  const { id, role } = await prisma
+  const { id } = await prisma
     .createUser(create)
     .$fragment('fragment Payload on User { id role password }');
 

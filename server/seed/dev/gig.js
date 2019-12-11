@@ -4,7 +4,7 @@
 import faker from 'faker';
 import argon2 from 'argon2';
 import prisma from '@thegigatlas/prisma';
-import { fullDisplay } from './utils';
+import { fullDisplay } from '../utils';
 import { tags } from './tag';
 
 function createUser(password) {
