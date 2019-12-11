@@ -12,16 +12,22 @@ const planModule = require('./plan');
 
 const { NODE_ENV } = process.env;
 
-const prod = {
-  admin: require('./admin').default,
-};
+/**
+ * modules for production seeds should be put here
+ */
+const prod = {};
 
+/**
+ * modules for development seeds should be put here
+ */
 const dev = {
   'test-plan': planModule.dailyTestPlan,
   gig: require('./dev/gig').default,
   tag: require('./dev/tag').default,
   plan: planModule.default,
   thread: require('./dev/thread').default,
+  threadTag: require('./dev/threadTag').default,
+  technologyTag: require('./dev/technologyTag').default,
 };
 
 const envSeeds = {
@@ -29,35 +35,36 @@ const envSeeds = {
   production: prod,
 };
 
+/**
+ * modules for both produciton and development seeds should be put here
+ */
 const seeds = {
-  threadTag: require('./threadTag').default,
+  admin: require('./admin').default,
   'db-config': require('./db_config').default,
-  technologyTag: require('./technologyTag').default,
 };
 
 const toSeeds = [];
 
-process.argv.forEach((arg, i) => {
-  if (i > 1) {
-    let seed = seeds[arg];
+const [_0, _1, ...seedArgs] = process.argv;
+seedArgs.forEach(arg => {
+  let seed = seeds[arg];
 
-    if (!seed) {
-      try {
-        seed = envSeeds[NODE_ENV][arg];
-      } catch (e) {
-        throw new Error(`Invalid NODE_ENV=${NODE_ENV}`);
-      }
+  if (!seed) {
+    try {
+      seed = envSeeds[NODE_ENV][arg];
+    } catch (e) {
+      throw new Error(`Invalid NODE_ENV=${NODE_ENV}`);
     }
+  }
 
-    if (!seed) {
-      throw new Error(`No seed found: ${arg}`);
-      process.exit(1);
-    } else {
-      toSeeds.push({
-        seed,
-        name: arg,
-      });
-    }
+  if (!seed) {
+    throw new Error(`No seed found: ${arg}`);
+    process.exit(1);
+  } else {
+    toSeeds.push({
+      seed,
+      name: arg,
+    });
   }
 });
 
