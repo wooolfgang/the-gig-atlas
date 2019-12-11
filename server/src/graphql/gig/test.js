@@ -6,10 +6,11 @@ import { createDebugPost } from '../utils/req_debug';
 
 const { testUrl } = config;
 
+const testTags = ['gig-test-tag1', 'gig-test-tag2'];
 const gig = {
   title: 'Testing App',
   description: 'testing my app',
-  tags: ['nodejs', 'react'],
+  tags: testTags,
   projectType: 'TESTING',
   paymentType: 'FIXED',
   minFee: 100.0,
@@ -34,30 +35,30 @@ const existingUser = {
   role: 'MEMBER',
 };
 
-let testFile2;
+let testFile2id;
 
 beforeAll(async () => {
+  await Promise.all(testTags.map(t => prisma.createTag({ name: t }))).catch(
+    console.error,
+  );
   const [file1, file2] = await Promise.all([
     prisma.createFile({ name: 'Test File 1' }),
     prisma.createFile({ name: 'Test File 2' }),
-  ]);
+  ]).catch(console.error);
 
   employer.avatarFileId = file1.id;
-  testFile2 = file2.id;
+  testFile2id = file2.id;
 
   await prisma.createUser(existingUser);
 });
 
 afterAll(async () => {
-  try {
-    await Promise.all([
-      prisma.deleteUser({ email: employer.email }),
-      prisma.deleteUser({ email: existingUser.email }),
-      prisma.deleteManyFiles({ id_in: [employer.avatarFileId, testFile2.id] }),
-    ]);
-  } catch (e) {
-    // fail gracefully
-  }
+  await Promise.all([
+    prisma.deleteUser({ email: employer.email }),
+    prisma.deleteUser({ email: existingUser.email }),
+    prisma.deleteManyFiles({ id_in: [employer.avatarFileId, testFile2id] }),
+    prisma.deleteManyTags({ name_in: testTags }),
+  ]).catch(console.error);
 });
 
 describe('Testing gig resolvers', () => {
@@ -113,7 +114,7 @@ describe('Testing gig resolvers', () => {
       // same email as previously created gig from test
       email: employer.email,
       employerType: 'COMPANY',
-      avatarFileId: testFile2,
+      avatarFileId: testFile2id,
     };
     const res = await axios.post(testUrl, {
       query: /* graphql */ `
@@ -167,7 +168,7 @@ describe('Testing gig resolvers', () => {
       introduction: 'This is new',
       email: existingUser.email,
       employerType: 'COMPANY',
-      avatarFileId: testFile2,
+      avatarFileId: testFile2id,
     };
     const res = await axios.post(testUrl, {
       query: /* graphql */ `
@@ -225,7 +226,7 @@ describe('Testing gig resolvers', () => {
     const gigTestXss = {
       title: 'Testing App',
       description: '<math><mi//xlink:href="data:x,<script>alert(4)</script>">',
-      tags: ['nodejs', 'react'],
+      tags: testTags,
       projectType: 'TESTING',
       paymentType: 'FIXED',
       minFee: 100.0,
@@ -240,7 +241,7 @@ describe('Testing gig resolvers', () => {
       introduction: '<TABLE><tr><td>HELLO</tr></TABL>',
       email: existingUser.email,
       employerType: 'COMPANY',
-      avatarFileId: testFile2,
+      avatarFileId: testFile2id,
     };
     const res = await axios.post(testUrl, {
       query: /* graphql */ `

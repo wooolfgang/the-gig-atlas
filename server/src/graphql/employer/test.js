@@ -13,10 +13,11 @@ const userInput = {
   password: 'asdfksdfjs;ldjfksadf',
   onboardingStep: 'EMPLOYER',
 };
+const testTags = ['emp-test-nodejs', 'emp-test-react'];
 const inputGig = {
   title: 'Testing App',
   description: 'testing my app',
-  tags: ['nodejs', 'react'],
+  tags: testTags,
   projectType: 'TESTING',
   paymentType: 'FIXED',
   minFee: 100.0,
@@ -36,11 +37,12 @@ const input = {
   gig: inputGig,
 };
 let userAuth;
-let token;
+// let token;
 let debugPost;
 let fileId;
 
 beforeAll(async () => {
+  await Promise.all(testTags.map(t => prisma.createTag({ name: t })));
   userAuth = await createUser(userInput);
   debugPost = debugReq.createDebugPost.withAuth(testUrl, userAuth);
   const file = await prisma.createFile({ name: 'this is a file' });
@@ -52,6 +54,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await prisma.deleteUser({ email: userInput.email }).catch(console.error);
   await prisma.deleteFile({ id: fileId }).catch(console.error);
+  await prisma.deleteManyTags({ name_in: testTags }).catch(console.error);
 });
 
 describe('Employer crud operation', () => {
