@@ -14,10 +14,12 @@
     "test:watch": "cross-env NODE_ENV=dev jest --watch",
     "test:paypal": "cross-env NODE_ENV=dev jest serverless/paypal/test.js --watch",
     "test:subscribe": "cross-env NODE_ENV=dev jest src/graphql/subscription/test.js",
-    "seed": "cross-env NODE_ENV=dev node -r dotenv/config ./seed/index.js",
-    "seed:default": "yarn run seed admin plan threadTag technologyTag db-config",
-    "seed:test": "cross-env NODE_ENV=test node -r dotenv/config ./seed/index.js admin threadTag technologyTag",
-    "watchers": "cross-env echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p",
+    "seed:dev": "cross-env NODE_ENV=dev node -r dotenv/config ./seed/index.js",
+    "seed:prod": "cross-env NODE_ENV=production node -r dotenv/config ./seed/index.js",
+    "seed:testing": "cross-env NODE_ENV=test node -r dotenv/config ./seed/index.js",
+    "seed:default": "yarn run seed:dev admin plan db-config",
+    "seed:test": "yarn run seed:testing admin threadTag technologyTag",
+    "watchers": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p",
     "purge": "cross-env NODE_ENV=dev node -r dotenv/config seed/_purge.js"
   },
   "devDependencies": {
