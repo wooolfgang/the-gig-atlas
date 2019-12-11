@@ -1,5 +1,5 @@
 import prisma from '@thegigatlas/prisma';
-import cfg from '../../src/config';
+import cfg from '../src/config';
 
 const { admin } = cfg;
 
