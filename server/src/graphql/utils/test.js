@@ -1,4 +1,4 @@
-import { purify, dompurify } from './rules';
+import { purify } from './rules';
 
 describe('dompurify', () => {
   it('Purify function properly works', () => {
