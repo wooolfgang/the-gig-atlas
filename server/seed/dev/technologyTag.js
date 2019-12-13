@@ -31,7 +31,7 @@ export default async () => {
   ];
 
   try {
-    const deleted = await prisma.deleteManyTags();
+    // const deleted = await prisma.deleteManyTags(); // should not cause conflict, use purge command instead
 
     try {
       await prisma.createTagCategory({

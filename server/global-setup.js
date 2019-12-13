@@ -8,7 +8,7 @@ const { setup: setupDevServer } = require('jest-dev-server');
 
 module.exports = async function globalSetup() {
   await setupDevServer({
-    command: 'node babel-register.js',
+    command: 'node -r dotenv/config babel-register.js',
     launchTimeout: 50000,
     debug: true,
     port: 7070,

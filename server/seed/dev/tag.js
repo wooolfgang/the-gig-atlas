@@ -2,8 +2,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import prisma from '@thegigatlas/prisma';
-import cfg from '../src/config';
-import { fullDisplay } from './utils';
+import cfg from '../../src/config';
+import { fullDisplay } from '../utils';
 
 export const categories = ['programming language', 'technologies', 'engineering'];
 export const progLangs = ['js', 'python', 'rust', 'java', 'C', 'C++', 'C#', 'html', 'css', 'es6', 'typescript', 'go', 'dart'];

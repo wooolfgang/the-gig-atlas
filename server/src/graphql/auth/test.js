@@ -1,9 +1,10 @@
 import axios from 'axios';
 import prisma from '@thegigatlas/prisma';
 import config from '../../config';
-import { createDebugPost } from '../utils/req_debug';
+import { createUser } from './util';
+// import { createDebugPost } from '../utils/req_debug';
 
-const { testUrl, admin } = config;
+const { testUrl } = config;
 const input = {
   email: 'john@gmail.com',
   firstName: 'John',
@@ -15,6 +16,11 @@ const user2 = {
   email: 'Li@gmail.com',
   firstName: 'Li',
   lastName: 'test',
+};
+
+const admin = {
+  email: 'admin@test.com',
+  password: 'testadmin',
 };
 
 const signupMutatation = `
@@ -34,20 +40,20 @@ mutation {
 }
 `;
 
+beforeAll(async () => {
+  await createUser(admin, 'ADMIN');
+});
+
 /**
  * IMPORTANT: added users must be remove after test
  */
 
 afterAll(async () => {
-  try {
-    // await to prevent data races from jest:watch
-    await Promise.all([
-      prisma.deleteUser({ email: input.email }),
-      prisma.deleteUser({ email: user2.email }),
-    ]);
-  } catch (e) {
-    //
-  }
+  const delMails = [input.email, user2.email, admin.email];
+  await prisma.deleteManyUsers({ email_in: delMails }).catch(e => {
+    // eslint-disable-next-line no-console
+    console.error('Auth test afterAll delete: ', e);
+  });
 });
 
 describe('User Authentication', () => {

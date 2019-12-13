@@ -7,9 +7,9 @@
  */
 
 import { formatError } from 'graphql';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 // loads .env variables
-dotenv.config();
+// dotenv.config();
 
 /**
  * @todo set prisma binding after lib error is fixed
