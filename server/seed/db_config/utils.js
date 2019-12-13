@@ -1,17 +1,17 @@
 /**
  * Search indexing config data
  * @typedef {Object} SearchConfig
- * @property {string} [schema="default$default"] - shcema name made by prisma
+ * @property {string} [schema="default$default"] - schema name made by prisma
  * @property {string} [idxCol="_srch_idx"] - name of column to store vector tokens (custom)
  * @property {string} [config="english"] -  index config name for postgres reference
- * @property {string} table - name of table made by prisma, referenced from datamode.prisma
+ * @property {string} table - name of table made by prisma, referenced from datamodel.prisma
  * @property {string} column - name of target column to index (custom)
  * @property {string} tableIdx - name of index for table (custom)
  * @property {string} tableIdxTrigger - name trigger to in table (custom)
  */
 
 const defaultCfg = {
-  schema: 'default$default', // shcema made by prisma
+  schema: 'default$default', // schema made by prisma
   idxCol: '_srch_idx', // name of col to store idx vector
   config: 'english', // vector ref config
 };
