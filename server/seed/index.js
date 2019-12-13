@@ -14,9 +14,11 @@ const seeds = {
   admin: require('./admin').default,
   plan: planModule.default,
   'test-plan': planModule.dailyTestPlan,
-  // product: require('./product').default,
   thread: require('./thread').default,
   threadTag: require('./threadTag').default,
+  'db-config': require('./db_config').default,
+  gig: require('./gig').default,
+  tag: require('./tag').default,
   technologyTag: require('./technologyTag').default,
 };
 

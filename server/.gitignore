@@ -18,3 +18,5 @@ _**
 # all files/dirs with prefix _
 _**
 .vscode
+
+prisma/

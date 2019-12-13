@@ -15,14 +15,15 @@
     "test:paypal": "NODE_ENV=dev jest serverless/paypal/test.js --watch",
     "test:subscribe": "NODE_ENV=dev jest src/graphql/subscription/test.js",
     "seed": "NODE_ENV=dev node ./seed/index.js",
-    "seed:default": "yarn run seed admin plan threadTag technologyTag",
+    "seed:default": "yarn run seed admin plan threadTag technologyTag db-config",
     "seed:test": "NODE_ENV=test node ./seed/index.js admin threadTag technologyTag",
-    "nodemon:clear": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"
+    "watchers": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p",
+    "purge": "NODE_ENV=dev node seed/_purge.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
-    "@babel/register": "^7.6.2",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/register": "^7.7.4",
     "@types/argon2": "^0.15.0",
     "@types/axios": "^0.14.0",
     "@types/express": "^4.17.1",
@@ -35,6 +36,7 @@
     "@types/yup": "^0.26.24",
     "babel-jest": "^24.9.0",
     "cz-conventional-changelog": "^3.0.2",
+    "faker": "^4.1.0",
     "jest": "^24.9.0",
     "jest-dev-server": "^4.3.0",
     "jest-environment-node": "^24.9.0",

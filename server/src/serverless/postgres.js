@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { Client, Pool } from 'pg';
-import config from '../config';
+import cfg from '../config';
 
-const { pg } = config;
+const { pg } = cfg;
 
 /**
  * Create one time conneciton client
@@ -19,7 +19,7 @@ export async function client() {
 
 /**
  * Create a continous connection pooling
- * usefull for working system
+ * usefull for continous working system
  * call .end() to end connection
  */
 export function pool() {
@@ -33,4 +33,17 @@ export function pool() {
   });
 
   return pgPool;
+}
+
+/**
+ * convert string to or query by replace spaces with "|"
+ * @param {string} txt - text to convert to or query
+ * @ref https://www.postgresql.org/docs/9.1/datatype-textsearch.html
+ */
+export function toOrQuery(txt) {
+  return txt.trim().replace(/\s+/g, '|');
+}
+
+export function toAndQuery(txt) {
+  return txt.trim().replace(/\s+/g, '&');
 }
