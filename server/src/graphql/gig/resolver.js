@@ -1,6 +1,7 @@
 import uuidv4 from 'uuid/v4';
 import argon2 from 'argon2';
 import prisma from '@thegigatlas/prisma';
+import { toAndQuery, toOrQuery } from '../../serverless/postgres';
 // eslint-disable-next-line import/no-cycle
 import { transformEmployerInput } from '../employer/resolver';
 
@@ -17,22 +18,20 @@ export function transformGigInput(gigInput) {
  * Search gigs
  * target fields: 1.titles, 2.tags, 3.employers
  */
-// async function searchGigs(_r, { search }) {
-//   const qs = `
-//     SELECT id, title
-//     FROM Gigs
-//     WHERE
-//   `;
-//   // prisma.$raw()
+function searchGigs(_r, { search }, { pg }) {
+  const orQuery = toOrQuery(search);
+  const andQuery = toAndQuery(search);
+  const qs = /* sql */ `
+    SELECT * FROM search_gigs('${andQuery}', '${orQuery}');
+  `;
 
-//   return [];
-// }
+  return pg.query(qs).then(r => r.rows);
+}
 
 export default {
   Query: {
+    searchGigs,
     gigs: (_, args) => prisma.gigs(args),
-    searchGigs: (_, { search }) =>
-      prisma.gigs({ where: { title_contains: search } }),
     gigsListLanding: () => prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
   },
   Mutation: {

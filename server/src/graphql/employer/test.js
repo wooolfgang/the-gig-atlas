@@ -50,18 +50,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  try {
-    await prisma.deleteUser({ email: userInput.email });
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
-  }
-  try {
-    await prisma.deleteFile({ id: fileId });
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
-  }
+  await prisma.deleteUser({ email: userInput.email }).catch(console.error);
+  await prisma.deleteFile({ id: fileId }).catch(console.error);
 });
 
 describe('Employer crud operation', () => {

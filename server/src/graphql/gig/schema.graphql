@@ -20,7 +20,7 @@ type Mutation {
 type Gig {
   id: ID
   createdAt: DateTime
-  title: String!
+  title: String
   description: String!
   tags: [Tag!]!
   projectType: ProjectType!
@@ -33,6 +33,7 @@ type Gig {
   communicationType: GigCommunicationType!
   communicationEmail: String
   communicationWebsite: String
+  p: Int # search priority, 1 - n
 }
 
 input GigInput {

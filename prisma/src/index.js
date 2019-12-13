@@ -1,7 +1,7 @@
 /**
  * Injects the .env variables from where the prisma-client is run,
  * NOT the env variables in this repository
- * Ex: Run this on server, it will use the .env variables on server package
+ * Ex: Run this from server, it will use the .env variables from server package
  */
 require('dotenv').config();
 
