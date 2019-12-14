@@ -21,19 +21,20 @@ type Gig {
   id: ID
   createdAt: DateTime
   title: String
-  description: String!
+  description: String
   tags: [Tag!]!
-  projectType: ProjectType!
-  paymentType: PaymentType!
-  minFee: Float!
-  maxFee: Float!
-  jobType: JobType!
+  projectType: ProjectType
+  paymentType: PaymentType
+  minFee: Float
+  maxFee: Float
+  jobType: JobType
   locationRestriction: String
-  employer: Employer!
-  communicationType: GigCommunicationType!
+  employer: Employer
+  communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
   p: Int # search priority, 1 - n
+  media: File
 }
 
 input GigInput {

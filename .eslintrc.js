@@ -38,6 +38,10 @@ module.exports = {
     "jest/prefer-to-have-length": "warn",
     "jest/valid-expect": "error",
     // customs
-    "no-confusing-arrow": "off"
+    "no-confusing-arrow": "off",
+    "implicit-arrow-linebreak": "off",
+    "arrow-parens": "off",
+    "comma-dangle": "off",
+    "function-paren-newline": "off"
   },
 };

@@ -1,9 +1,11 @@
-import rssToJson from '../utils/rssToJson';
-
 export default async () => {
   console.log('Remoteok scraper is called');
-  const data = await rssToJson('https://remoteok.io/remote-jobs.rss');
-  data.website = 'remoteok';
-  data.writtenAt = new Date();
+  const jsonRes = await fetch('https://remoteok.io/api');
+  const [_legalities, ...res] = await jsonRes.json();
+  const data = {
+    items: res,
+    website: 'remoteok',
+    writtenAt: new Date(),
+  };
   return data;
 };
