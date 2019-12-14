@@ -53,6 +53,7 @@
     "server",
     "client",
     "scraper",
-    "prisma"
+    "prisma",
+    "jobs"
   ]
 }

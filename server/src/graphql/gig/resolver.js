@@ -70,6 +70,7 @@ export default {
   Gig: {
     employer: ({ id }) => prisma.gig({ id }).employer(),
     tags: ({ id }) => prisma.gig({ id }).tags(),
+    media: ({ id }) => prisma.gig({ id }).media(),
   },
 };
 
