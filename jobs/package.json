@@ -1,0 +1,30 @@
+{
+  "name": "jobs",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Li Arolf Rey <liarolfrrey@gmail.com>",
+  "homepage": "https://github.com/wooolfgang/the-gig-atlas#readme",
+  "license": "ISC",
+  "main": "",
+  "directories": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wooolfgang/the-gig-atlas.git"
+  },
+  "scripts": {
+    "scrape-gigs:dev": "NODE_ENV=dev node ./scrape-gigs",
+    "scrape-gigs": "NODE_ENV=production node ./scrape-gigs"
+  },
+  "bugs": {
+    "url": "https://github.com/wooolfgang/the-gig-atlas/issues"
+  },
+  "dependencies": {
+    "@thegigatlas/prisma": "^0.0.1",
+    "@thegigatlas/scraper": "^0.0.1",
+    "express": "^4.17.1",
+    "node-cron": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.1"
+  }
+}
