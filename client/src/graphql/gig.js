@@ -66,10 +66,10 @@ export const GET_GIGS_LIST_FOR_LANDING = gql`
       communicationWebsite
       employer {
         id
-        avatar {
-          id
-          url
-        }
+      }
+      media {
+        id
+        url
       }
     }
   }
