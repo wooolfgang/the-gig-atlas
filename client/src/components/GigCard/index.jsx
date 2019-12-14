@@ -31,15 +31,13 @@ const GigCard = ({
     jobType,
     minFee,
     maxFee,
-    employer: {
-      avatar: { url },
-    },
+    media,
   },
 }) => (
   <Card style={{ margin }} tabIndex="0">
     <Flex>
       <FirstRow width={isMobile ? '20' : '12%'}>
-        <Avatar src={url} />
+        <Avatar src={media && media.url} />
       </FirstRow>
       <SecondRow width={isMobile ? '80%' : '60%'}>
         <Title>{title}</Title>
@@ -109,10 +107,11 @@ GigCard.propTypes = {
     minFee: PropTypes.number.isRequired,
     maxFee: PropTypes.number.isRequired,
     employer: PropTypes.shape({
-      avatar: PropTypes.shape({
-        id: PropTypes.string,
-        url: PropTypes.string,
-      }),
+      id: PropTypes.string,
+    }),
+    media: PropTypes.shape({
+      id: PropTypes.string,
+      url: PropTypes.string,
     }),
   }),
 };
