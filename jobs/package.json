@@ -12,8 +12,8 @@
     "url": "git+https://github.com/wooolfgang/the-gig-atlas.git"
   },
   "scripts": {
-    "scrape-gigs:dev": "NODE_ENV=dev node ./scrape-gigs",
-    "scrape-gigs": "NODE_ENV=production node ./scrape-gigs"
+    "scraper-cron": "node ./scraper-cron",
+    "seed-gigs": "node ./scraper-cron/runSeeds"
   },
   "bugs": {
     "url": "https://github.com/wooolfgang/the-gig-atlas/issues"
