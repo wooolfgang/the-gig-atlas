@@ -38,21 +38,22 @@ async function seedDataFromRemoteOk() {
     }),
   );
 
-  try {
-    const created = await Promise.all(
-      existingGigsFiltered.map(gig =>
-        prisma
-          .createGig(gig)
-          .then(console.log(`Created gig ${gig.title}`))
-          .catch(e => console.log('Error: ', e)),
-      ),
-    );
-    console.log('---------------------------------------------');
-    console.log(`Created ${created.length} number of gigs`);
-    console.log('---------------------------------------------');
-  } catch (e) {
-    console.log(e);
-  }
+  const responses = await Promise.allSettled(
+    existingGigsFiltered.map(gig => prisma.createGig(gig)),
+  );
+
+  let createdCount = 0;
+
+  responses.forEach(result => {
+    if (result.status === 'fulfilled') {
+      console.log(`Created ${result.title}`);
+      createdCount += 1;
+    } else if (result.status === 'rejected') {
+      console.log('On create error: ', JSON.stringify(result.reason));
+    }
+  });
+
+  console.log(`Created ${createdCount} from remoteok`);
 }
 
 module.exports = seedDataFromRemoteOk;
