@@ -1,4 +1,4 @@
 const Scraper = require('@thegigatlas/scraper').default;
 
-const scraper = Scraper({ limit: 0 });
+const scraper = Scraper({ limit: 5 });
 module.exports = scraper;
