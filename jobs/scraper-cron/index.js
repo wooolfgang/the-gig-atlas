@@ -5,10 +5,10 @@ const app = express();
 const seedGigs = require('./seedGigs');
 
 /* Run cron job every 2 hours */
-cron.schedule('* * */2 * *', async () => {
-  console.log('Running seed-gig cron task...');
+cron.schedule('0 0 */2 * * *', async () => {
+  console.log('Running seed-gig cron task... ', new Date());
   await seedGigs();
-  console.log('Ended seed-gig cron task...');
+  console.log('Ended seed-gig cron task...', new Date());
 });
 
 const port = 5000;
