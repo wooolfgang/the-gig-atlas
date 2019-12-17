@@ -46,7 +46,7 @@ async function seedDataFromRemoteOk() {
 
   responses.forEach(result => {
     if (result.status === 'fulfilled') {
-      console.log(`Created ${result.title}`);
+      console.log(`Created ${result.value.title}`);
       createdCount += 1;
     } else if (result.status === 'rejected') {
       console.log('On create error: ', JSON.stringify(result.reason));
