@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 export const Card = styled.div`
   min-height: 111px;
@@ -70,4 +70,81 @@ export const Centered = styled.div`
   display: flex;
   flex-direction: column;
   direction: rtl;
+`;
+
+export const GigCardSkeleton = styled.div`
+  min-height: 111px;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  background: ${props => props.theme.color.d6};
+  transition: all 150ms ease-in-out;
+  overflow: hidden;
+`;
+
+const loading = keyframes`
+  100% {
+    transform: translateX(100%);
+  }
+`;
+
+const after = css`
+  &::after {
+    content: '';
+    transform: translateX(-100%);
+    animation: ${loading} 1.5s infinite;
+    background: ${props => `
+      linear-gradient(
+        90deg,
+        transparent,
+        ${props.theme.color.neutral0},
+        transparent
+      )
+      `};
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+  }
+`;
+
+export const GigSkeletonContainer = styled.div`
+  min-height: 111px;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  background: ${props => props.theme.color.d6};
+  transition: all 150ms ease-in-out;
+  overflow: hidden;
+  margin-bottom: 12px;
+
+  #gig-avatar {
+    border-radius: 50%;
+    background: ${props => props.theme.color.neutral5};
+    width: 4rem;
+    height: 4rem;
+    position: relative;
+    overflow: hidden;
+    ${after}
+  }
+
+  #gig-title {
+    height: 1.45rem;
+    background: ${props => props.theme.color.neutral5};
+    width: 475px;
+    max-width: 85vw;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+    ${after}
+  }
+
+  #gig-description {
+    height: 1.15rem;
+    background: ${props => props.theme.color.neutral5};
+    width: 425px;
+    max-width: 85vw;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+    ${after}
+  }
 `;

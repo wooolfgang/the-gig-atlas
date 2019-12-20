@@ -46,7 +46,8 @@ export const InputStyles = css`
   font-size: 1rem;
   box-shadow: inset 0px 4px 20px rgba(0, 0, 0, 0.05);
   background: ${props => props.theme.color.d6};
-  border: 1px solid ${props => props.theme.color.d4};
+  border-radius: 2px;
+  border: 2px solid ${props => props.theme.color.d4};
   min-height: 2em;
   outline: 0;
   transition: all 100ms;
@@ -72,17 +73,17 @@ export const InputStyles = css`
   ${props =>
     props.hasError &&
     `
-    border: 1px solid ${props.theme.color.e1} !important;
+    border: 2px solid ${props.theme.color.e1} !important;
   `}
 
   ${props =>
     props.selected &&
     `
-    border: 1px solid ${props.theme.color.s3};
+    border: 2px solid ${props.theme.color.s3};
   `}
 
   &:focus {
-    border: 1px solid ${props => props.theme.color.s3};
+    border: 2px solid ${props => props.theme.color.s3};
   }
 `;
 

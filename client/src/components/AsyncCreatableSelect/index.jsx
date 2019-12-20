@@ -6,10 +6,10 @@ import { color } from '../../utils/theme';
 const customStyles = {
   control: (styles, state) => ({
     ...styles,
-    borderRadius: '0px',
+    borderRadius: '2px',
     boxShadow: 'inset 0px 4px 20px rgba(0, 0, 0, 0.05)',
     background: color.d6,
-    border: `1px solid ${
+    border: `2px solid ${
       // eslint-disable-next-line no-nested-ternary
       state.isFocused
         ? color.s3
