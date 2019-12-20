@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Router from 'next/router';
 import { useQuery } from '@apollo/react-hooks';
 import Nav from '../../../components/Nav';
 import GigsList from '../../../components/GigsList';
@@ -115,7 +116,7 @@ const Banner = () => (
           We bridge the gap between client and freelancers. Join our community
           of freelancers and remote workers.
         </SubText>
-        <Button> Get Started </Button>
+        <Button onClick={() => Router.push('/signup')}> Get Started </Button>
       </div>
       <BannerSvg />
     </BannerInner>

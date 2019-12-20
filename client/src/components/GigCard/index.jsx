@@ -10,6 +10,7 @@ import {
   SecondRow,
   ThirdRow,
   Centered,
+  GigSkeletonContainer,
 } from './style';
 import { color } from '../../utils/theme';
 
@@ -123,5 +124,19 @@ GigCard.defaultProps = {
     tags: [],
   },
 };
+
+export const GigCardSkeleton = () => (
+  <GigSkeletonContainer>
+    <Flex>
+      <FirstRow>
+        <div id="gig-avatar" />
+      </FirstRow>
+      <SecondRow style={{ padding: '0 1rem' }}>
+        <div id="gig-title" />
+        <div id="gig-description" />
+      </SecondRow>
+    </Flex>
+  </GigSkeletonContainer>
+);
 
 export default GigCard;

@@ -74,3 +74,50 @@ export const GET_GIGS_LIST_FOR_LANDING = gql`
     }
   }
 `;
+
+export const GET_GIGS = gql`
+  query GET_GIGS(
+    $where: GigWhereInput
+    $orderBy: GigOrderByInput
+    $skip: Int
+    $after: String
+    $before: String
+    $first: Int
+    $last: Int
+  ) {
+    gigs(
+      where: $where
+      orderBy: $orderBy
+      skip: $skip
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+    ) {
+      id
+      title
+      createdAt
+      description
+      tags {
+        id
+        name
+      }
+      projectType
+      paymentType
+      minFee
+      maxFee
+      jobType
+      locationRestriction
+      communicationType
+      communicationEmail
+      communicationWebsite
+      employer {
+        id
+      }
+      media {
+        id
+        url
+      }
+    }
+  }
+`;
