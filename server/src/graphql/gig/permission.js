@@ -13,6 +13,7 @@ export default {
   Query: {
     gigsListLanding: allow,
     searchGigs: allow,
+    gigs: allow,
   },
   Gig: allow,
 };
