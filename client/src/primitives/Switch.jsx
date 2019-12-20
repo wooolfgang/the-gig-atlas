@@ -7,7 +7,8 @@ const StyledSwitch = styled.button`
   font-size: 1rem;
   box-shadow: inset 0px 4px 20px rgba(0, 0, 0, 0.05);
   background: ${props => props.theme.color.d6};
-  border: 1px solid ${props => props.theme.color.d4};
+  border: 2px solid ${props => props.theme.color.d4};
+  border-radius: 2px;
   min-height: 2em;
   padding: 0;
   display: flex;
@@ -15,7 +16,7 @@ const StyledSwitch = styled.button`
   ${props =>
     props.hasError &&
     `
-    border: 1px solid ${props.theme.color.e1} !important;
+    border: 2px solid ${props.theme.color.e1} !important;
 
     * {
       color: ${props.theme.color.e1};
