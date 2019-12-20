@@ -114,13 +114,9 @@ export const GET_THREADS = gql`
 
 export const GET_THREAD_TAGS = gql`
   query GET_THREAD_TAGS {
-    tags(where: { category: { name: "thread" } }) {
+    tags(where: { categories_some: { name: "thread" } }) {
       id
       name
-      category {
-        id
-        name
-      }
     }
   }
 `;
