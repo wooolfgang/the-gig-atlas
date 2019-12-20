@@ -53,7 +53,6 @@ const ThreadCreate = ({ user }) => {
             onSubmit={async values => {
               try {
                 setIsSubmitting(true);
-                console.log(values);
                 const res = await createThread({
                   variables: { input: values },
                 });
@@ -88,7 +87,7 @@ const ThreadCreate = ({ user }) => {
                   isMulti
                   options={
                     threadTags &&
-                    threadTags.threadTags.map(t => ({
+                    threadTags.tags.map(t => ({
                       label: t.name,
                       value: t.name,
                     }))
