@@ -8,6 +8,7 @@ import {
   LogoContainer,
   Search,
   SearchContainer,
+  Badge,
 } from './style';
 import { MediaConsumer } from '../MediaProvider';
 import { NavLink, Logo, Button, Avatar } from '../../primitives';
@@ -19,11 +20,12 @@ import { propTypes } from '../../utils/globals';
 
 const NotAuthenticated = () => (
   <NavLinks>
+    <NavLink style={{ marginRight: '20px', position: 'relative' }} href="/gigs">
+      Find Gigs
+      <Badge>NEW</Badge>
+    </NavLink>
     <NavLink style={{ marginRight: '20px' }} href="/community">
       Community
-    </NavLink>
-    <NavLink style={{ marginRight: '20px' }} href="/gigs">
-      Gigs
     </NavLink>
     <NavLink style={{ marginRight: '20px' }} href="/login">
       Login
@@ -53,8 +55,18 @@ const LoginSignup = () => (
 
 const AuthenticatedFreelancer = withRouter(({ router: { route }, user }) => (
   <>
-    <SearchContainer>
-      <Search type="search" placeholder="Find gigs for web development" />
+    <SearchContainer
+      onClick={() => {
+        Router.push({
+          pathname: '/gigs',
+          query: {
+            from: 'main',
+            focused: true,
+          },
+        });
+      }}
+    >
+      <Search type="search" placeholder="Find remote gigs and jobs" />
       <SearchIcon
         width="18"
         height="18"
