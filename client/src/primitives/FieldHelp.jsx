@@ -22,7 +22,7 @@ const FieldHelp = ({ value, visible }) => {
         <Help key={key} style={props}>
           {value}
         </Help>
-      )
+      ),
   );
 };
 
