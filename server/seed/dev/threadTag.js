@@ -47,8 +47,6 @@ export default async () => {
   ];
 
   try {
-    // const deleted = await prisma.deleteManyTags(); // should not cause conflict, use purge command instead
-
     try {
       await prisma.createTagCategory({
         name: 'thread',
@@ -62,7 +60,6 @@ export default async () => {
     ]);
 
     console.log('\n>>> Seed on threadTags');
-    console.log('removed old threadTags', deleted);
     console.log('created new threadTags:\n', newThreadTags);
   } catch (e) {
     console.error('error on inserting threadTags(s)\n', e);
