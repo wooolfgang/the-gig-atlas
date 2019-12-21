@@ -63,9 +63,11 @@ async function seedDataFromRemoteOk(threadTs) {
     errors,
   )}`;
 
+  console.log(createdMsg);
+  console.log(rejectedMsg);
+
   try {
-    await sendSlackMessage(createdMsg, threadTs);
-    await sendSlackMessage(rejectedMsg, threadTs);
+    await sendSlackMessage(`${createdMsg} \n ${rejectedMsg}`, threadTs);
   } catch (e) {
     console.log('Failed to send slack message');
   }

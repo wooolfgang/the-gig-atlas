@@ -10,7 +10,7 @@ const transformWeWorkRemotelyItem = item => ({
   communicationWebsite: item.url,
   jobType: 'FULL_TIME',
   media: item.media
-    && item.media.content
+    && item.media.content &&
     item.media.content[0] && {
       create: {
         url: item.media.content[0].url[0],
@@ -63,13 +63,15 @@ async function seedDataFromWeWorkRemotely(threadTs) {
   });
 
   const createdMsg = `Created ${createdCount} from weworkremotely`;
-  const rejectedMsg = `Rejected ${rejectedCount} from remoteok, ${JSON.stringify(
+  const rejectedMsg = `Rejected ${rejectedCount} from woworkremotely, ${JSON.stringify(
     errors,
   )}`;
 
+  console.log(createdMsg);
+  console.log(rejectedMsg);
+
   try {
-    await sendSlackMessage(createdMsg, threadTs);
-    await sendSlackMessage(rejectedMsg, threadTs);
+    await sendSlackMessage(`${createdMsg} \n ${rejectedMsg}`, threadTs);
   } catch (e) {
     console.log('Failed to send slack message');
   }

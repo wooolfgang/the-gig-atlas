@@ -24,9 +24,10 @@ cron.schedule('0 0 */2 * * *', async () => {
 
   await seedGigs(threadTs);
 
-  const endMessage = `Ended seed-gig cron task... ${new Date()}`;
+  const endMessage = `
+  Ended seed-gig cron task... ${new Date()}`;
   console.log(endMessage);
-  await sendSlackMessage(endMessage);
+  await sendSlackMessage(endMessage, threadTs);
 });
 
 const port = 5000;
