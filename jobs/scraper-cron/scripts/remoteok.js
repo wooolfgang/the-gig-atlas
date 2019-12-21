@@ -1,5 +1,6 @@
 const prisma = require('@thegigatlas/prisma');
 const scraper = require('../scraper');
+const sendSlackMessage = require('../utils/sendSlackMessage');
 
 const transformRemoteOkItem = item => ({
   title: item.position,
@@ -18,7 +19,7 @@ const transformRemoteOkItem = item => ({
 const transformRemoteOkData = items =>
   items.map(item => transformRemoteOkItem(item));
 
-async function seedDataFromRemoteOk() {
+async function seedDataFromRemoteOk(threadTs) {
   const res = await scraper.scrape(['remoteok']);
   const dataFromScraper = res.remoteok.items;
   const dataFromScraperTransformed = transformRemoteOkData(dataFromScraper);
@@ -43,6 +44,8 @@ async function seedDataFromRemoteOk() {
   );
 
   let createdCount = 0;
+  let rejectedCount = 0;
+  const errors = [];
 
   responses.forEach(result => {
     if (result.status === 'fulfilled') {
@@ -50,10 +53,22 @@ async function seedDataFromRemoteOk() {
       createdCount += 1;
     } else if (result.status === 'rejected') {
       console.log('On create error: ', JSON.stringify(result.reason));
+      errors.push(result.value);
+      rejectedCount += 1;
     }
   });
 
-  console.log(`Created ${createdCount} from remoteok`);
+  const createdMsg = `Created ${createdCount} from remoteok`;
+  const rejectedMsg = `Rejected ${rejectedCount} from remotok, ${JSON.stringify(
+    errors,
+  )}`;
+
+  try {
+    await sendSlackMessage(createdMsg, threadTs);
+    await sendSlackMessage(rejectedMsg, threadTs);
+  } catch (e) {
+    console.log('Failed to send slack message');
+  }
 }
 
 module.exports = seedDataFromRemoteOk;
