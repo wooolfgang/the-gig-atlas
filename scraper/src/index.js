@@ -49,7 +49,10 @@ const Scraper = ({ limit = 5 } = {}) => {
     const dataFromJSON = await getDataFromJSONStore(urls);
     return Object.keys(dataFromJSON).reduce((acc, key) => {
       const d = dataFromJSON[key];
-      if (new Date(new Date(d.writtenAt) + timeLimitInMs) < new Date()) {
+
+      const timeLimit = new Date(d.writtenAt).getTime() + timeLimitInMs;
+      const timeNow = new Date().getTime();
+      if (timeNow < timeLimit) {
         acc[key] = d;
       }
 
@@ -65,7 +68,9 @@ const Scraper = ({ limit = 5 } = {}) => {
         return true;
       }
 
-      if (new Date(new Date(data.writtenAt) + timeLimitInMs) >= new Date()) {
+      const timeLimit = new Date(data.writtenAt).getTime() + timeLimitInMs;
+      const timeNow = new Date().getTime();
+      if (timeNow >= timeLimit) {
         return true;
       }
 
