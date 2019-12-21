@@ -5,6 +5,6 @@ const StyledLogo = styled.img`
   width: 48px;
 `;
 
-const Logo = () => <StyledLogo src="/static/logo.png" alt="logo" />;
+const Logo = () => <StyledLogo src="/static/logo.svg" alt="logo" />;
 
 export default Logo;
