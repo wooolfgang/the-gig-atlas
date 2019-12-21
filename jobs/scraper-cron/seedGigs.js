@@ -1,8 +1,13 @@
+require('dotenv').config();
+
 const seedDataFromWeWorkRemotely = require('./scripts/weworkremotely');
 const seedDataFromRemoteOk = require('./scripts/remoteok');
 
-async function seedGigs() {
-  return Promise.all([seedDataFromWeWorkRemotely(), seedDataFromRemoteOk()]);
+async function seedGigs(threadTs) {
+  return Promise.all([
+    seedDataFromWeWorkRemotely(threadTs),
+    seedDataFromRemoteOk(threadTs),
+  ]);
 }
 
 module.exports = seedGigs;
