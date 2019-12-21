@@ -9,11 +9,13 @@ const transformWeWorkRemotelyItem = item => ({
   communicationType: 'WEBSITE',
   communicationWebsite: item.url,
   jobType: 'FULL_TIME',
-  media: {
-    create: {
-      url: item.media.content[0].url[0],
+  media: item.media
+    && item.media.content
+    item.media.content[0] && {
+      create: {
+        url: item.media.content[0].url[0],
+      },
     },
-  },
 });
 
 const transformWeWorkRemotelyData = items =>
