@@ -113,6 +113,39 @@ export const GET_GIGS = gql`
       communicationWebsite
       employer {
         id
+        displayName
+      }
+      media {
+        id
+        url
+      }
+    }
+  }
+`;
+
+export const GIG_SEARCH = gql`
+  query GIG_SEARCH($search: String!) {
+    searchGigs(search: $search) {
+      id
+      title
+      createdAt
+      description
+      tags {
+        id
+        name
+      }
+      projectType
+      paymentType
+      minFee
+      maxFee
+      jobType
+      locationRestriction
+      communicationType
+      communicationEmail
+      communicationWebsite
+      employer {
+        id
+        displayName
       }
       media {
         id

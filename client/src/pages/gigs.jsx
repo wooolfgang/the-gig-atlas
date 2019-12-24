@@ -1,16 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/react-hooks';
 import Nav from '../components/Nav';
 import withAuthSync from '../components/withAuthSync';
 import GigsList from '../components/GigsList';
-import { GET_GIGS } from '../graphql/gig';
+import { GIG_SEARCH } from '../graphql/gig';
 import { GigCardSkeleton } from '../components/GigCard';
 import { JOB_TYPE, PROJECT_TYPE, PAYMENT_TYPE } from '../utils/constants';
 import SearchIcon from '../icons/Search';
 import { color } from '../utils/theme';
 import { propTypes } from '../utils/globals';
+import debounce from '../utils/debounce';
 
 const Container = styled.main`
   padding: 2rem 1rem;
@@ -91,7 +92,7 @@ const FilterContainer = styled.div`
   }
 `;
 
-const Search = () => {
+const Search = ({ onSearch }) => {
   const router = useRouter();
   const searchRef = useRef(null);
   const { focused } = router.query;
@@ -104,17 +105,21 @@ const Search = () => {
 
   return (
     <SearchContainer>
-      <SearchInput placeholder="Search for gigs" ref={searchRef} />
+      <SearchInput
+        placeholder="Search for remote gigs and jobs"
+        ref={searchRef}
+        onChange={e => onSearch(e.target.value)}
+      />
       <SearchIcon style={{ padding: '0 .5rem' }} fill={color.d4} />
     </SearchContainer>
   );
 };
 
 const Gigs = ({ user }) => {
-  const { data, loading: searchLoading } = useQuery(GET_GIGS, {
-    fetchPolicy: 'network-only',
+  const [searchValue, setSearchValue] = useState('');
+  const { data, loading } = useQuery(GIG_SEARCH, {
     variables: {
-      first: 8,
+      search: searchValue,
     },
   });
 
@@ -122,14 +127,18 @@ const Gigs = ({ user }) => {
     if (!user) {
       return <Nav type="NOT_AUTHENTICATED" />;
     }
-    return <Nav type="AUTHENTICATED_FREELANCER" />;
+    return <Nav type="AUTHENTICATED_FREELANCER" user={user} />;
   }
+
+  const debounced = debounce(searchValue => {
+    setSearchValue(searchValue);
+  }, 2000);
 
   return (
     <div>
       {renderNav()}
       <Container>
-        <Search />
+        <Search onSearch={debounced} />
         <FilterContainer>
           <p className="filter-name">Job Type</p>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -156,7 +165,7 @@ const Gigs = ({ user }) => {
           ))}
         </FilterContainer>
         <GigsContainer>
-          {searchLoading ? (
+          {loading ? (
             <div>
               <GigCardSkeleton />
               <GigCardSkeleton />
@@ -164,7 +173,7 @@ const Gigs = ({ user }) => {
               <GigCardSkeleton />
             </div>
           ) : (
-            <GigsList gigs={data ? data.gigs : []} />
+            <GigsList gigs={data ? data.searchGigs : []} />
           )}
         </GigsContainer>
       </Container>
