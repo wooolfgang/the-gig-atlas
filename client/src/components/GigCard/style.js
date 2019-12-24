@@ -23,16 +23,18 @@ export const Avatar = styled.div`
   border-radius: 50%;
   width: 4em;
   height: 4em;
+
   ${props =>
     props.src &&
     `
-      border: 1px solid ${props.theme.color.d3};
-      background: #fff url(${props.src}) center center no-repeat;
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-      background-size: cover;
-    `}
+      border: 1px solid ${props.theme.color.d5};
+      background: url(${props.src}) center center no-repeat;
+      -webkit-background-size: contain;
+      -moz-background-size: contain;
+      -o-background-size: contain;
+      background-size: contain;
+      box-shadow: inset 0px 4px 20px rgba(0, 0, 0, 0.05);
+      `}
 `;
 
 export const Title = styled.h4`

@@ -19,6 +19,13 @@ export function transformGigInput(gigInput) {
  * target fields: 1.titles, 2.tags, 3.employers
  */
 function searchGigs(_r, { search }, { pg }) {
+  if (!search) {
+    return prisma.gigs({
+      first: 8,
+      orderBy: 'createdAt_DESC',
+    });
+  }
+
   const orQuery = toOrQuery(search);
   const andQuery = toAndQuery(search);
   const qs = /* sql */ `
