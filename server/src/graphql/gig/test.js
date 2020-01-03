@@ -9,7 +9,7 @@ const { testUrl } = config;
 const gig = {
   title: 'Testing App',
   description: 'testing my app',
-  tags: ['nodejs', 'react'],
+  tags: ['react', 'nodejs'],
   projectType: 'TESTING',
   paymentType: 'FIXED',
   minFee: 100.0,
@@ -46,6 +46,17 @@ beforeAll(async () => {
   testFile2 = file2.id;
 
   await prisma.createUser(existingUser);
+  try {
+    await Promise.all(
+      gig.tags.map(tag =>
+        prisma.createTag({
+          name: tag,
+        }),
+      ),
+    );
+  } catch (e) {
+    //
+  }
 });
 
 afterAll(async () => {
@@ -54,6 +65,9 @@ afterAll(async () => {
       prisma.deleteUser({ email: employer.email }),
       prisma.deleteUser({ email: existingUser.email }),
       prisma.deleteManyFiles({ id_in: [employer.avatarFileId, testFile2.id] }),
+      prisma.deleteManyTags({
+        name_in: gig.tags,
+      }),
     ]);
   } catch (e) {
     // fail gracefully

@@ -7,7 +7,7 @@ import { fullDisplay } from '../utils';
 
 export const categories = ['programming language', 'technologies', 'engineering', 'websites'];
 export const progLangs = ['js', 'python', 'rust', 'java', 'C', 'C++', 'C#', 'html', 'css', 'es6', 'typescript', 'go', 'dart'];
-export const techs = ['react', 'vue', 'yue', 'aws', 'graphql', 'node', 'webassembly', 'android', 'linux'];
+export const techs = ['react', 'vue', 'yue', 'aws', 'graphql', 'nodejs', 'webassembly', 'android', 'linux'];
 export const engineering = ['configuration', 'devops', 'architecture', 'software design', 'microservices'];
 export const websites = ['weworkremotely', 'remoteok'];
 export const tags = [...progLangs, ...techs, ...engineering, ...websites];
