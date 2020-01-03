@@ -35,7 +35,7 @@ export default async () => {
   try {
     await prisma.createUser(newAdmin);
 
-    console.log('\n>>> Sucesful Seed on admin');
+    console.log('\n>>> Successful Seed on admin');
     console.log('New admin created: ', newAdmin);
   } catch (e) {
     console.error('error on inserting admin\n');
