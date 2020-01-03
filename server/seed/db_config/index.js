@@ -42,7 +42,7 @@ export default async () => {
       createGigSearchFunction(pg),
     ]);
 
-    console.log('\n>>> Sucesful Gig Search idx initialization');
+    console.log('\n>>> Successful Gig Search idx initialization');
     // console.log(res);
     pg.end();
   } catch (e) {

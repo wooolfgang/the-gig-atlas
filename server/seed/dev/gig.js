@@ -113,7 +113,7 @@ export default async () => {
   try {
     const res = await Promise.all(toProcess);
     // const res = randomTags(5)
-    console.log('\n>>> Sucesful Seed on employer user with gigs');
+    console.log('\n>>> Successful Seed on employer user with gigs');
     console.log('Results\n');
     fullDisplay(res);
   } catch (e) {
