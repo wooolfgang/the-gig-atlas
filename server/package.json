@@ -10,7 +10,7 @@
     "start": "cross-env NODE_ENV=dev node -r dotenv/config babel-register.js",
     "dev": "cross-env NODE_ENV=dev nodemon --exec node -r dotenv/config babel-register.js",
     "lint": "eslint -c .eslintrc ./",
-    "test": "cross-env NODE_ENV=test yarn jest",
+    "test": "cross-env NODE_ENV=test && yarn jest",
     "test:watch": "cross-env NODE_ENV=dev jest --watch",
     "test:paypal": "cross-env NODE_ENV=dev jest serverless/paypal/test.js --watch",
     "test:subscribe": "cross-env NODE_ENV=dev jest src/graphql/subscription/test.js",

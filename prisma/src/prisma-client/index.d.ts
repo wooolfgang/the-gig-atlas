@@ -839,7 +839,9 @@ export type GigOrderByInput =
   | "communicationEmail_ASC"
   | "communicationEmail_DESC"
   | "communicationWebsite_ASC"
-  | "communicationWebsite_DESC";
+  | "communicationWebsite_DESC"
+  | "fromId_ASC"
+  | "fromId_DESC";
 
 export type SocialOrderByInput =
   | "id_ASC"
@@ -1391,6 +1393,21 @@ export interface GigWhereInput {
   communicationWebsite_ends_with?: Maybe<String>;
   communicationWebsite_not_ends_with?: Maybe<String>;
   media?: Maybe<FileWhereInput>;
+  from?: Maybe<TagWhereInput>;
+  fromId?: Maybe<String>;
+  fromId_not?: Maybe<String>;
+  fromId_in?: Maybe<String[] | String>;
+  fromId_not_in?: Maybe<String[] | String>;
+  fromId_lt?: Maybe<String>;
+  fromId_lte?: Maybe<String>;
+  fromId_gt?: Maybe<String>;
+  fromId_gte?: Maybe<String>;
+  fromId_contains?: Maybe<String>;
+  fromId_not_contains?: Maybe<String>;
+  fromId_starts_with?: Maybe<String>;
+  fromId_not_starts_with?: Maybe<String>;
+  fromId_ends_with?: Maybe<String>;
+  fromId_not_ends_with?: Maybe<String>;
   AND?: Maybe<GigWhereInput[] | GigWhereInput>;
   OR?: Maybe<GigWhereInput[] | GigWhereInput>;
   NOT?: Maybe<GigWhereInput[] | GigWhereInput>;
@@ -2446,6 +2463,8 @@ export interface GigCreateWithoutTagsInput {
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
   media?: Maybe<FileCreateOneInput>;
+  from?: Maybe<TagCreateOneInput>;
+  fromId?: Maybe<String>;
 }
 
 export interface EmployerCreateOneWithoutGigsInput {
@@ -2672,6 +2691,8 @@ export interface GigCreateWithoutEmployerInput {
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
   media?: Maybe<FileCreateOneInput>;
+  from?: Maybe<TagCreateOneInput>;
+  fromId?: Maybe<String>;
 }
 
 export interface TagCreateManyWithoutGigsInput {
@@ -2802,6 +2823,19 @@ export interface TagCategoryCreateManyWithoutTagsInput {
 export interface TagCategoryCreateWithoutTagsInput {
   id?: Maybe<ID_Input>;
   name?: Maybe<String>;
+}
+
+export interface TagCreateOneInput {
+  create?: Maybe<TagCreateInput>;
+  connect?: Maybe<TagWhereUniqueInput>;
+}
+
+export interface TagCreateInput {
+  id?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  threads?: Maybe<ThreadCreateManyWithoutTagsInput>;
+  gigs?: Maybe<GigCreateManyWithoutTagsInput>;
+  categories?: Maybe<TagCategoryCreateManyWithoutTagsInput>;
 }
 
 export interface CommentUpdateInput {
@@ -2945,6 +2979,8 @@ export interface GigUpdateWithoutTagsDataInput {
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
   media?: Maybe<FileUpdateOneInput>;
+  from?: Maybe<TagUpdateOneInput>;
+  fromId?: Maybe<String>;
 }
 
 export interface EmployerUpdateOneWithoutGigsInput {
@@ -3561,6 +3597,8 @@ export interface GigUpdateWithoutEmployerDataInput {
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
   media?: Maybe<FileUpdateOneInput>;
+  from?: Maybe<TagUpdateOneInput>;
+  fromId?: Maybe<String>;
 }
 
 export interface TagUpdateManyWithoutGigsInput {
@@ -4219,6 +4257,27 @@ export interface TagUpdateManyDataInput {
   name?: Maybe<String>;
 }
 
+export interface TagUpdateOneInput {
+  create?: Maybe<TagCreateInput>;
+  update?: Maybe<TagUpdateDataInput>;
+  upsert?: Maybe<TagUpsertNestedInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<TagWhereUniqueInput>;
+}
+
+export interface TagUpdateDataInput {
+  name?: Maybe<String>;
+  threads?: Maybe<ThreadUpdateManyWithoutTagsInput>;
+  gigs?: Maybe<GigUpdateManyWithoutTagsInput>;
+  categories?: Maybe<TagCategoryUpdateManyWithoutTagsInput>;
+}
+
+export interface TagUpsertNestedInput {
+  update: TagUpdateDataInput;
+  create: TagCreateInput;
+}
+
 export interface GigUpsertWithWhereUniqueWithoutEmployerInput {
   where: GigWhereUniqueInput;
   update: GigUpdateWithoutEmployerDataInput;
@@ -4364,6 +4423,20 @@ export interface GigScalarWhereInput {
   communicationWebsite_not_starts_with?: Maybe<String>;
   communicationWebsite_ends_with?: Maybe<String>;
   communicationWebsite_not_ends_with?: Maybe<String>;
+  fromId?: Maybe<String>;
+  fromId_not?: Maybe<String>;
+  fromId_in?: Maybe<String[] | String>;
+  fromId_not_in?: Maybe<String[] | String>;
+  fromId_lt?: Maybe<String>;
+  fromId_lte?: Maybe<String>;
+  fromId_gt?: Maybe<String>;
+  fromId_gte?: Maybe<String>;
+  fromId_contains?: Maybe<String>;
+  fromId_not_contains?: Maybe<String>;
+  fromId_starts_with?: Maybe<String>;
+  fromId_not_starts_with?: Maybe<String>;
+  fromId_ends_with?: Maybe<String>;
+  fromId_not_ends_with?: Maybe<String>;
   AND?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
   OR?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
   NOT?: Maybe<GigScalarWhereInput[] | GigScalarWhereInput>;
@@ -4387,6 +4460,7 @@ export interface GigUpdateManyDataInput {
   communicationType?: Maybe<GigCommunicationType>;
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
+  fromId?: Maybe<String>;
 }
 
 export interface EmployerUpsertWithoutAsUserInput {
@@ -4663,6 +4737,8 @@ export interface GigCreateInput {
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
   media?: Maybe<FileCreateOneInput>;
+  from?: Maybe<TagCreateOneInput>;
+  fromId?: Maybe<String>;
 }
 
 export interface GigUpdateInput {
@@ -4681,6 +4757,8 @@ export interface GigUpdateInput {
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
   media?: Maybe<FileUpdateOneInput>;
+  from?: Maybe<TagUpdateOneInput>;
+  fromId?: Maybe<String>;
 }
 
 export interface GigUpdateManyMutationInput {
@@ -4696,6 +4774,7 @@ export interface GigUpdateManyMutationInput {
   communicationType?: Maybe<GigCommunicationType>;
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
+  fromId?: Maybe<String>;
 }
 
 export interface OrderCreateInput {
@@ -4799,6 +4878,8 @@ export interface GigUpdateDataInput {
   communicationEmail?: Maybe<String>;
   communicationWebsite?: Maybe<String>;
   media?: Maybe<FileUpdateOneInput>;
+  from?: Maybe<TagUpdateOneInput>;
+  fromId?: Maybe<String>;
 }
 
 export interface GigUpsertNestedInput {
@@ -4979,14 +5060,6 @@ export interface FreelancerUpsertWithoutSocialsInput {
 export interface SocialUpdateManyMutationInput {
   type?: Maybe<SocialType>;
   url?: Maybe<String>;
-}
-
-export interface TagCreateInput {
-  id?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  threads?: Maybe<ThreadCreateManyWithoutTagsInput>;
-  gigs?: Maybe<GigCreateManyWithoutTagsInput>;
-  categories?: Maybe<TagCategoryCreateManyWithoutTagsInput>;
 }
 
 export interface TagUpdateInput {
@@ -5764,6 +5837,7 @@ export interface Gig {
   communicationType?: GigCommunicationType;
   communicationEmail?: String;
   communicationWebsite?: String;
+  fromId?: String;
 }
 
 export interface GigPromise extends Promise<Gig>, Fragmentable {
@@ -5793,6 +5867,8 @@ export interface GigPromise extends Promise<Gig>, Fragmentable {
   communicationEmail: () => Promise<String>;
   communicationWebsite: () => Promise<String>;
   media: <T = FilePromise>() => T;
+  from: <T = TagPromise>() => T;
+  fromId: () => Promise<String>;
 }
 
 export interface GigSubscription
@@ -5824,6 +5900,8 @@ export interface GigSubscription
   communicationEmail: () => Promise<AsyncIterator<String>>;
   communicationWebsite: () => Promise<AsyncIterator<String>>;
   media: <T = FileSubscription>() => T;
+  from: <T = TagSubscription>() => T;
+  fromId: () => Promise<AsyncIterator<String>>;
 }
 
 export interface GigNullablePromise extends Promise<Gig | null>, Fragmentable {
@@ -5853,6 +5931,8 @@ export interface GigNullablePromise extends Promise<Gig | null>, Fragmentable {
   communicationEmail: () => Promise<String>;
   communicationWebsite: () => Promise<String>;
   media: <T = FilePromise>() => T;
+  from: <T = TagPromise>() => T;
+  fromId: () => Promise<String>;
 }
 
 export interface Employer {
@@ -7914,6 +7994,7 @@ export interface GigPreviousValues {
   communicationType?: GigCommunicationType;
   communicationEmail?: String;
   communicationWebsite?: String;
+  fromId?: String;
 }
 
 export interface GigPreviousValuesPromise
@@ -7934,6 +8015,7 @@ export interface GigPreviousValuesPromise
   communicationType: () => Promise<GigCommunicationType>;
   communicationEmail: () => Promise<String>;
   communicationWebsite: () => Promise<String>;
+  fromId: () => Promise<String>;
 }
 
 export interface GigPreviousValuesSubscription
@@ -7954,6 +8036,7 @@ export interface GigPreviousValuesSubscription
   communicationType: () => Promise<AsyncIterator<GigCommunicationType>>;
   communicationEmail: () => Promise<AsyncIterator<String>>;
   communicationWebsite: () => Promise<AsyncIterator<String>>;
+  fromId: () => Promise<AsyncIterator<String>>;
 }
 
 export interface OrderSubscriptionPayload {

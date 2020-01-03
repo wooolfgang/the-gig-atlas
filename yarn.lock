@@ -13718,10 +13718,10 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rss-to-json@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/rss-to-json/-/rss-to-json-1.0.5.tgz#063cac4bfffe155b5287f152c051d765ec629bc3"
-  integrity sha512-VZjgiki9dmgyzhU4DbRxxVTNf4buswPhajK23XkbeUxgEJOzBfPcYK+ig19yC2vNTf8F8pegTvCyIErrrHNqvg==
+rss-to-json-v2@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/rss-to-json-v2/-/rss-to-json-v2-1.0.11.tgz#bd03e7b96d5f6b43ff3b08bd1d8927c73a002fdf"
+  integrity sha512-AytGUo1bDJuxLcjw3duUON7Ss/hFzjXR8+b6qNDGOcxikalXtTZvvSvDLnGsUt2gcvsSwKpJSFEOkU0VGl87fg==
   dependencies:
     axios "^0.19.0"
     xml2js "^0.4.22"

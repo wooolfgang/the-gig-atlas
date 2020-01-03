@@ -16,7 +16,7 @@ const userInput = {
 const inputGig = {
   title: 'Testing App',
   description: 'testing my app',
-  tags: ['nodejs', 'react'],
+  tags: ['react', 'nodejs'],
   projectType: 'TESTING',
   paymentType: 'FIXED',
   minFee: 100.0,
@@ -47,11 +47,25 @@ beforeAll(async () => {
 
   fileId = file.id;
   input.employer.avatarFileId = file.id;
+  try {
+    await Promise.all(
+      inputGig.tags.map(tag =>
+        prisma.createTag({
+          name: tag,
+        }),
+      ),
+    );
+  } catch (e) {
+    //
+  }
 });
 
 afterAll(async () => {
   await prisma.deleteUser({ email: userInput.email }).catch(console.error);
   await prisma.deleteFile({ id: fileId }).catch(console.error);
+  await prisma.deleteManyTags({
+    name_in: inputGig.tags,
+  });
 });
 
 describe('Employer crud operation', () => {

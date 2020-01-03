@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const prisma = require('@thegigatlas/prisma');
 const scraper = require('../scraper');
 const sendSlackMessage = require('../utils/sendSlackMessage');
@@ -9,13 +10,19 @@ const transformWeWorkRemotelyItem = item => ({
   communicationType: 'WEBSITE',
   communicationWebsite: item.url,
   jobType: 'FULL_TIME',
-  media: item.media
-    && item.media.content &&
-    item.media.content[0] && {
-      create: {
-        url: item.media.content[0].url[0],
-      },
+  status: 'POSTED',
+  media: item.media && item.media.content
+    && item.media.content[0] && {
+    create: {
+      url: item.media.content[0].url[0],
     },
+  },
+  from: {
+    connect: {
+      name: 'weworkremotely',
+    }
+  },
+  fromId: item.guid,
 });
 
 const transformWeWorkRemotelyData = items =>
@@ -30,7 +37,13 @@ async function seedDataFromWeWorkRemotely(threadTs) {
 
   const existingGigs = await Promise.all(
     dataFromScraperTransformed.map(gig =>
-      prisma.$exists.gig({ title: gig.title }),
+      prisma.$exists.gig({
+        title: gig.title,
+        fromId: gig.fromId,
+        from: {
+          name: 'weworkremotely'
+        }
+      }),
     ),
   );
 
@@ -57,7 +70,7 @@ async function seedDataFromWeWorkRemotely(threadTs) {
       createdCount += 1;
     } else if (result.status === 'rejected') {
       rejectedCount += 1;
-      errors.push(result.value);
+      errors.push(result.reason);
       console.log('On create error: ', JSON.stringify(result.reason));
     }
   });
