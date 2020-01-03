@@ -1,4 +1,4 @@
-import Feed from 'rss-to-json';
+import Feed from 'rss-to-json-v2';
 
 export default function rssToJson(url) {
   return new Promise((res, rej) => {

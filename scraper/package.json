@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.4",
-    "rss-to-json": "^1.0.5",
+    "rss-to-json-v2": "^1.0.11",
     "scraper": "^0.0.9",
     "yargs": "^15.0.2"
   },

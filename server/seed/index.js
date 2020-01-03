@@ -22,12 +22,11 @@ const prod = {};
  */
 const dev = {
   'test-plan': planModule.dailyTestPlan,
-  gig: require('./dev/gig').default,
   tag: require('./dev/tag').default,
+  gig: require('./dev/gig').default,
   plan: planModule.default,
-  thread: require('./dev/thread').default,
   threadTag: require('./dev/threadTag').default,
-  technologyTag: require('./dev/technologyTag').default,
+  thread: require('./dev/thread').default,
 };
 
 const envSeeds = {
@@ -46,33 +45,64 @@ const seeds = {
 const toSeeds = [];
 
 const [_0, _1, ...seedArgs] = process.argv;
-seedArgs.forEach(arg => {
-  let seed = seeds[arg];
 
-  if (!seed) {
-    try {
-      seed = envSeeds[NODE_ENV][arg];
-    } catch (e) {
-      throw new Error(`Invalid NODE_ENV=${NODE_ENV}`);
+if (seedArgs && seedArgs.length > 0) {
+  seedArgs.forEach(arg => {
+    let seed = seeds[arg];
+
+    if (!seed) {
+      try {
+        seed = envSeeds[NODE_ENV][arg];
+      } catch (e) {
+        throw new Error(`Invalid NODE_ENV=${NODE_ENV}`);
+      }
     }
-  }
 
-  if (!seed) {
-    throw new Error(`No seed found: ${arg}`);
-    process.exit(1);
-  } else {
+    if (!seed) {
+      throw new Error(`No seed found: ${arg}`);
+      process.exit(1);
+    } else {
+      toSeeds.push({
+        seed,
+        name: arg,
+      });
+    }
+  });
+} else {
+  // Run all seed scripts sequentially if no argument is found
+  const seedsFromEnv = Object.keys(envSeeds[NODE_ENV]);
+  const seedsFromDefault = Object.keys(seeds);
+
+  for (let i = 0; i < seedsFromDefault.length; i += 1) {
+    const name = seedsFromDefault[i];
+    const seed = seeds[name];
     toSeeds.push({
       seed,
-      name: arg,
+      name,
     });
   }
-});
+
+  for (let i = 0; i < seedsFromEnv.length; i += 1) {
+    const name = seedsFromEnv[i];
+    const seed = envSeeds[NODE_ENV][name];
+    toSeeds.push({
+      seed,
+      name,
+    });
+  }
+}
 
 if (toSeeds.length === 0) {
-  throw new Error('No provided seed arguments');
+  console.log('\n No seeds founds');
+  process.exit(0);
 } else {
-  toSeeds.forEach(({ seed, name }) => {
-    console.log(`\nSeeding on ${name}...`);
-    seed();
-  });
+  (async () => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const seed of toSeeds) {
+      console.log(`\nSeeding on ${seed.name}...`);
+      // eslint-disable-next-line no-await-in-loop
+      await seed.seed();
+    }
+    console.log(' \n Successfully run seed scripts');
+  })();
 }
