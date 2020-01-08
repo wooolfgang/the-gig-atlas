@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/react-hooks';
 import Nav from '../components/Nav';
@@ -12,6 +13,9 @@ import SearchIcon from '../icons/Search';
 import { color } from '../utils/theme';
 import { propTypes } from '../utils/globals';
 import debounce from '../utils/debounce';
+import media from '../utils/media';
+import Button from '../primitives/Button';
+import { useMedia } from '../components/MediaProvider';
 
 const Container = styled.main`
   padding: 2rem 1rem;
@@ -25,6 +29,17 @@ const Container = styled.main`
   grid-template-rows: 2rem auto 1rem;
   box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.05);
   min-height: calc(100vh - 67.5px);
+
+  ${media.tablet`
+    grid-template-areas:
+      '. search .'
+      '. filter .'
+      '. gigs .'
+      '. sidebar .';
+      ; 
+    grid-template-columns: .3rem auto .3rem;
+    grid-template-rows: 2rem auto auto 2rem;
+  `}
 `;
 
 const SearchContainer = styled.div`
@@ -76,8 +91,9 @@ const FilterContainer = styled.div`
   grid-area: filter;
   padding: 1rem;
   box-sizing: border-box;
-  position: sticky;
-  top: 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
 
   .filter-name {
     margin: 0.75rem 0;
@@ -91,6 +107,8 @@ const FilterContainer = styled.div`
     color: ${props => props.theme.color.neutral70};
   }
 `;
+
+const Filter = styled.div``;
 
 const Search = ({ onSearch }) => {
   const router = useRouter();
@@ -115,13 +133,24 @@ const Search = ({ onSearch }) => {
   );
 };
 
+Search.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+};
+
 const Gigs = ({ user }) => {
+  const { size } = useMedia({}, { debounceTime: 5 });
+  const isBigScreen = size === 'desktop' || size === 'giant';
+  const [showFilter, setShowFilter] = useState(isBigScreen);
   const [searchValue, setSearchValue] = useState('');
   const { data, loading } = useQuery(GIG_SEARCH, {
     variables: {
       search: searchValue,
     },
   });
+
+  useEffect(() => {
+    setShowFilter(isBigScreen);
+  }, [isBigScreen]);
 
   function renderNav() {
     if (!user) {
@@ -130,8 +159,8 @@ const Gigs = ({ user }) => {
     return <Nav type="AUTHENTICATED_FREELANCER" user={user} />;
   }
 
-  const debounced = debounce(searchValue => {
-    setSearchValue(searchValue);
+  const debounced = debounce(val => {
+    setSearchValue(val);
   }, 2000);
 
   return (
@@ -139,30 +168,78 @@ const Gigs = ({ user }) => {
       {renderNav()}
       <Container>
         <Search onSearch={debounced} />
+
         <FilterContainer>
-          <p className="filter-name">Job Type</p>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {Object.keys(JOB_TYPE).map(key => (
-              <label htmlFor={`job-type-${key}`} className="filter-label">
-                <input type="checkbox" id={`job-type-${key}`} value={key} />{' '}
-                {JOB_TYPE[key]}
-              </label>
-            ))}
-          </div>
-          <p className="filter-name">Project Type</p>
-          {Object.keys(PROJECT_TYPE).map(key => (
-            <label htmlFor={`project-type-${key}`} className="filter-label">
-              <input type="checkbox" id={`project-type-${key}`} value={key} />{' '}
-              {PROJECT_TYPE[key]}
-            </label>
-          ))}
-          <p className="filter-name">Payment Type</p>
-          {Object.keys(PAYMENT_TYPE).map(key => (
-            <label htmlFor={`payment-type-${key}`} className="filter-label">
-              <input type="checkbox" id={`payment-type-${key}`} value={key} />{' '}
-              {PAYMENT_TYPE[key]}
-            </label>
-          ))}
+          {showFilter ? (
+            <>
+              <Filter>
+                <p className="filter-name">Job Type</p>
+                <div id="filters">
+                  {Object.keys(JOB_TYPE).map(key => (
+                    <label
+                      htmlFor={`job-type-${key}`}
+                      className="filter-label"
+                      key={key}
+                    >
+                      <input
+                        type="checkbox"
+                        id={`job-type-${key}`}
+                        value={key}
+                      />{' '}
+                      {JOB_TYPE[key]}
+                    </label>
+                  ))}
+                </div>
+              </Filter>
+              <Filter>
+                <p className="filter-name">Project Type</p>
+                <div id="filters">
+                  {Object.keys(PROJECT_TYPE).map(key => (
+                    <label
+                      htmlFor={`project-type-${key}`}
+                      className="filter-label"
+                      key={key}
+                    >
+                      <input
+                        type="checkbox"
+                        id={`project-type-${key}`}
+                        value={key}
+                      />{' '}
+                      {PROJECT_TYPE[key]}
+                    </label>
+                  ))}
+                </div>
+              </Filter>
+              <Filter>
+                <p className="filter-name">Payment Type</p>
+                <div className="filters">
+                  {Object.keys(PAYMENT_TYPE).map(key => (
+                    <label
+                      htmlFor={`payment-type-${key}`}
+                      className="filter-label"
+                      key={key}
+                    >
+                      <input
+                        type="checkbox"
+                        id={`payment-type-${key}`}
+                        value={key}
+                      />{' '}
+                      {PAYMENT_TYPE[key]}
+                    </label>
+                  ))}
+                </div>
+              </Filter>
+              {!isBigScreen && (
+                <Button onClick={() => setShowFilter(!showFilter)}>
+                  Hide Filter
+                </Button>
+              )}
+            </>
+          ) : (
+            <Button onClick={() => setShowFilter(!showFilter)}>
+              Show Filters
+            </Button>
+          )}
         </FilterContainer>
         <GigsContainer>
           {loading ? (
