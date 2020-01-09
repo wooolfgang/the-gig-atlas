@@ -39,7 +39,7 @@ sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no dev@167.179.102.140 <<EOF
   npm run client:build || exit 1
 
   # Restarting pm2 instances
-  (pm2 restart client:staging && pm2 restart server:staging) || exit 1
+  (pm2 restart client:staging && pm2 restart server:staging && pm2 restart cron-gig-scraper) || exit 1
 
   echo Build process executed successfully!
   exit 0
