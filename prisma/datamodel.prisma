@@ -126,8 +126,16 @@ type Gig {
   communicationWebsite: String
   media: File
 
-  from: Tag @relation(name: "GigFromTag") # source of gig (if scraped)
+  from: GigSource @default(value: INTERNAL)
   fromId: String # id of gig source to check for duplicates
+}
+
+enum GigSource {
+  INTERNAL
+  HACKERNEWS
+  REMOTEOK
+  WEWORKREMOTELY
+  STACKOVERFLOW
 }
 
 enum JobType {
@@ -161,7 +169,7 @@ type Product {
   id: ID! @id
   name: String!
   price: Float! #// price to refer for billing cyle in subscription or in order
-  codename: String! @unique #// to avoid dublication
+  codename: String! @unique #// to avoid dupliation
   description: String
   createdAt: DateTime! @createdAt 
   updatedAt: DateTime! @updatedAt

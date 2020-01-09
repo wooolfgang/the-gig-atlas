@@ -57,6 +57,10 @@ var models = [
     embedded: false
   },
   {
+    name: "GigSource",
+    embedded: false
+  },
+  {
     name: "JobType",
     embedded: false
   },
