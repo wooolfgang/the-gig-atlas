@@ -17,11 +17,7 @@ const transformWeWorkRemotelyItem = item => ({
       url: item.media.content[0].url[0],
     },
   },
-  from: {
-    connect: {
-      name: 'weworkremotely',
-    }
-  },
+  from: 'WEWORKREMOTELY',
   fromId: item.guid,
 });
 
