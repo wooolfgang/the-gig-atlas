@@ -16,11 +16,7 @@ const transformRemoteOkItem = item => ({
     },
   },
   status: 'POSTED',
-  from: {
-    connect: {
-      name: 'remoteok',
-    },
-  },
+  from: 'REMOTEOK',
   fromId: item.guid,
   tags: {
     connect: item.tags && item.tags.map(tag => ({

@@ -1775,7 +1775,7 @@ type Gig {
   communicationEmail: String
   communicationWebsite: String
   media: File
-  from: Tag
+  from: GigSource
   fromId: String
 }
 
@@ -1808,7 +1808,7 @@ input GigCreateInput {
   communicationEmail: String
   communicationWebsite: String
   media: FileCreateOneInput
-  from: TagCreateOneInput
+  from: GigSource
   fromId: String
 }
 
@@ -1843,7 +1843,7 @@ input GigCreateWithoutEmployerInput {
   communicationEmail: String
   communicationWebsite: String
   media: FileCreateOneInput
-  from: TagCreateOneInput
+  from: GigSource
   fromId: String
 }
 
@@ -1863,7 +1863,7 @@ input GigCreateWithoutTagsInput {
   communicationEmail: String
   communicationWebsite: String
   media: FileCreateOneInput
-  from: TagCreateOneInput
+  from: GigSource
   fromId: String
 }
 
@@ -1903,6 +1903,8 @@ enum GigOrderByInput {
   communicationEmail_DESC
   communicationWebsite_ASC
   communicationWebsite_DESC
+  from_ASC
+  from_DESC
   fromId_ASC
   fromId_DESC
 }
@@ -1923,6 +1925,7 @@ type GigPreviousValues {
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
+  from: GigSource
   fromId: String
 }
 
@@ -2063,6 +2066,10 @@ input GigScalarWhereInput {
   communicationWebsite_not_starts_with: String
   communicationWebsite_ends_with: String
   communicationWebsite_not_ends_with: String
+  from: GigSource
+  from_not: GigSource
+  from_in: [GigSource!]
+  from_not_in: [GigSource!]
   fromId: String
   fromId_not: String
   fromId_in: [String!]
@@ -2080,6 +2087,14 @@ input GigScalarWhereInput {
   AND: [GigScalarWhereInput!]
   OR: [GigScalarWhereInput!]
   NOT: [GigScalarWhereInput!]
+}
+
+enum GigSource {
+  INTERNAL
+  HACKERNEWS
+  REMOTEOK
+  WEWORKREMOTELY
+  STACKOVERFLOW
 }
 
 enum GigStatus {
@@ -2122,7 +2137,7 @@ input GigUpdateDataInput {
   communicationEmail: String
   communicationWebsite: String
   media: FileUpdateOneInput
-  from: TagUpdateOneInput
+  from: GigSource
   fromId: String
 }
 
@@ -2142,7 +2157,7 @@ input GigUpdateInput {
   communicationEmail: String
   communicationWebsite: String
   media: FileUpdateOneInput
-  from: TagUpdateOneInput
+  from: GigSource
   fromId: String
 }
 
@@ -2159,6 +2174,7 @@ input GigUpdateManyDataInput {
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
+  from: GigSource
   fromId: String
 }
 
@@ -2175,6 +2191,7 @@ input GigUpdateManyMutationInput {
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
+  from: GigSource
   fromId: String
 }
 
@@ -2229,7 +2246,7 @@ input GigUpdateWithoutEmployerDataInput {
   communicationEmail: String
   communicationWebsite: String
   media: FileUpdateOneInput
-  from: TagUpdateOneInput
+  from: GigSource
   fromId: String
 }
 
@@ -2248,7 +2265,7 @@ input GigUpdateWithoutTagsDataInput {
   communicationEmail: String
   communicationWebsite: String
   media: FileUpdateOneInput
-  from: TagUpdateOneInput
+  from: GigSource
   fromId: String
 }
 
@@ -2421,7 +2438,10 @@ input GigWhereInput {
   communicationWebsite_ends_with: String
   communicationWebsite_not_ends_with: String
   media: FileWhereInput
-  from: TagWhereInput
+  from: GigSource
+  from_not: GigSource
+  from_in: [GigSource!]
+  from_not_in: [GigSource!]
   fromId: String
   fromId_not: String
   fromId_in: [String!]
@@ -4068,11 +4088,6 @@ input TagCreateManyWithoutThreadsInput {
   connect: [TagWhereUniqueInput!]
 }
 
-input TagCreateOneInput {
-  create: TagCreateInput
-  connect: TagWhereUniqueInput
-}
-
 input TagCreateWithoutCategoriesInput {
   id: ID
   name: String
@@ -4163,13 +4178,6 @@ input TagSubscriptionWhereInput {
   NOT: [TagSubscriptionWhereInput!]
 }
 
-input TagUpdateDataInput {
-  name: String
-  threads: ThreadUpdateManyWithoutTagsInput
-  gigs: GigUpdateManyWithoutTagsInput
-  categories: TagCategoryUpdateManyWithoutTagsInput
-}
-
 input TagUpdateInput {
   name: String
   threads: ThreadUpdateManyWithoutTagsInput
@@ -4226,15 +4234,6 @@ input TagUpdateManyWithWhereNestedInput {
   data: TagUpdateManyDataInput!
 }
 
-input TagUpdateOneInput {
-  create: TagCreateInput
-  update: TagUpdateDataInput
-  upsert: TagUpsertNestedInput
-  delete: Boolean
-  disconnect: Boolean
-  connect: TagWhereUniqueInput
-}
-
 input TagUpdateWithoutCategoriesDataInput {
   name: String
   threads: ThreadUpdateManyWithoutTagsInput
@@ -4266,11 +4265,6 @@ input TagUpdateWithWhereUniqueWithoutGigsInput {
 input TagUpdateWithWhereUniqueWithoutThreadsInput {
   where: TagWhereUniqueInput!
   data: TagUpdateWithoutThreadsDataInput!
-}
-
-input TagUpsertNestedInput {
-  update: TagUpdateDataInput!
-  create: TagCreateInput!
 }
 
 input TagUpsertWithWhereUniqueWithoutCategoriesInput {
