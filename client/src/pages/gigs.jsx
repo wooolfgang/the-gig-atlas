@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -81,7 +82,6 @@ const SearchInput = styled.input`
 const GigsContainer = styled.div`
   width: 100%;
   max-width: 100vw;
-  margin: auto;
   padding: 30px 0px;
   box-sizing: border-box;
   grid-area: gigs;
@@ -141,11 +141,13 @@ const Gigs = ({ user }) => {
   const { size } = useMedia({}, { debounceTime: 5 });
   const isBigScreen = size === 'desktop' || size === 'giant';
   const [showFilter, setShowFilter] = useState(isBigScreen);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchVariables, setSearchVariables] = useState({
+    search: '',
+    first: 8,
+    where: {},
+  });
   const { data, loading } = useQuery(GIG_SEARCH, {
-    variables: {
-      search: searchValue,
-    },
+    variables: searchVariables,
   });
 
   useEffect(() => {
@@ -159,16 +161,48 @@ const Gigs = ({ user }) => {
     return <Nav type="AUTHENTICATED_FREELANCER" user={user} />;
   }
 
-  const debounced = debounce(val => {
-    setSearchValue(val);
+  const handleTextSearch = debounce(val => {
+    setSearchVariables(prevVal => ({ ...prevVal, search: val }));
   }, 2000);
+
+  const handleFiltering = (filter, value, checked) => {
+    setSearchVariables(prevVal => {
+      const where = {
+        ...prevVal.where,
+      };
+
+      if (checked && !(where[filter] instanceof Array)) {
+        where[filter] = [];
+      }
+
+      if (checked && where[filter] instanceof Array) {
+        where[filter].push(value);
+      } else if (!checked && where[filter] instanceof Array) {
+        where[filter] = where[filter].filter(v => v !== value);
+      }
+
+      if (where[filter] && where[filter].length === 0 && !checked) {
+        delete where[filter];
+      }
+
+      return {
+        ...prevVal,
+        where,
+      };
+    });
+  };
+
+  const handleShowMore = () =>
+    setSearchVariables(prevVal => ({
+      ...prevVal,
+      first: prevVal.first + 8,
+    }));
 
   return (
     <div>
       {renderNav()}
       <Container>
-        <Search onSearch={debounced} />
-
+        <Search onSearch={handleTextSearch} />
         <FilterContainer>
           {showFilter ? (
             <>
@@ -185,6 +219,13 @@ const Gigs = ({ user }) => {
                         type="checkbox"
                         id={`job-type-${key}`}
                         value={key}
+                        onClick={e =>
+                          handleFiltering(
+                            'jobType_in',
+                            key.toUpperCase(),
+                            e.target.checked,
+                          )
+                        }
                       />{' '}
                       {JOB_TYPE[key]}
                     </label>
@@ -204,6 +245,13 @@ const Gigs = ({ user }) => {
                         type="checkbox"
                         id={`project-type-${key}`}
                         value={key}
+                        onClick={e =>
+                          handleFiltering(
+                            'projectType_in',
+                            key.toUpperCase(),
+                            e.target.checked,
+                          )
+                        }
                       />{' '}
                       {PROJECT_TYPE[key]}
                     </label>
@@ -223,6 +271,13 @@ const Gigs = ({ user }) => {
                         type="checkbox"
                         id={`payment-type-${key}`}
                         value={key}
+                        onClick={e =>
+                          handleFiltering(
+                            'paymentType_in',
+                            key.toUpperCase(),
+                            e.target.checked,
+                          )
+                        }
                       />{' '}
                       {PAYMENT_TYPE[key]}
                     </label>
@@ -250,7 +305,10 @@ const Gigs = ({ user }) => {
               <GigCardSkeleton />
             </div>
           ) : (
-            <GigsList gigs={data ? data.searchGigs : []} />
+            <>
+              <GigsList gigs={data ? data.searchGigs : []} />
+              <Button onClick={handleShowMore}>Show More</Button>
+            </>
           )}
         </GigsContainer>
       </Container>
