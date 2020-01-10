@@ -124,8 +124,24 @@ export const GET_GIGS = gql`
 `;
 
 export const GIG_SEARCH = gql`
-  query GIG_SEARCH($search: String!) {
-    searchGigs(search: $search) {
+  query GIG_SEARCH(
+    $search: String!
+    $where: GigWhereInput
+    $skip: Int
+    $after: String
+    $before: String
+    $first: Int
+    $last: Int
+  ) {
+    searchGigs(
+      search: $search
+      where: $where
+      skip: $skip
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+    ) {
       id
       title
       createdAt
