@@ -6,6 +6,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { CREATE_COMMENT } from '../../graphql/thread';
 import CustomField from '../CustomField';
 import Button from '../../primitives/Button';
+import noop from '../../utils/noop';
 
 const CommentTextArea = ({ threadId, parentId, onSubmit, onError }) => {
   const [createThread] = useMutation(CREATE_COMMENT);
@@ -58,8 +59,6 @@ const CommentTextArea = ({ threadId, parentId, onSubmit, onError }) => {
     />
   );
 };
-
-const noop = () => {};
 
 CommentTextArea.propTypes = {
   threadId: PropTypes.string.isRequired,
