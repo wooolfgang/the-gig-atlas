@@ -18,11 +18,20 @@ export function transformGigInput(gigInput) {
  * Search gigs
  * target fields: 1.titles, 2.tags, 3.employers
  */
-function searchGigs(_r, { search }, { pg }) {
+function searchGigs(
+  _r,
+  { search, where, skip, after, before, first, last },
+  { pg },
+) {
   if (!search) {
     return prisma.gigs({
-      first: 8,
+      first: first || 8,
+      where,
       orderBy: 'createdAt_DESC',
+      skip,
+      after,
+      before,
+      last,
     });
   }
 
