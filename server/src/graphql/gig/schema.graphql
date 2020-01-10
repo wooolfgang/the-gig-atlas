@@ -8,7 +8,15 @@ type Query {
     first: Int
     last: Int
   ): [Gig]!
-  searchGigs(search: String!): [Gig]!
+  searchGigs(
+    search: String!
+    where: GigWhereInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Gig]!
   gigsListLanding: [Gig]!
 }
 
