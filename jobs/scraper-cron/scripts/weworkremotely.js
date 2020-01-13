@@ -3,6 +3,8 @@ const prisma = require('@thegigatlas/prisma');
 const scraper = require('../scraper');
 const sendSlackMessage = require('../utils/sendSlackMessage');
 
+const WEBSITE_FROM = 'WEWORKREMOTELY';
+
 const transformWeWorkRemotelyItem = item => ({
   title: item.title,
   description: item.description,
@@ -17,7 +19,7 @@ const transformWeWorkRemotelyItem = item => ({
       url: item.media.content[0].url[0],
     },
   },
-  from: 'WEWORKREMOTELY',
+  from: WEBSITE_FROM,
   fromId: item.guid,
 });
 
@@ -36,9 +38,7 @@ async function seedDataFromWeWorkRemotely(threadTs) {
       prisma.$exists.gig({
         title: gig.title,
         fromId: gig.fromId,
-        from: {
-          name: 'weworkremotely'
-        }
+        from: WEBSITE_FROM
       }),
     ),
   );
@@ -71,8 +71,8 @@ async function seedDataFromWeWorkRemotely(threadTs) {
     }
   });
 
-  const createdMsg = `Created ${createdCount} from weworkremotely`;
-  const rejectedMsg = `Rejected ${rejectedCount} from woworkremotely, ${JSON.stringify(
+  const createdMsg = `Created ${createdCount} from ${WEBSITE_FROM}`;
+  const rejectedMsg = `Rejected ${rejectedCount} from ${WEBSITE_FROM}, ${JSON.stringify(
     errors,
   )}`;
 
