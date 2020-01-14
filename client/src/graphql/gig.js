@@ -43,34 +43,42 @@ export const CREATE_GIG = gql`
 `;
 
 /* Queries */
+export const Gig = gql`
+  {
+    id
+    title
+    description
+    createdAt
+    description
+    tags {
+      id
+      name
+    }
+    projectType
+    paymentType
+    jobType
+    minFee
+    maxFee
+    jobType
+    locationRestriction
+    communicationType
+    communicationEmail
+    communicationWebsite
+    employer {
+      id
+    }
+    media {
+      id
+      url
+    }
+    from
+  }
+`;
 
 export const GET_GIGS_LIST_FOR_LANDING = gql`
   query GET_GIGS_LIST_FOR_LANDING {
     gigsListLanding {
-      id
-      title
-      createdAt
-      description
-      tags {
-        id
-        name
-      }
-      projectType
-      paymentType
-      minFee
-      maxFee
-      jobType
-      locationRestriction
-      communicationType
-      communicationEmail
-      communicationWebsite
-      employer {
-        id
-      }
-      media {
-        id
-        url
-      }
+      ...${Gig}
     }
   }
 `;
@@ -94,31 +102,7 @@ export const GET_GIGS = gql`
       first: $first
       last: $last
     ) {
-      id
-      title
-      createdAt
-      description
-      tags {
-        id
-        name
-      }
-      projectType
-      paymentType
-      minFee
-      maxFee
-      jobType
-      locationRestriction
-      communicationType
-      communicationEmail
-      communicationWebsite
-      employer {
-        id
-        displayName
-      }
-      media {
-        id
-        url
-      }
+      ...${Gig}
     }
   }
 `;
@@ -142,31 +126,7 @@ export const GIG_SEARCH = gql`
       first: $first
       last: $last
     ) {
-      id
-      title
-      createdAt
-      description
-      tags {
-        id
-        name
-      }
-      projectType
-      paymentType
-      minFee
-      maxFee
-      jobType
-      locationRestriction
-      communicationType
-      communicationEmail
-      communicationWebsite
-      employer {
-        id
-        displayName
-      }
-      media {
-        id
-        url
-      }
+      ...${Gig}
     }
   }
 `;
