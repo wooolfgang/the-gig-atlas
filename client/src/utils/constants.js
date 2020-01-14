@@ -15,3 +15,11 @@ export const PAYMENT_TYPE = {
   HOURLY: 'Hourly',
   FIXED: 'Fixed',
 };
+
+export const GIG_SOURCE = {
+  INTERNAL: 'internal',
+  HACKERNEWS: 'hackernews',
+  REMOTEOK: 'remoteok',
+  WEWORKREMOTELY: 'weworkremotely',
+  STACKOVERFLOW: 'stackoverflow',
+};
