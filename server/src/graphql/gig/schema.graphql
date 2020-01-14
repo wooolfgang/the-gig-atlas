@@ -33,9 +33,9 @@ type Gig {
   tags: [Tag!]!
   projectType: ProjectType
   paymentType: PaymentType
+  jobType: JobType
   minFee: Float
   maxFee: Float
-  jobType: JobType
   locationRestriction: String
   employer: Employer
   communicationType: GigCommunicationType
@@ -43,6 +43,7 @@ type Gig {
   communicationWebsite: String
   p: Int # search priority, 1 - n
   media: File
+  from: GigSource
 }
 
 input GigInput {
