@@ -1,13 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Container,
-  ClientContainer,
-  Avatar,
-  GigContainer,
-  Tech,
-  ApplyButton,
-} from './style';
+import { Container, ClientContainer, GigContainer, Tech } from './style';
+import { color } from '../../utils/theme';
+import { JOB_TYPE } from '../../utils/constants';
+import { Avatar, Button } from '../../primitives';
 
 const Gig = ({ employer: _employer, gig: _gig, preview }) => {
   const employer = _employer || {};
@@ -16,9 +12,9 @@ const Gig = ({ employer: _employer, gig: _gig, preview }) => {
     <Container>
       <ClientContainer>
         <div>
-          <Avatar src={employer.avatarSrc} />
+          <Avatar src={employer.avatar && employer.avatar.url} />
         </div>
-        <div style={{ padding: '0 1rem' }}>
+        <div style={{ padding: '0 1.5rem' }}>
           <h2 style={{ margin: '0', marginBottom: '0.4rem' }}>
             {employer.displayName}
           </h2>
@@ -26,21 +22,27 @@ const Gig = ({ employer: _employer, gig: _gig, preview }) => {
             href={employer.website}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ display: 'block', marginBottom: '0.3em' }}
+            style={{
+              display: 'block',
+              marginBottom: '0.3em',
+              color: color.s2,
+              textDecoration: 'none',
+            }}
           >
             {employer.website}
           </a>
-          <div
-            contentEditable="true"
-            dangerouslySetInnerHTML={{ __html: employer.introduction }}
-          />
+          <div dangerouslySetInnerHTML={{ __html: employer.introduction }} />
         </div>
       </ClientContainer>
       <GigContainer>
         <h2 style={{ margin: '0', marginBottom: '0.8rem' }}>{gig.title}</h2>
         <div style={{ marginBottom: '0.8em' }}>
-          {gig.jobType} | {gig.paymentType} ({gig.minFee}-{gig.maxFee}) |{' '}
-          {gig.projectType} | {gig.locationRestriction}
+          <span style={{ fontSize: '.95rem', color: color.d2 }}>
+            {JOB_TYPE[gig.jobType]} ‧ ${gig.minFee}-${gig.maxFee}{' '}
+            {gig.locationRestriction
+              ? `‧ ${gig.locationRestriction}`
+              : '‧ Remote'}
+          </span>
         </div>
         <div style={{ display: 'flex', marginBottom: '1.5rem' }}>
           {gig.tags &&
@@ -49,10 +51,9 @@ const Gig = ({ employer: _employer, gig: _gig, preview }) => {
         </div>
         <div
           style={{ marginBottom: '2rem' }}
-          contentEditable="true"
           dangerouslySetInnerHTML={{ __html: gig.description }}
         />
-        <ApplyButton>Apply For Gig</ApplyButton>
+        <Button styleType="submit">Apply Now</Button>
       </GigContainer>
     </Container>
   );
@@ -66,7 +67,10 @@ Gig.propTypes = {
     introduction: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     employerType: PropTypes.string.isRequired,
-    avatarSrc: PropTypes.string,
+    avatar: PropTypes.shape({
+      id: PropTypes.string,
+      url: PropTypes.string,
+    }),
   }),
   gig: PropTypes.shape({
     title: PropTypes.string.isRequired,
