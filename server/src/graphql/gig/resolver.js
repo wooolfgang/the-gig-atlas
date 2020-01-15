@@ -11,7 +11,7 @@ export function transformGigInput({ avatarFileId, ...gigInput }) {
     tags: {
       connect: gigInput.tags.map(tag => ({ name: tag })),
     },
-    media: {
+    media: avatarFileId && {
       connect: {
         id: avatarFileId,
       },
