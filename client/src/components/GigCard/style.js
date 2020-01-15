@@ -13,6 +13,7 @@ export const Card = styled.div`
   outline: none;
 
   :focus,
+  :focus-within,
   :hover {
     box-shadow: 0 0 0 1.5px hsla(0, 0%, 100%, 0.05),
       inset 0 0 0 1.25px rgba(82, 95, 127, 0.3),
@@ -106,9 +107,22 @@ export const GigExtension = styled.div`
 
   :hover {
     border: 1px dashed ${props => props.theme.color.d4};
-    a {
-      color: ${props => props.theme.color.s1};
-    }
+  }
+`;
+
+export const A = styled.a`
+  text-decoration: none;
+  font-size: 0.85rem;
+  color: ${props => props.theme.color.s2};
+
+  ${GigExtension}:hover & {
+    color: ${props => props.theme.color.s1};
+  }
+
+  :hover,
+  :focus {
+    color: ${props => props.theme.color.s1};
+    text-decoration: underline;
   }
 `;
 
@@ -187,10 +201,4 @@ export const GigSkeletonContainer = styled.div`
     overflow: hidden;
     ${after}
   }
-`;
-
-export const A = styled.a`
-  text-decoration: none;
-  font-size: 0.85rem;
-  color: ${props => props.theme.color.s2};
 `;
