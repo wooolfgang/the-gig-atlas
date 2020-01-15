@@ -100,7 +100,9 @@ const GigCard = ({
         )}
       </Flex>
       <GigExtension>
-        <span id="gig-from">From: {from}</span>
+        <span id="gig-from">
+          From: {from === 'INTERNAL' ? 'GIG ATLAS' : from}
+        </span>
         <ExternalLink />
       </GigExtension>
     </Card>
