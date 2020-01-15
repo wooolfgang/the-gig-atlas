@@ -1,4 +1,5 @@
 type Query {
+  gig(id: ID!): Gig
   gigs(
     where: GigWhereInput
     orderBy: GigOrderByInput
