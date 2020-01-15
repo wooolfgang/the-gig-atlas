@@ -75,6 +75,32 @@ export const Gig = gql`
   }
 `;
 
+export const Employer = gql`
+  {
+    id
+    displayName
+    website
+    introduction
+    email
+    employerType
+    avatar {
+      id
+      url
+    }
+  }
+`;
+
+export const GET_GIG = gql`
+  query GET_GIG ($id: ID!) {
+    gig (id: $id) {
+      ...${Gig}
+      employer {
+        ...${Employer}
+      }
+    }
+  }
+`;
+
 export const GET_GIGS_LIST_FOR_LANDING = gql`
   query GET_GIGS_LIST_FOR_LANDING {
     gigsListLanding {

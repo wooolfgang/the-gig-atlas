@@ -4,8 +4,7 @@ import React from 'react';
 import Head from 'next/head';
 import { getDataFromTree } from '@apollo/react-ssr';
 import initApollo from '../../utils/apollo';
-
-const isServer = typeof window === 'undefined';
+import isServer from '../../utils/isServer';
 
 export default App => {
   const WithApollo = ({ apolloClient, apolloState, ...props }) => {

@@ -6,9 +6,9 @@ import getConfig from 'next/config';
 import { header } from '@shared/common';
 import { persistCache } from 'apollo-cache-persist';
 import auth from './auth';
+import isServer from './isServer';
 
 const { publicRuntimeConfig } = getConfig();
-const isServer = typeof window === 'undefined';
 let apolloClient = null;
 
 // => Polyfill fetch() on the server (used by apollo-client)
