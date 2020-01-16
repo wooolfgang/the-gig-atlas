@@ -141,7 +141,11 @@ const Nav = ({ type, user }) => {
 
 Nav.propTypes = {
   type: PropTypes.string.isRequired,
-  user: propTypes.user.isRequired,
+  user: propTypes.user,
+};
+
+Nav.defaultProps = {
+  user: null,
 };
 
 export default Nav;
