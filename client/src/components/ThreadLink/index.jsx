@@ -12,8 +12,8 @@ import {
 import AvatarUserDropdown from '../AvatarUserDropdown';
 import Upvote from '../Upvote';
 import { UPVOTE_THREAD } from '../../graphql/thread';
+import RequireAuthenticated from '../RequireAuthenticated';
 
-// eslint-disable-next-line react/prop-types
 const UpvoteThread = ({ threadId, upvoteCount, hasUserUpvoted }) => {
   const [upvoteThread] = useMutation(UPVOTE_THREAD, {
     variables: {
@@ -28,6 +28,16 @@ const UpvoteThread = ({ threadId, upvoteCount, hasUserUpvoted }) => {
       upvoteCount={upvoteCount}
     />
   );
+};
+
+UpvoteThread.propTypes = {
+  threadId: PropTypes.string.isRequired,
+  upvoteCount: PropTypes.number.isRequired,
+  hasUserUpvoted: PropTypes.bool,
+};
+
+UpvoteThread.defaultProps = {
+  hasUserUpvoted: false,
 };
 
 const ArrowRightSimpleAnimated = () => (
@@ -65,14 +75,16 @@ const ThreadLink = ({ thread, loading, userId }) => {
 
   return (
     <ThreadLinkContainer key={thread.id}>
-      <UpvoteThread
-        threadId={thread.id}
-        upvoteCount={thread ? thread.upvoteCount : 0}
-        hasUserUpvoted={
-          thread.votes.filter(vote => vote.user.id && vote.user.id === userId)
-            .length > 0
-        }
-      />
+      <RequireAuthenticated isAuthenticated={!!userId}>
+        <UpvoteThread
+          threadId={thread.id}
+          upvoteCount={thread ? thread.upvoteCount : 0}
+          hasUserUpvoted={
+            thread.votes.filter(vote => vote.user.id && vote.user.id === userId)
+              .length > 0
+          }
+        />
+      </RequireAuthenticated>
       <div
         style={{ display: 'flex', flexDirection: 'column' }}
         onClick={() => Router.push(`/thread/${thread.id}`)}
