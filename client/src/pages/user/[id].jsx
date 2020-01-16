@@ -1,9 +1,12 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
+import { withRouter } from 'next/router';
 import styled from 'styled-components';
 import Nav from '../../components/Nav';
 import FreelancerProfile from '../../components/FreelancerProfile';
+import withAuthSync from '../../components/withAuthSync';
 import media from '../../utils/media';
+import { propTypes } from '../../utils/globals';
 
 const Container = styled.main`
   width: 100vw;
@@ -19,13 +22,15 @@ const Container = styled.main`
   `}
 `;
 
-const UserProfile = () => {
-  const router = useRouter();
+const UserProfile = ({ router, user }) => {
   const userId = router.query.id;
 
   return (
     <>
-      <Nav type="AUTHENTICATED_FREELANCER" />
+      <Nav
+        type={user ? 'AUTHENTICATED_FREELANCER' : 'NOT_AUTHENTICATED'}
+        user={user}
+      />
       <Container>
         <FreelancerProfile userId={userId} />
       </Container>
@@ -33,4 +38,17 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+UserProfile.propTypes = {
+  router: PropTypes.shape({
+    query: {
+      id: PropTypes.string,
+    },
+  }).isRequired,
+  user: propTypes.user,
+};
+
+UserProfile.defaultProps = {
+  user: null,
+};
+
+export default withRouter(withAuthSync(UserProfile, 'all'));
