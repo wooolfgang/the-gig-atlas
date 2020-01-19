@@ -10,7 +10,8 @@
     "compose:dev": "sudo docker-compose --file docker-compose.yml up -d",
     "prisma:generate": "prisma generate",
     "prisma:apply": "prisma deploy --force",
-    "prisma:login": "prisma login --key $(grep PRISMA_CLOUD_SESSION_KEY .env | cut -d '=' -f2)"
+    "prisma:login": "prisma login --key $(grep PRISMA_CLOUD_SESSION_KEY .env | cut -d '=' -f2)",
+    "migrate:latest": "cross-env NODE_ENV=dev knex migrate:latest"
   },
   "files": [
     "lib"
@@ -27,10 +28,14 @@
   },
   "homepage": "https://github.com/wooolfgang/the-gig-atlas#readme",
   "devDependencies": {
+    "cross-env": "^6.0.3",
+    "dotenv": "^8.2.0",
+    "knex": "^0.20.8",
     "prisma": "^1.34.10"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
+    "knex": "^0.20.8",
     "prisma-binding": "^2.3.16",
     "prisma-client-lib": "^1.34.10"
   }
