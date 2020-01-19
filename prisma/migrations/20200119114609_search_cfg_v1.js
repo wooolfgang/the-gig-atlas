@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable func-names */
 /**
@@ -23,7 +24,7 @@ const defaultCfg = {
  *  @param {object} pgClient - postgres pool/client object
  *  @param {SearchConfig} cfgData - the {@link SearchConfig} config
  */
-export function setupSearch(knex, cfgData) {
+function setupSearch(knex, cfgData) {
   const { schema, table, column, idxCol, tableIdx, tableIdxTrigger, config } = {
     ...defaultCfg,
     ...cfgData,
@@ -67,7 +68,7 @@ export function setupSearch(knex, cfgData) {
  *  @param {object} pgClient - postgres pool/client object
  *  @param {SearchConfig} cfgData - the {@link SearchConfig} config
  */
-export function removeSearch(knex, cfgData) {
+function removeSearch(knex, cfgData) {
   const { schema, table, idxCol, tableIdx, tableIdxTrigger } = {
     ...defaultCfg,
     ...cfgData,
@@ -87,8 +88,7 @@ export function removeSearch(knex, cfgData) {
     DO
     $do$
     BEGIN
-    IF EXISTS (${colExists})
-      THEN
+    IF EXISTS (${colExists}) THEN
       ${removeSearchIdx}
     END IF;
     END
@@ -122,17 +122,21 @@ const employerNameSearch = {
 // ------ migrations
 
 exports.up = knex => {
-  knex = setupSearch(knex, gigSearch);
-  knex = setupSearch(knex, tagSearch);
-  knex = setupSearch(knex, employerNameSearch);
+  let schema = knex.schema;
 
-  return knex;
+  schema = setupSearch(schema, gigSearch);
+  schema = setupSearch(schema, tagSearch);
+  schema = setupSearch(schema, employerNameSearch);
+
+  return schema;
 };
 
 exports.down = knex => {
-  knex = removeSearch(knex, gigSearch);
-  knex = removeSearch(knex, tagSearch);
-  knex = removeSearch(knex, employerNameSearch);
+  let schema = knex.schema;
 
-  return knex;
+  schema = removeSearch(schema, gigSearch);
+  schema = removeSearch(schema, tagSearch);
+  schema = removeSearch(schema, employerNameSearch);
+
+  return schema;
 };
