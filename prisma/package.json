@@ -11,7 +11,9 @@
     "prisma:generate": "prisma generate",
     "prisma:apply": "prisma deploy --force",
     "prisma:login": "prisma login --key $(grep PRISMA_CLOUD_SESSION_KEY .env | cut -d '=' -f2)",
-    "migrate:latest": "cross-env NODE_ENV=dev knex migrate:latest"
+    "migrate:dev": "knex migrate:latest --env development",
+    "migrate:staging": "knex migrate:latest --env staging",
+    "migrate:production": "knex migrate:latest --env production"
   },
   "files": [
     "lib"
