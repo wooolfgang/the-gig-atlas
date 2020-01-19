@@ -8,15 +8,7 @@ type Query {
     first: Int
     last: Int
   ): [Gig]!
-  searchGigs(
-    search: String!
-    where: GigWhereInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Gig]!
+  searchGigs(search: String!, first: Int): [Gig]!
   gigsListLanding: [Gig]!
 }
 
@@ -41,7 +33,7 @@ type Gig {
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
-  p: Int # search priority, 1 - n
+  p: Int # search priority, 1 to n
   media: File
 }
 

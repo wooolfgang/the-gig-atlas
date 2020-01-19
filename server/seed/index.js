@@ -22,8 +22,9 @@ const prod = {};
  */
 const dev = {
   'test-plan': planModule.dailyTestPlan,
-  tag: require('./dev/tag').default,
   gig: require('./dev/gig').default,
+  gig2: require('./dev/gig2').default,
+  tag: require('./dev/tag').default,
   plan: planModule.default,
   threadTag: require('./dev/threadTag').default,
   thread: require('./dev/thread').default,
@@ -39,7 +40,7 @@ const envSeeds = {
  */
 const seeds = {
   admin: require('./admin').default,
-  'db-config': require('./db_config').default,
+  // 'db-config': require('./db_config').default,
 };
 
 const toSeeds = [];

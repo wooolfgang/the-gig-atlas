@@ -18,27 +18,12 @@ export function transformGigInput(gigInput) {
  * Search gigs
  * target fields: 1.titles, 2.tags, 3.employers
  */
-function searchGigs(
-  _r,
-  { search, where, skip, after, before, first, last },
-  { pg },
-) {
-  if (!search) {
-    return prisma.gigs({
-      first: first || 8,
-      where,
-      orderBy: 'createdAt_DESC',
-      skip,
-      after,
-      before,
-      last,
-    });
-  }
-
+function searchGigs(_r, { search, first }, { pg }) {
+  const itemsCounts = first || 10;
   const orQuery = toOrQuery(search);
   const andQuery = toAndQuery(search);
   const qs = /* sql */ `
-    SELECT * FROM search_gigs('${andQuery}', '${orQuery}');
+    SELECT * FROM search_gigs('${andQuery}', '${orQuery}', ${itemsCounts});
   `;
 
   return pg.query(qs).then(r => r.rows);
@@ -53,7 +38,6 @@ export default {
   Mutation: {
     createGig: async (_, { gig, employer }) => {
       const existingUser = await prisma.$exists.user({ email: employer.email });
-      const password = await argon2.hash(uuidv4());
       const createGigInput = {
         ...transformGigInput(gig),
         employer: {
@@ -69,12 +53,13 @@ export default {
                   create: {
                     email: employer.email,
                     role: 'MEMBER',
-                    password,
+                    password: await argon2.hash(uuidv4()),
                   },
                 },
           },
         },
       };
+
       return prisma.createGig(createGigInput);
     },
     deleteGig: async (_, args) => {
