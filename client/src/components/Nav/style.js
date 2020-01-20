@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import media from '../../utils/media';
 
 export const StyledNav = styled.nav`
   padding: 0 8.3%;
@@ -8,6 +9,7 @@ export const StyledNav = styled.nav`
   height: 67.5px;
   box-sizing: border-box;
   background: #fff;
+  position: relative;
 
   a {
     color: ${props => props.theme.color.d1};
@@ -24,6 +26,17 @@ export const LogoContainer = styled.div`
 export const NavLinks = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+
+  ${media.tablet`
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 2rem .5rem 2rem 8.3%;
+
+    * {
+      padding: .5rem;
+    }
+  `}
 `;
 
 export const PostGigButton = styled.button`
