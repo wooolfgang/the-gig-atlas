@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Router, { withRouter } from 'next/router';
 import {
@@ -17,6 +17,9 @@ import router from '../../utils/router';
 import SearchIcon from '../../icons/Search';
 import { color } from '../../utils/theme';
 import { propTypes } from '../../utils/globals';
+import Dropdown from '../Dropdown';
+import Menu from '../../icons/Menu';
+import Cancel from '../../icons/Cancel';
 
 const NotAuthenticated = () => (
   <NavLinks>
@@ -38,7 +41,10 @@ const NotAuthenticated = () => (
 
 const LoginSignup = () => (
   <NavLinks>
-    <NavLink href="/login" style={{ marginRight: '.9rem' }}>
+    <NavLink
+      href="/login"
+      style={{ marginRight: '.9rem', textAlign: 'center' }}
+    >
       Login
     </NavLink>
     <NavLink href="/signup">
@@ -101,6 +107,40 @@ const AuthenticatedFreelancer = withRouter(({ router: { route }, user }) => (
   </>
 ));
 
+const MobileMenu = ({ content }) => {
+  const [visible, setVisible] = useState(false);
+  const toggleVisibility = () => setVisible(!visible);
+
+  return (
+    <div>
+      {visible ? (
+        <Cancel
+          onClick={toggleVisibility}
+          fill={color.neutral70}
+          width="32"
+          height="32"
+          style={{ cursor: 'pointer' }}
+        />
+      ) : (
+        <Menu
+          onClick={toggleVisibility}
+          fill={color.neutral70}
+          width="32"
+          height="32"
+          style={{ cursor: 'pointer' }}
+        />
+      )}
+      <Dropdown visible={visible} style={{ width: '100vw' }}>
+        {content}
+      </Dropdown>
+    </div>
+  );
+};
+
+MobileMenu.propTypes = {
+  content: PropTypes.node.isRequired,
+};
+
 const NavType = {
   NOT_AUTHENTICATED: NotAuthenticated,
   AUTHENTICATED_FREELANCER: AuthenticatedFreelancer,
@@ -131,7 +171,7 @@ const Nav = ({ type, user }) => {
           {size === 'desktop' || size === 'giant' || !size ? (
             <NavContent user={user} />
           ) : (
-            <div>Menu</div>
+            <MobileMenu content={<NavContent />} />
           )}
         </StyledNav>
       )}
