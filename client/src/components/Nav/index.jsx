@@ -30,7 +30,7 @@ const NotAuthenticated = () => (
     <NavLink style={{ marginRight: '20px' }} href="/community">
       Community
     </NavLink>
-    <NavLink style={{ marginRight: '20px', display: 'flex' }} href="/login">
+    <NavLink style={{ marginRight: '20px' }} href="/login">
       Login
     </NavLink>
     <NavLink href="/gig/tech/create">
