@@ -26,7 +26,6 @@ export const LogoContainer = styled.div`
 export const NavLinks = styled.div`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
 
   ${media.tablet`
     align-items: flex-start;
