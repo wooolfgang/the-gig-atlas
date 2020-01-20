@@ -2,6 +2,11 @@
 
 A wrapper for scraping job/gigs listing websites
 
+## Setup
+```$
+  yarn run build
+```
+
 ## Usage
 
 ```
