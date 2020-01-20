@@ -29,7 +29,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.4",
-    "rss-to-json-v2": "^1.0.11",
+    "axios": "^0.19.1",
+    "cheerio": "^1.0.0-rc.3",
+    "puppeteer": "^2.0.0",
+    "rss-to-json-v2": "^1.0.12",
     "scraper": "^0.0.9",
     "yargs": "^15.0.2"
   },
