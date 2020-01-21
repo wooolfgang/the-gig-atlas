@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/react-hooks';
 import Nav from '../../../components/Nav';
 import GigsList from '../../../components/GigsList';
 import HTMLHead from '../../../components/HTMLHead';
+import Footer from '../../../components/Footer';
 import { GET_GIGS_LIST_FOR_LANDING } from '../../../graphql/gig';
 import BannerSvg from '../svg/banner';
 import GigsSvg from '../svg/gigs';
@@ -148,6 +149,7 @@ const Index = () => {
           <GigsList gigs={data ? data.gigsListLanding : []} />
         </GigsGrid>
       </GigsContainer>
+      <Footer />
     </>
   );
 };
