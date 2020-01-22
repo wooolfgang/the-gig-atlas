@@ -8,13 +8,14 @@ export const Container = styled.div`
   justify-content: space-between;
   height: 10rem;
   align-items: center;
-  background: ${props => props.theme.color.d5};
-  box-shadow: inset 0 0 15px #fff;
+  background: #fff;
+  box-shadow: inset 0 0 15px #fafafa;
   flex-wrap: wrap;
 
   ${media.phone`
     flex-direction: column;
     justify-content: center;
+    height: 12rem;
   `}
 `;
 
@@ -60,5 +61,15 @@ export const Links = styled.div`
   * {
     margin-left: 0.5rem;
     font-size: 0.925rem;
+  }
+
+  a {
+    text-decoration: none;
+    transition: all 100ms;
+    color: ${props => props.theme.color.neutral50};
+  }
+
+  a:hover {
+    color: ${props => props.theme.color.neutral70};
   }
 `;
