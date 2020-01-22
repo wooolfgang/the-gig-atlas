@@ -32,10 +32,18 @@ const Footer = () => (
     <Right>
       <Twitter fill={color.s2} />
       <Links>
-        <Link>Contact</Link>
-        <Link>About Us</Link>
-        <Link>FAQ's</Link>
-        <Link>Support</Link>
+        <Link href="/contact" passHref>
+          <a href="/contact">Contact</a>
+        </Link>
+        <Link href="/aboutus" passHref>
+          <a href="/aboutus">About Us</a>
+        </Link>
+        <Link href="/faqs" passHref>
+          <a href="/faqs">FAQ's</a>
+        </Link>
+        <Link href="/support" passHref>
+          <a href="/support">Support</a>
+        </Link>
       </Links>
     </Right>
   </Container>
