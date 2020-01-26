@@ -36,14 +36,14 @@ function setupSearch(knex, cfgData) {
     ALTER TABLE ${schemaTable}
       ADD COLUMN ${idxCol} tsvector;
     UPDATE ${schemaTable}
-      SET ${idxCol} = to_tsvector('${config}', ${column});
+      SET ${idxCol} = to_tsvector('${config}', '${column}');
     CREATE INDEX ${tableIdx}
       ON ${schemaTable}
       USING GIN (${idxCol});
     CREATE TRIGGER ${tableIdxTrigger}
       BEFORE INSERT OR UPDATE ON ${schemaTable}
       FOR EACH ROW EXECUTE PROCEDURE
-        tsvector_update_trigger(${idxCol}, 'pg_catalog.${config}', ${column});
+        tsvector_update_trigger(${idxCol}, 'pg_catalog.${config}', '${column}');
   `;
   const colExists = /* sql */ `
     SELECT 1 FROM information_schema.columns
