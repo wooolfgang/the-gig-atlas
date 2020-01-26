@@ -1,4 +1,5 @@
 type Query {
+  gig(id: ID!): Gig
   gigs(
     where: GigWhereInput
     orderBy: GigOrderByInput
@@ -26,9 +27,9 @@ type Gig {
   tags: [Tag!]!
   projectType: ProjectType
   paymentType: PaymentType
+  jobType: JobType
   minFee: Float
   maxFee: Float
-  jobType: JobType
   locationRestriction: String
   employer: Employer
   communicationType: GigCommunicationType
@@ -36,6 +37,7 @@ type Gig {
   communicationWebsite: String
   media: File
   status: GigStatus
+  from: GigSource
 }
 
 input GigInput {

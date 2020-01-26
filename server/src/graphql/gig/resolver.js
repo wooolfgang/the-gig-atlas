@@ -8,11 +8,16 @@ import { transformEmployerInput } from '../employer/resolver';
 // import { fullDisplay } from '../utils/display';
 import { gigSearchQuery } from './utils';
 
-export function transformGigInput(gigInput) {
+export function transformGigInput({ avatarFileId, ...gigInput }) {
   return {
     ...gigInput,
     tags: {
       connect: gigInput.tags.map(tag => ({ name: tag })),
+    },
+    media: avatarFileId && {
+      connect: {
+        id: avatarFileId,
+      },
     },
   };
 }
@@ -68,6 +73,7 @@ async function nextPage(_, { ids }, _c, info) {
 
 export default {
   Query: {
+    gig: (_, { id }) => prisma.gig({ id }),
     searchGigs,
     nextPage,
     gigs: (_, args, _1, info) =>
@@ -78,8 +84,25 @@ export default {
   Mutation: {
     createGig: async (_, { gig, employer }) => {
       const existingUser = await prisma.$exists.user({ email: employer.email });
+      // const password = await argon2.hash(uuidv4());
+
+      // Create tags that do not exist
+      const existingTags = await Promise.all(
+        gig.tags.map(tag =>
+          prisma.$exists.tag({
+            name: tag,
+          }),
+        ),
+      );
+      const tagsToCreate = gig.tags.filter(
+        (tag, index) => !existingTags[index],
+      );
+      await Promise.all(
+        tagsToCreate.map(tag => prisma.createTag({ name: tag })),
+      );
+
       const createGigInput = {
-        ...transformGigInput(gig),
+        ...transformGigInput({ ...gig, avatarFileId: employer.avatarFileId }),
         employer: {
           create: {
             ...transformEmployerInput(employer),

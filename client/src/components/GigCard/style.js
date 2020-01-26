@@ -1,22 +1,33 @@
 import styled, { css, keyframes } from 'styled-components';
 
+const DEFAULT_HEIGHT = 110;
+const EXTENDED_HEIGHT = 160;
+
 export const Card = styled.div`
-  min-height: 111px;
-  padding: 0.75rem;
+  height: ${DEFAULT_HEIGHT}px;
+  padding: 0.9rem 0.75rem 0rem 0.75rem;
   box-sizing: border-box;
   background: ${props => props.theme.color.d6};
-  transition: all 150ms ease-in-out;
+  transition: all 125ms;
   overflow: hidden;
+  outline: none;
 
   :focus,
+  :focus-within,
   :hover {
-    transform: translateY(-2px);
-    box-shadow: 2px 0px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 0 0 1.5px hsla(0, 0%, 100%, 0.05),
+      inset 0 0 0 1.25px rgba(82, 95, 127, 0.3),
+      0 13px 27px -5px rgba(50, 50, 93, 0.25),
+      0 8px 16px -8px rgba(0, 0, 0, 0.3), 0 -6px 16px -6px rgba(0, 0, 0, 0.025);
+    height: ${EXTENDED_HEIGHT}px;
   }
 `;
 
 export const Flex = styled.div`
   display: flex;
+  padding-bottom: 15px;
+  box-sizing: border-box;
+  height: calc(${DEFAULT_HEIGHT}px - 10px);
 `;
 
 export const Avatar = styled.div`
@@ -40,7 +51,7 @@ export const Avatar = styled.div`
 export const Title = styled.h4`
   margin: 0px;
   margin-bottom: 0.3em;
-  font-size: 1.15em;
+  font-size: 1.125em;
 `;
 
 export const Tech = styled.small`
@@ -68,14 +79,55 @@ export const ThirdRow = styled(Row)`
   direction: rtl;
 `;
 
-export const Centered = styled.div`
+export const CenteredMobile = styled.div`
   display: flex;
   flex-direction: column;
   direction: rtl;
+  height: 30px;
+`;
+
+export const GigExtension = styled.div`
+  height: 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed lightgray;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  transition: all 125ms;
+  flex-wrap: wrap;
+
+  #gig-from {
+    color: #525f7f;
+    font-size: 0.8rem;
+  }
+
+  :hover {
+    border: 1px dashed ${props => props.theme.color.d4};
+  }
+`;
+
+export const A = styled.a`
+  text-decoration: none;
+  font-size: 0.85rem;
+  color: ${props => props.theme.color.s2};
+
+  ${GigExtension}:hover & {
+    color: ${props => props.theme.color.s1};
+  }
+
+  :hover,
+  :focus {
+    color: ${props => props.theme.color.s1};
+    text-decoration: underline;
+  }
 `;
 
 export const GigCardSkeleton = styled.div`
-  min-height: 111px;
+  min-height: ${DEFAULT_HEIGHT}px;
   padding: 0.75rem;
   box-sizing: border-box;
   background: ${props => props.theme.color.d6};
@@ -110,7 +162,7 @@ const after = css`
 `;
 
 export const GigSkeletonContainer = styled.div`
-  min-height: 111px;
+  min-height: ${DEFAULT_HEIGHT}px;
   padding: 0.75rem;
   box-sizing: border-box;
   background: ${props => props.theme.color.d6};

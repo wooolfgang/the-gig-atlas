@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useMutation } from '@apollo/react-hooks';
@@ -7,6 +6,8 @@ import CommentTextArea from '../CommentTextArea';
 import Avatar from '../../primitives/Avatar';
 import Upvote from '../Upvote';
 import { UPVOTE_COMMENT } from '../../graphql/thread';
+import RequireAuthenticated from '../RequireAuthenticated';
+import { propTypes } from '../../utils/globals';
 
 const CommentContainer = styled.div`
   margin-left: ${props => `${props.nestLevel * 22}px`};
@@ -44,6 +45,7 @@ const UpvoteComment = ({
   hasUserUpvoted,
   upvoteCount,
   setComment,
+  user,
 }) => {
   const [upvoteComment] = useMutation(UPVOTE_COMMENT, {
     variables: {
@@ -51,28 +53,43 @@ const UpvoteComment = ({
     },
   });
   return (
-    <Upvote
-      onUpvote={async () => {
-        try {
-          const res = await upvoteComment();
-          if (res.data) {
-            setComment(comment => ({
-              ...comment,
-              upvoteCount: res.data.upvoteComment.upvoteCount,
-              votes: res.data.upvoteComment.votes,
-            }));
+    <RequireAuthenticated isAuthenticated={!!user}>
+      <Upvote
+        onUpvote={async () => {
+          try {
+            const res = await upvoteComment();
+            if (res.data) {
+              setComment(comment => ({
+                ...comment,
+                upvoteCount: res.data.upvoteComment.upvoteCount,
+                votes: res.data.upvoteComment.votes,
+              }));
+            }
+          } catch (e) {
+            console.log(e);
           }
-        } catch (e) {
-          console.log(e);
-        }
-      }}
-      hasUserUpvoted={hasUserUpvoted}
-      upvoteCount={upvoteCount}
-    />
+        }}
+        hasUserUpvoted={hasUserUpvoted}
+        upvoteCount={upvoteCount}
+      />
+    </RequireAuthenticated>
   );
 };
 
-const Comment = ({ comment: _comment, threadId, nestLevel = 0, userId }) => {
+UpvoteComment.propTypes = {
+  commentId: PropTypes.string.isRequired,
+  upvoteCount: PropTypes.number.isRequired,
+  setComment: PropTypes.func.isRequired,
+  hasUserUpvoted: PropTypes.bool,
+  user: propTypes.user,
+};
+
+UpvoteComment.defaultProps = {
+  hasUserUpvoted: false,
+  user: null,
+};
+
+const Comment = ({ comment: _comment, threadId, nestLevel = 0, user }) => {
   const [showTextArea, setShowTextArea] = useState(false);
   const [comment, setComment] = useState(_comment);
   const [childrenComments, setChildrenComments] = useState(
@@ -86,10 +103,12 @@ const Comment = ({ comment: _comment, threadId, nestLevel = 0, userId }) => {
           commentId={comment.id}
           upvoteCount={comment.upvoteCount}
           hasUserUpvoted={
-            comment.votes.filter(vote => vote.user && vote.user.id === userId)
-              .length > 0
+            comment.votes.filter(
+              vote => vote.user && vote.user.id === user && user.id,
+            ).length > 0
           }
           setComment={setComment}
+          user={user}
         />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div>
@@ -109,12 +128,14 @@ const Comment = ({ comment: _comment, threadId, nestLevel = 0, userId }) => {
             <div dangerouslySetInnerHTML={{ __html: comment.text }} />
           </div>
           <div>
-            <ReplyButton
-              type="button"
-              onClick={() => setShowTextArea(!showTextArea)}
-            >
-              {showTextArea ? 'Hide' : 'Reply'}
-            </ReplyButton>
+            <RequireAuthenticated isAuthenticated={!!user}>
+              <ReplyButton
+                type="button"
+                onClick={() => setShowTextArea(!showTextArea)}
+              >
+                {showTextArea ? 'Hide' : 'Reply'}
+              </ReplyButton>
+            </RequireAuthenticated>
           </div>
           {showTextArea && (
             <CommentBoxContainer>
@@ -136,7 +157,7 @@ const Comment = ({ comment: _comment, threadId, nestLevel = 0, userId }) => {
           threadId={threadId}
           key={child.id}
           nestLevel={nestLevel + 1}
-          userId={userId}
+          user={user}
         />
       ))}
     </>
@@ -152,10 +173,12 @@ Comment.propTypes = {
   }).isRequired,
   threadId: PropTypes.string.isRequired,
   nestLevel: PropTypes.number,
+  user: propTypes.user,
 };
 
 Comment.defaultProps = {
   nestLevel: 0,
+  user: null,
 };
 
 export default Comment;
