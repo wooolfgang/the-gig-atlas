@@ -78,7 +78,7 @@ function createGigSearchFunction(knex) {
   `;
   // get the first items_count number only
   const pagination = /* sql */ `
-    SELECT * FROM search_res FETCH NEXT (items_count) ROWS ONLY
+    SELECT * FROM search_res OFFSET skip_count LIMIT first_count
   `;
   // populate the paginated rows with title
   const pagedData = /* sql */ `
@@ -128,11 +128,54 @@ function createGigSearchFunction(knex) {
   return knex.raw(createFn);
 
   // ref => http://www.postgresqltutorial.com/plpgsql-function-returns-a-table/
+
+  // eslint-disable-next-line no-unreachable
+  const { andInput, orInput, first, skip, job, project, payment } = {};
+
+  const sq = /* sql */ `
+    WITH ts_search AS (
+      SELECT to_tsquery('english', '${andInput}') AS and_vec, to_tsquery('english', '${orInput}') AS or_vec
+    ), gigs_title AS (
+      SELECT g.id, g._srch_idx
+      FROM "default$default"."Gig" AS g
+      WHERE g.status='POSTED'
+        AND g._srch_idx @@ ts_search.or_vec
+    ), combined AS (
+      SELECT c.id, 'test' as title, MIN(c.p) AS p
+        FROM (
+          SELECT gtc.id, 1 AS p
+          FROM gtc
+          WHERE gtc._srch_idx @@ and_query
+        UNION
+          SELECT gtc.id, 2 as p
+          FROM gtc
+        UNION
+        ${tagsRelativeGigs}
+        UNION
+        ${employersRelativeGigs}
+      ) AS c
+      GROUP BY c.id
+      ORDER BY p ASC
+      )
+
+  `;
 }
 
 function removeGigSearchFunction(knex) {
+  // const q = /* sql */ `
+  //   DROP FUNCTION IF EXISTS search_gigs(and_input VARCHAR, or_input VARCHAR, qty INT,);
+  // `;
+
   const q = /* sql */ `
-    DROP FUNCTION IF EXISTS search_gigs(and_input VARCHAR, or_input VARCHAR, items_count INT);
+    DROP FUNCTION IF EXISTS search_gigs(
+      and_input VARCHAR,
+      or_input VARCHAR,
+      first_count INT,
+      skip_count INT,
+      job VARCHAR,
+      project VARCHAR,
+      payment VARCHAR
+    )
   `;
 
   return knex.raw(q);

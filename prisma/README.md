@@ -4,10 +4,21 @@ Prisma module contains the docker-compose.yml to run the prisma docker instance.
 It also contains the generated prisma-client which can be used by different packages 
 
 ## Getting started
+  1. Compose docker
   ```bash
-  $ yarn compose:dev => Creates the docker prisma instance
-  $ yarn prisma:generate => Generates an up-to-date prisma-client
-  $ yarn prisma:apply => Apply's the latest datamodel to the prisma db
+     yarn run compose:dev
+  ```
+  2. Apply Datamodel
+  ```bash
+     yarn run prisma:apply
+  ```
+  3. Apply raw SQL configuration migration
+  ```bash
+     yarn run migrate:dev
+  ```
+  4. Generate prisma api
+  ```bash
+     yarn run yarn prisma:generate
   ```
 
 ## Usage
