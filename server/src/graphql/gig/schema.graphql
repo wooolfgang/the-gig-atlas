@@ -8,7 +8,7 @@ type Query {
     first: Int
     last: Int
   ): [Gig]!
-  searchGigs(search: String!, first: Int): [Gig]!
+  searchGigs(search: String!, where: SearchOptions): GigSearch!
   gigsListLanding: [Gig]!
 }
 
@@ -33,8 +33,8 @@ type Gig {
   communicationType: GigCommunicationType
   communicationEmail: String
   communicationWebsite: String
-  p: Int # search priority, 1 to n
   media: File
+  status: GigStatus
 }
 
 input GigInput {
@@ -50,4 +50,17 @@ input GigInput {
   communicationType: GigCommunicationType!
   communicationEmail: String
   communicationWebsite: String
+}
+
+input SearchOptions {
+  first: Int
+  skip: Int
+  jobs: [JobType]
+  projects: [ProjectType]
+  payments: [PaymentType]
+}
+
+type GigSearch {
+  gigs: [Gig]!
+  ids: [String]!
 }

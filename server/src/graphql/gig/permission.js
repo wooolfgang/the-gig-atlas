@@ -16,4 +16,5 @@ export default {
     gigs: allow,
   },
   Gig: allow,
+  GigSearch: allow,
 };
