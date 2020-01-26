@@ -17,6 +17,18 @@ export function transformGigInput(gigInput) {
   };
 }
 
+function _sortGigsByIds(ids, gigs) {
+  const idMap = ids.reduce((map, id, i) => {
+    // eslint-disable-next-line no-param-reassign
+    map[id] = i;
+
+    return map;
+  }, {});
+
+  gigs.sort((a, b) => idMap[a.id] - idMap[b.id]);
+  return gigs;
+}
+
 /**
  * Search gigs
  * target fields: 1.titles, 2.tags, 3.employers
@@ -24,7 +36,6 @@ export function transformGigInput(gigInput) {
 async function searchGigs(_r, { search, where = {} }, { pg }, info) {
   const { first, skip } = where;
   const qs = gigSearchQuery(search, where);
-  console.log(qs);
   const { rows } = await pg.query(qs); // .catch(e => console.log(e));
   const ids = rows.map(r => r.id);
 
@@ -43,21 +54,22 @@ async function searchGigs(_r, { search, where = {} }, { pg }, info) {
 
   const frag = createSubFragment(info, 'GigSearch', 'Gig', 'gigs', true);
   const gigs = await prisma.gigs({ where: { id_in } }).$fragment(frag);
-  // => sort gigs to its original index position
-  const idMap = id_in.reduce((map, id, i) => {
-    // eslint-disable-next-line no-param-reassign
-    map[id] = i;
+  const sortedGigs = _sortGigsByIds(id_in, gigs);
 
-    return map;
-  }, {});
-  gigs.sort((a, b) => idMap[a.id] - idMap[b.id]);
+  return { ids, gigs: sortedGigs };
+}
 
-  return { gigs, ids };
+async function nextPage(_, { ids }, _c, info) {
+  const frag = createFragment(info, 'NextGig', 'Gig', true);
+  const gigs = await prisma.gigs({ where: { id_in: ids } }).$fragment(frag);
+
+  return _sortGigsByIds(ids, gigs);
 }
 
 export default {
   Query: {
     searchGigs,
+    nextPage,
     gigs: (_, args, _1, info) =>
       prisma.gigs(args).$fragment(createFragment(info, 'Gigs', 'Gig', true)),
     gigsListLanding: (_, _0, _1, info) =>

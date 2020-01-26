@@ -10,6 +10,7 @@ type Query {
   ): [Gig]!
   searchGigs(search: String!, where: SearchOptions): GigSearch!
   gigsListLanding: [Gig]!
+  nextPage(ids: [ID!]!): [Gig]!
 }
 
 type Mutation {
