@@ -10,6 +10,7 @@ import Comment from '../../components/Comment';
 import CommentTextArea from '../../components/CommentTextArea';
 import withAuthSync from '../../components/withAuthSync';
 import { propTypes } from '../../utils/globals';
+import RequireAuthenticated from '../../components/RequireAuthenticated';
 
 const PageContainer = styled.div`
   min-height: calc(100vh - 67.5px);
@@ -63,19 +64,20 @@ const ReplyButton = styled.button`
   }
 `;
 
-const ParentCommentTextArea = ({ threadId, setParentComments }) => {
+const ParentCommentTextArea = ({ threadId, setParentComments, user }) => {
   const [showTextArea, setShowTextArea] = useState(false);
   return (
     <>
       <div>
-        <ReplyButton
-          type="button"
-          onClick={() => setShowTextArea(show => !show)}
-        >
-          {showTextArea ? 'Hide' : 'Reply to thread '}
-        </ReplyButton>
+        <RequireAuthenticated isAuthenticated={!!user}>
+          <ReplyButton
+            type="button"
+            onClick={() => setShowTextArea(show => !show)}
+          >
+            {showTextArea ? 'Hide' : 'Reply to thread '}
+          </ReplyButton>
+        </RequireAuthenticated>
       </div>
-
       {showTextArea && (
         <CommentBoxContainer>
           <CommentTextArea
@@ -94,6 +96,11 @@ const ParentCommentTextArea = ({ threadId, setParentComments }) => {
 ParentCommentTextArea.propTypes = {
   threadId: PropTypes.string.isRequired,
   setParentComments: PropTypes.func.isRequired,
+  user: propTypes.user,
+};
+
+ParentCommentTextArea.defaultProps = {
+  user: null,
 };
 
 const Thread = ({ user }) => {
@@ -118,7 +125,10 @@ const Thread = ({ user }) => {
 
   return (
     <>
-      <Nav type="AUTHENTICATED_FREELANCER" user={user} />
+      <Nav
+        type={user ? 'AUTHENTICATED_FREELANCER' : 'NOT_AUTHENTICATED'}
+        user={user}
+      />
       <PageContainer>
         <ThreadContainer>
           <Link href="/">
@@ -145,6 +155,7 @@ const Thread = ({ user }) => {
             threadId={threadId}
             setParentComments={setParentComments}
             thread={data && data.thread}
+            user={user}
           />
           <CommentTreeContainer>
             {parentComments &&
@@ -153,7 +164,7 @@ const Thread = ({ user }) => {
                   comment={comment}
                   threadId={threadId}
                   key={comment.id}
-                  userId={user.id}
+                  user={user}
                 />
               ))}
           </CommentTreeContainer>

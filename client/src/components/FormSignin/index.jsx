@@ -61,7 +61,7 @@ const SigninLocal = () => {
                 disabled={isSubmitting}
                 loading={isSubmitting}
               >
-                {isSubmitting ? 'Submitting...' : 'Continue With Email'}
+                {isSubmitting ? 'Submitting...' : 'Login With Email'}
               </Button>
             </Form>
           </Form>

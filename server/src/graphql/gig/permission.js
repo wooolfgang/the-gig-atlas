@@ -11,6 +11,7 @@ export default {
     deleteGig: allow,
   },
   Query: {
+    gig: allow,
     gigsListLanding: allow,
     searchGigs: allow,
     gigs: allow,
