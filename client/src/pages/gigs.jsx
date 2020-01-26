@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable react/jsx-curly-newline */
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -6,7 +7,7 @@ import styled from 'styled-components';
 import { useApolloClient } from '@apollo/react-hooks';
 import withAuthSync from '../components/withAuthSync';
 import GigsList from '../components/GigsList';
-import { GIG_SEARCH } from '../graphql/gig';
+import { GIG_SEARCH, GIG_NEXT_PAGE } from '../graphql/gig';
 import { GigCardSkeleton } from '../components/GigCard';
 // import { JOB_TYPE, PROJECT_TYPE, PAYMENT_TYPE } from '../utils/constants';
 import { propTypes } from '../utils/globals';
@@ -58,6 +59,7 @@ const Gigs = ({ user }) => {
     totalResults: 0,
     page: 1,
     isLoading: false,
+    resultIds: [],
   });
   const [searchVariables, setSearchVariables] = useState({
     search: '',
@@ -71,7 +73,7 @@ const Gigs = ({ user }) => {
     searchVariables.first * paging.page < paging.totalResults;
 
   const client = useApolloClient();
-  let resultIds = [];
+  // let resultIds = [];
 
   const newSearch = async ({ search, first, where = {} }) => {
     const options = { search, where: { ...where, first } };
@@ -84,27 +86,58 @@ const Gigs = ({ user }) => {
       const { gigs, ids } = res.data.searchGigs;
       console.log('new gigs: ', gigs.length, ids.length);
       console.log(gigs);
-      resultIds = ids;
+      // resultIds = ids;
+      // console.log('new result ids: ', resultIds);
       setPage({
         gigs,
         totalResults: ids.length,
         page: 1,
+        resultIds: ids,
       });
     } catch (e) {
       console.log('search erro: ', e);
     }
   };
 
-  // const nextPage = async () => {
-  //   if (!hasNextPage()) {
-  //     return;
-  //   }
+  const nextPage = async () => {
+    if (!hasNextPage()) {
+      return;
+    }
 
-  //   setPage(prev => ({ ...prev, isLoading: true }));
-  //   try {
-  //     const res =
-  //   }
-  // };
+    const { page, resultIds } = paging;
+    const { first } = searchVariables;
+    // const end = page * first + first >
+    const nextIds = [];
+    const start = page * first;
+    const end = page * first + first;
+    console.log(start, end, resultIds);
+    for (let i = start; i < end; i++) {
+      if (!resultIds[i]) break;
+      nextIds.push(resultIds[i]);
+    }
+
+    console.log('next ids: ', nextIds);
+
+    try {
+      setPage(prev => ({ ...prev, isLoading: true }));
+      const res = await client.query({
+        query: GIG_NEXT_PAGE,
+        variables: { ids: nextIds },
+      });
+      const newGigs = res.data.nextPage;
+      console.log('next gigs: ', newGigs);
+
+      setPage(prev => ({
+        ...prev,
+        gigs: [...prev.gigs, ...newGigs],
+        page: prev.page + 1,
+        isLoading: false,
+      }));
+    } catch (e) {
+      console.log(e);
+      setPage(prev => ({ ...prev, isLoading: false }));
+    }
+  };
 
   const throttleSearching = createThrottle(1000, newOption => {
     if (!searchVariables.search.trim()) {
@@ -154,11 +187,11 @@ const Gigs = ({ user }) => {
     });
   };
 
-  const handleShowMore = () =>
-    setSearchVariables(prevVal => ({
-      ...prevVal,
-      first: prevVal.first + 8,
-    }));
+  // const handleShowMore = () =>
+  //   setSearchVariables(prevVal => ({
+  //     ...prevVal,
+  //     first: prevVal.first + 8,
+  //   }));
 
   return (
     <div>
@@ -182,7 +215,7 @@ const Gigs = ({ user }) => {
             <>
               <GigsList gigs={paging.gigs} />
               {hasNextPage() && (
-                <Button onClick={handleShowMore} loading={paging.isLoading}>
+                <Button onClick={nextPage} loading={paging.isLoading}>
                   Show More
                 </Button>
               )}
