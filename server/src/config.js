@@ -95,6 +95,7 @@ const dev = {
   cors: {
     origin: [
       'http://localhost:3000',
+      'http://localhost', // for testing purpose
       'http://staging.thegigatlas.com',
       'https://staging.thegigatlas.com',
     ],
