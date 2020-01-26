@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable react/jsx-curly-newline */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 // import PropTypes from 'prop-types';
 // import { useRouter } from 'next/router';
@@ -53,18 +53,18 @@ const GigsContainer = styled.div`
 `;
 
 const Gigs = ({ user }) => {
-  const [isSearching, setSearching] = useState(false);
+  const [isSearching, setSearching] = useState(false); // searching for new search only not for paging loaded query
   const [paging, setPage] = useState({
-    gigs: [],
+    gigs: [], // gigs to be displayed
     totalResults: 0,
-    page: 1,
-    isLoading: false,
-    resultIds: [],
+    page: 1, // number of gig batch loaded as page
+    isLoading: false, // state for loading for next gigs
+    resultIds: [], // containes all ids that will be referenced for paging
   });
   const [searchVariables, setSearchVariables] = useState({
     search: '',
-    first: 8,
-    where: {},
+    first: 8, // first is the number of items gigs to be queried and incremental loaded
+    where: {}, // where reference to client only not on server searchGig where parameter
   });
 
   const startSearching = () => setSearching(true);
@@ -77,15 +77,15 @@ const Gigs = ({ user }) => {
 
   const newSearch = async ({ search, first, where = {} }) => {
     const options = { search, where: { ...where, first } };
-    console.log('new Search: ', options);
+    // console.log('new Search: ', options);
     try {
       const res = await client.query({
         query: GIG_SEARCH,
         variables: options,
       });
       const { gigs, ids } = res.data.searchGigs;
-      console.log('new gigs: ', gigs.length, ids.length);
-      console.log(gigs);
+      // console.log('new gigs: ', gigs.length, ids.length);
+      // console.log(gigs);
       // resultIds = ids;
       // console.log('new result ids: ', resultIds);
       setPage({
@@ -95,7 +95,7 @@ const Gigs = ({ user }) => {
         resultIds: ids,
       });
     } catch (e) {
-      console.log('search erro: ', e);
+      console.error(e);
     }
   };
 
@@ -110,13 +110,13 @@ const Gigs = ({ user }) => {
     const nextIds = [];
     const start = page * first;
     const end = page * first + first;
-    console.log(start, end, resultIds);
+    // console.log(start, end, resultIds);
     for (let i = start; i < end; i++) {
       if (!resultIds[i]) break;
       nextIds.push(resultIds[i]);
     }
 
-    console.log('next ids: ', nextIds);
+    // console.log('next ids: ', nextIds);
 
     try {
       setPage(prev => ({ ...prev, isLoading: true }));
@@ -125,7 +125,7 @@ const Gigs = ({ user }) => {
         variables: { ids: nextIds },
       });
       const newGigs = res.data.nextPage;
-      console.log('next gigs: ', newGigs);
+      // console.log('next gigs: ', newGigs);
 
       setPage(prev => ({
         ...prev,
@@ -134,7 +134,7 @@ const Gigs = ({ user }) => {
         isLoading: false,
       }));
     } catch (e) {
-      console.log(e);
+      console.error(e);
       setPage(prev => ({ ...prev, isLoading: false }));
     }
   };
