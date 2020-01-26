@@ -33,6 +33,18 @@ function gigRandStatus() {
   return ['POSTED', 'SAVED'][randomN(0, 1)];
 }
 
+function randProjectType() {
+  return ['GREENFIELD', 'MAINTENANCE', 'CONSULTING', 'TESTING'][randomN(0, 3)];
+}
+
+function randPaymentType() {
+  return ['HOURLY', 'FIXED'][randomN(0, 1)];
+}
+
+function randJobType() {
+  return ['FULL_TIME', 'PART_TIME', 'CONTRACT'][randomN(0, 1)];
+}
+
 function randomTags(count) {
   const stags = [...tags];
   const rtags = [];
@@ -52,6 +64,9 @@ function createGig() {
     description: faker.lorem.paragraph(),
     status: gigRandStatus(),
     tags: { connect: randomTags(15) },
+    jobType: randJobType(),
+    projectType: randProjectType(),
+    paymentType: randPaymentType(),
   };
 }
 
