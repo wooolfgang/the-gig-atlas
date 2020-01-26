@@ -124,49 +124,36 @@ export const GET_GIGS = gql`
 `;
 
 export const GIG_SEARCH = gql`
-  query GIG_SEARCH(
-    $search: String!
-    $where: GigWhereInput
-    $skip: Int
-    $after: String
-    $before: String
-    $first: Int
-    $last: Int
-  ) {
-    searchGigs(
-      search: $search
-      where: $where
-      skip: $skip
-      after: $after
-      before: $before
-      first: $first
-      last: $last
-    ) {
-      id
-      title
-      createdAt
-      description
-      tags {
+  query GIG_SEARCH($search: String!, $where: SearchOptions) {
+    searchGigs(search: $search, where: $where) {
+      gigs {
         id
-        name
+        title
+        createdAt
+        description
+        tags {
+          id
+          name
+        }
+        projectType
+        paymentType
+        minFee
+        maxFee
+        jobType
+        locationRestriction
+        communicationType
+        communicationEmail
+        communicationWebsite
+        employer {
+          id
+          displayName
+        }
+        media {
+          id
+          url
+        }
       }
-      projectType
-      paymentType
-      minFee
-      maxFee
-      jobType
-      locationRestriction
-      communicationType
-      communicationEmail
-      communicationWebsite
-      employer {
-        id
-        displayName
-      }
-      media {
-        id
-        url
-      }
+      ids
     }
   }
 `;
