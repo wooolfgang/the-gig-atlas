@@ -72,13 +72,11 @@ export default {
     nextPage,
     gigs: (_, args, _1, info) =>
       prisma.gigs(args).$fragment(createFragment(info, 'Gigs', 'Gig', true)),
-    gigsListLanding: (_, _0, _1, info) =>
-      prisma
-        .gigs({ first: 6, orderBy: 'createdAt_DESC' })
-        .$fragment(createFragment(info, 'GigsLand', 'Gig', true)),
+    gigsListLanding: () => prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
+    // .$fragment(createFragment(info, 'GigsLand', 'Gig', true)),
   },
   Mutation: {
-    createGig: async (_, { gig, employer }, _c, info) => {
+    createGig: async (_, { gig, employer }) => {
       const existingUser = await prisma.$exists.user({ email: employer.email });
       const createGigInput = {
         ...transformGigInput(gig),
@@ -102,9 +100,8 @@ export default {
         },
       };
 
-      return prisma
-        .createGig(createGigInput)
-        .$fragment(createFragment(info, 'GigCreate', 'Gig', true));
+      return prisma.createGig(createGigInput);
+      // .$fragment(createFragment(info, 'GigCreateFrag', 'Gig', true));
     },
     deleteGig: async (_, args) => {
       await prisma.deleteGig(args);

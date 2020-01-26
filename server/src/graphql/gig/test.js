@@ -83,6 +83,207 @@ afterAll(async () => {
 });
 
 describe('Testing gig resolvers', () => {
+  it('Creates a new gig with populated employer, avatar and user', async () => {
+    const res = await axios.post(testUrl, {
+      query: /* graphql */ `
+        mutation($gig: GigInput!, $employer: EmployerInput!) {
+          createGig(gig: $gig, employer: $employer) {
+            title
+            communicationType
+            communicationEmail
+            description
+            tags {
+              id
+              name
+            }
+            projectType
+            paymentType
+            minFee
+            maxFee
+            jobType
+            employer {
+              id
+              email
+              avatar {
+                id
+              }
+              asUser {
+                email
+              }
+            }
+          }
+        }
+      `,
+      variables: { employer, gig },
+    });
+
+    const { employer: employerResult, ...gigResult } = res.data.data.createGig;
+    expect(gig).toMatchObject({
+      ...gigResult,
+      tags: gigResult.tags.map(t => t.name),
+    });
+    expect(employerResult.email).toEqual(employer.email);
+    expect(employerResult.avatar.id).toEqual(employer.avatarFileId);
+    expect(employerResult.asUser.email).toEqual(employer.email);
+  });
+
+  it('Updates existing employer with new data when same email is used in creating gig', async () => {
+    const newEmployerData = {
+      displayName: 'ASdkaldajsdkljskl',
+      website: 'https://gweeasdsad.com',
+      introduction: 'This is new',
+      // same email as previously created gig from test
+      email: employer.email,
+      employerType: 'COMPANY',
+      avatarFileId: testFile2,
+    };
+    const res = await axios.post(testUrl, {
+      query: /* graphql */ `
+        mutation($gig: GigInput!, $employer: EmployerInput!) {
+          createGig(gig: $gig, employer: $employer) {
+            title
+            communicationType
+            communicationEmail
+            description
+            tags {
+              id
+              name
+            }
+            projectType
+            paymentType
+            minFee
+            maxFee
+            jobType
+            employer {
+              id
+              email
+              displayName
+              avatar {
+                id
+              }
+              asUser {
+                email
+              }
+            }
+          }
+        }
+      `,
+      variables: { employer: newEmployerData, gig },
+    });
+
+    const { employer: employerResult, ...gigResult } = res.data.data.createGig;
+    expect(gig).toMatchObject({
+      ...gigResult,
+      tags: gigResult.tags.map(t => t.name),
+    });
+    expect(employerResult.email).toEqual(newEmployerData.email);
+    expect(employerResult.avatar.id).toEqual(newEmployerData.avatarFileId);
+    expect(employerResult.displayName).toEqual(newEmployerData.displayName);
+    expect(employerResult.asUser.email).toEqual(employer.email);
+  });
+
+  it('Should allow existing users to create a gig', async () => {
+    const newEmployerData = {
+      displayName: 'ASdkaldajsdkljskl',
+      website: 'https://gweeasdsad.com',
+      introduction: 'This is new',
+      email: existingUser.email,
+      employerType: 'COMPANY',
+      avatarFileId: testFile2,
+    };
+    const res = await axios.post(testUrl, {
+      query: /* graphql */ `
+        mutation($gig: GigInput!, $employer: EmployerInput!) {
+          createGig(gig: $gig, employer: $employer) {
+            title
+            communicationType
+            communicationEmail
+            description
+            tags {
+              id
+              name
+            }
+            projectType
+            paymentType
+            minFee
+            maxFee
+            jobType
+            employer {
+              id
+              email
+              displayName
+              avatar {
+                id
+              }
+              asUser {
+                email
+              }
+            }
+          }
+        }
+      `,
+      variables: { employer: newEmployerData, gig },
+    });
+    const { employer: employerResult, ...gigResult } = res.data.data.createGig;
+    expect(gig).toMatchObject({
+      ...gigResult,
+      tags: gigResult.tags.map(t => t.name),
+    });
+    expect(employerResult.email).toEqual(newEmployerData.email);
+    expect(employerResult.avatar.id).toEqual(newEmployerData.avatarFileId);
+    expect(employerResult.displayName).toEqual(newEmployerData.displayName);
+    expect(employerResult.asUser.email).toEqual(existingUser.email);
+  });
+
+  it('Created user from gig should be properly hashed by argon', async () => {
+    const user = await prisma.user({ email: employer.email });
+    const randomhash = await argon2.hash('adskjsadksjdaskldjaskl');
+    const res = await argon2.verify(user.password, randomhash);
+    expect(user.password).toBeTruthy();
+    expect(res).toEqual(false);
+  });
+
+  it('Should properly sanitize all the html strings to avoid xss attacks', async () => {
+    const gigTestXss = {
+      title: 'Testing App',
+      description: '<math><mi//xlink:href="data:x,<script>alert(4)</script>">',
+      tags: ['g-node', 'g-react'],
+      projectType: 'TESTING',
+      paymentType: 'FIXED',
+      minFee: 100.0,
+      maxFee: 200.0,
+      jobType: 'CONTRACT',
+      communicationType: 'EMAIL',
+      communicationEmail: 'casd@gmail.com',
+    };
+    const employerTestXss = {
+      displayName: 'ASdkaldajsdkljskl',
+      website: 'https://gweeasdsad.com',
+      introduction: '<TABLE><tr><td>HELLO</tr></TABL>',
+      email: existingUser.email,
+      employerType: 'COMPANY',
+      avatarFileId: testFile2,
+    };
+    const res = await axios.post(testUrl, {
+      query: /* graphql */ `
+        mutation($gig: GigInput!, $employer: EmployerInput!) {
+          createGig(gig: $gig, employer: $employer) {
+            description
+            employer {
+              id
+              introduction
+            }
+          }
+        }
+      `,
+      variables: { employer: employerTestXss, gig: gigTestXss },
+    });
+    const { employer: employerResult, ...gigResult } = res.data.data.createGig;
+    expect(employerResult.introduction).toBe(
+      '<table><tbody><tr><td>HELLO</td></tr></tbody></table>',
+    );
+    expect(gigResult.description).toBe('<math><mi></mi></math>');
+  });
 
   it('searches gig by title and tags', async () => {
     const post = createDebugPost(testUrl);
@@ -96,7 +297,6 @@ describe('Testing gig resolvers', () => {
           gigs {
             id
             title
-            status
             tags {
               id
               name
@@ -108,14 +308,11 @@ describe('Testing gig resolvers', () => {
     `;
 
     const res = await post({ query });
-    fullDisplay(res);
-    const { searchGigs: resG } = res;
-    expect(resG[0].p).toBe(1);
-    expect(resG[0].title).toBe(searchGigs[0].title);
-    expect(resG[1].p).toBe(2);
-    expect(resG[2].p).toBe(2);
-    expect(resG[3].p).toBe(3);
-    expect(resG[4].p).toBe(3);
+    // fullDisplay(res);
+    // results varies upon unrelated seeded gigs
+    const { gigs, ids } = res.searchGigs;
+    expect(gigs[0].title).toBe(searchGigs[0].title);
+    expect(ids.length >= 2).toBe(true);
   });
 });
 
@@ -143,12 +340,12 @@ function searchGigsFactory() {
   return [
     /*1*/_cgig('Senior javascript programmer', ['g-javascript', 'g-node', 'g-react']),
     /*2*/_cgig('Junior javascript programmer', ['g-javascript', 'g-node']),
-    // /*3*/_cgig('Frontend engineer', ['g-javascript', 'g-react', 'g-design', 'g-frontend']),
-    // /*4*/_cgig('Experienced Tech Mentor', ['g-javascript', 'g-node', 'g-next']),
-    // /*5*/_cgig('Information Business Consultant', ['g-information', 'g-architecture', 'g-consultant']),
-    // /*6*/_cgig('Frontend UI/UX designer', ['g-design', 'g-frontend', 'g-figma']),
-    // /*7*/_cgig('Development Operation Engineer', ['g-devops', 'g-infrastracture', 'g-configuration']),
-    // /*8*/_cgig('Senior AI Engineer', ['g-python', 'g-engineer', 'g-ai']),
+    /*3*/_cgig('Frontend engineer', ['g-javascript', 'g-react', 'g-design', 'g-frontend']),
+    /*4*/_cgig('Experienced Tech Mentor', ['g-javascript', 'g-node', 'g-next']),
+    /*5*/_cgig('Information Business Consultant', ['g-information', 'g-architecture', 'g-consultant']),
+    /*6*/_cgig('Frontend UI/UX designer', ['g-design', 'g-frontend', 'g-figma']),
+    /*7*/_cgig('Development Operation Engineer', ['g-devops', 'g-infrastracture', 'g-configuration']),
+    /*8*/_cgig('Senior AI Engineer', ['g-python', 'g-engineer', 'g-ai']),
   ].map(g => ({ ...g, tags: { connect: g.tags.map(t => ({ name: t })) } }));
   /* eslint-enable spaced-comment */
   /* eslint-enable prettier/prettier */
