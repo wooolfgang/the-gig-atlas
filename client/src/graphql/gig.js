@@ -157,3 +157,35 @@ export const GIG_SEARCH = gql`
     }
   }
 `;
+
+export const GIG_NEXT_PAGE = gql`
+  query GIG_NEXT_PAGE($ids: [ID!]!) {
+    nextPage(ids: $ids) {
+      id
+      title
+      createdAt
+      description
+      tags {
+        id
+        name
+      }
+      projectType
+      paymentType
+      minFee
+      maxFee
+      jobType
+      locationRestriction
+      communicationType
+      communicationEmail
+      communicationWebsite
+      employer {
+        id
+        displayName
+      }
+      media {
+        id
+        url
+      }
+    }
+  }
+`;
