@@ -1,5 +1,6 @@
 function debounce(func, wait, immediate) {
   let timeout = null;
+
   return function run() {
     const context = this;
     const args = arguments;
