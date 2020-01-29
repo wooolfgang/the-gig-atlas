@@ -1,6 +1,6 @@
 {
   "ext": "js, json, env, .babelrc, graphql",
-  "ignore": ["*.test.js", "test.js", "fixtures/*"],
+  "ignore": ["*.test.js", "test.js", "fixtures/*", "/seed/**"],
   "events": {
     "restart": "kill-port 8080",
     "crash": "kill-port 8080"

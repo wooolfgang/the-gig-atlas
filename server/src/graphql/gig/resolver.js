@@ -1,9 +1,10 @@
+/* eslint-disable import/no-cycle */
 import uuidv4 from 'uuid/v4';
 import argon2 from 'argon2';
 import prisma from '@thegigatlas/prisma';
-import { toAndQuery, toOrQuery } from '../../serverless/postgres';
-// eslint-disable-next-line import/no-cycle
+import { createFragment, createSubFragment } from '../utils/fragment';
 import { transformEmployerInput } from '../employer/resolver';
+import { gigSearchQuery } from './utils';
 
 export function transformGigInput({ avatarFileId, ...gigInput }) {
   return {
@@ -19,47 +20,67 @@ export function transformGigInput({ avatarFileId, ...gigInput }) {
   };
 }
 
+function _sortGigsByIds(ids, gigs) {
+  const idMap = ids.reduce((map, id, i) => {
+    // eslint-disable-next-line no-param-reassign
+    map[id] = i;
+
+    return map;
+  }, {});
+
+  gigs.sort((a, b) => idMap[a.id] - idMap[b.id]);
+  return gigs;
+}
+
 /**
  * Search gigs
  * target fields: 1.titles, 2.tags, 3.employers
  */
-function searchGigs(
-  _r,
-  { search, where, skip, after, before, first, last },
-  { pg },
-) {
-  if (!search) {
-    return prisma.gigs({
-      first: first || 8,
-      where,
-      orderBy: 'createdAt_DESC',
-      skip,
-      after,
-      before,
-      last,
-    });
+async function searchGigs(_r, { search, where = {} }, { pg }, info) {
+  const { first, skip } = where;
+  const qs = gigSearchQuery(search, where);
+  const { rows } = await pg.query(qs); // .catch(e => console.log(e));
+  const ids = rows.map(r => r.id);
+
+  if (rows.length === 0) {
+    return { gigs: [], ids: [] };
   }
 
-  const orQuery = toOrQuery(search);
-  const andQuery = toAndQuery(search);
-  const qs = /* sql */ `
-    SELECT * FROM search_gigs('${andQuery}', '${orQuery}');
-  `;
+  const id_in = [];
+  const itemCount = first || 20;
+  const begin = skip || 0;
+  for (let i = begin; i < itemCount; i += 1) {
+    const id = ids[i];
+    if (!id) break;
+    id_in.push(id);
+  }
 
-  return pg.query(qs).then(r => r.rows);
+  const frag = createSubFragment(info, 'GigSearch', 'Gig', 'gigs', true);
+  const gigs = await prisma.gigs({ where: { id_in } }).$fragment(frag);
+  const sortedGigs = _sortGigsByIds(id_in, gigs);
+
+  return { ids, gigs: sortedGigs };
+}
+
+async function nextPage(_, { ids }, _c, info) {
+  const frag = createFragment(info, 'NextGig', 'Gig', true);
+  const gigs = await prisma.gigs({ where: { id_in: ids } }).$fragment(frag);
+
+  return _sortGigsByIds(ids, gigs);
 }
 
 export default {
   Query: {
     gig: (_, { id }) => prisma.gig({ id }),
     searchGigs,
-    gigs: (_, args) => prisma.gigs(args),
+    nextPage,
+    gigs: (_, args, _1, info) =>
+      prisma.gigs(args).$fragment(createFragment(info, 'Gigs', 'Gig', true)),
     gigsListLanding: () => prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
   },
   Mutation: {
     createGig: async (_, { gig, employer }) => {
       const existingUser = await prisma.$exists.user({ email: employer.email });
-      const password = await argon2.hash(uuidv4());
 
       // Create tags that do not exist
       const existingTags = await Promise.all(
@@ -91,12 +112,13 @@ export default {
                   create: {
                     email: employer.email,
                     role: 'MEMBER',
-                    password,
+                    password: await argon2.hash(uuidv4()),
                   },
                 },
           },
         },
       };
+
       return prisma.createGig(createGigInput);
     },
     deleteGig: async (_, args) => {
@@ -106,9 +128,9 @@ export default {
     },
   },
   Gig: {
-    employer: ({ id }) => prisma.gig({ id }).employer(),
-    tags: ({ id }) => prisma.gig({ id }).tags(),
-    media: ({ id }) => prisma.gig({ id }).media(),
+    employer: ({ id, employer }) => employer || prisma.gig({ id }).employer(),
+    tags: ({ id, tags }) => tags || prisma.gig({ id }).tags(),
+    media: ({ id, media }) => media || prisma.gig({ id }).media(),
   },
 };
 

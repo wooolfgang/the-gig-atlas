@@ -34,12 +34,13 @@ afterAll(async () => {
   // No need to delete threads, as it cascade deletes on user delete
   try {
     await Promise.all([
-      prisma.deleteUser({ id: normalUser.id }),
+      prisma.deleteUser({ id: normalUser.id }), // also removes threadVote
       prisma.deleteManyTags({ name_in: tags }),
-      prisma.deleteThreadVote({ user: { id: normalUser.id } }),
+      // prisma.deleteThreadVote({ user: { id: normalUser.id } }), -- graph delete by from user
     ]);
   } catch (e) {
-    console.log('fail gracefully');
+    console.warn('FAIL GRACEFULLY: /thread afterAll');
+    console.log(e);
   }
 });
 
