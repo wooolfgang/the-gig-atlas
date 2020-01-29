@@ -19,12 +19,15 @@ const prod = {};
 
 /**
  * modules for development seeds should be put here
+ * the order of the seeds matter, when running
+ * yarn run seed:dev, the script is run
+ * synchronously according to its order
  */
 const dev = {
   'test-plan': planModule.dailyTestPlan,
+  tag: require('./dev/tag').default,
   gig: require('./dev/gig').default,
   gig2: require('./dev/gig2').default,
-  tag: require('./dev/tag').default,
   plan: planModule.default,
   threadTag: require('./dev/threadTag').default,
   thread: require('./dev/thread').default,

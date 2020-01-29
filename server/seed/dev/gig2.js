@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 /* eslint-disable no-use-before-define */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
@@ -24,14 +25,16 @@ const searchGigs = [
   /* eslint-enable spaced-comment */
   /* eslint-enable prettier/prettier */
 
-
 export default async () => {
   try {
     const tags = await Promise.all(
-      [...tags1, ...tags2, ...tags3].map(t => prisma.createTag({ name: t })),
+      [...tags1, ...tags2, ...tags3].map(t =>
+        prisma.createTag({ name: t }).catch(console.error),
+      ),
     );
 
-    const frag = /* sql */ 'fragment ASD on Gig { id title status tags { id name } }';
+    const frag =
+      /* sql */ 'fragment ASD on Gig { id title status tags { id name } }';
     const gigs = await Promise.all(
       searchGigs.map(g => prisma.createGig(g).$fragment(frag)),
     );
