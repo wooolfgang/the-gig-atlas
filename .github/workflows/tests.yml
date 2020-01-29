@@ -17,6 +17,7 @@ jobs:
       - run: npm run prisma:install
       - run: npm run prisma:apply
       - run: npm run prisma:generate
+      - run: cd prisma && npm run migrate:staging && cd ..
       - run: cp server/.env.testing server/.env
       - run: npm run server:test
   
