@@ -13,6 +13,7 @@
     "server:test": "cd server && npm run test",
     "prisma:generate": "cd prisma && npm run prisma:generate",
     "prisma:apply": "cd prisma && npm run prisma:login && npm run prisma:apply",
+    "prisma:install": "cd prisma && npm install",
     "common:build": "cd common && npm run build",
     "client:build": "cd client && npm run build",
     "scraper:build": "cd scraper && npm run build"

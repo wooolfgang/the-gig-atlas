@@ -19,7 +19,7 @@ services:
   postgres:
     ports:
       - '${PG_PORT}:5432' # acess postgres cli from local
-    image: postgres:10.3
+    image: ${PRISMA_IMAGE}
     restart: always
     environment:
       POSTGRES_USER: ${PG_USER}

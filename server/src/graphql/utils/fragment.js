@@ -12,13 +12,13 @@ const assembleFields = (selectionSet, isRecursive) => {
     return `${collected} ${current.name.value}`;
   }, '');
 
-  return `{ ${fields} }`;
+  return `{${fields} }`;
 };
 
 /**
- * Create fragment for prisma query optimizatoin
+ * Create fragment for prisma query optimization
  * @param {object} info the graphql info object
- * @param {string} operation fragment name
+ * @param {string} operation any fragment name
  * @param {string} type corresponding schema type
  * @param {boolean} isRecursive [default=false] allow relationship query
  */
@@ -28,3 +28,29 @@ export const createFragment = (info, operation, type, isRecursive = false) =>
     info.fieldNodes[0].selectionSet,
     isRecursive,
   )}`;
+
+/**
+ * Create fragment for prisma query optimization
+ * @param {object} info the graphql info object
+ * @param {string} operation any fragment name
+ * @param {string} type corresponding schema type of sub field
+ * @param {string} subName name of sub field
+ * @param {boolean} isRecursive [default=false] allow relationship query
+ */
+/* eslint-disable import/prefer-default-export */
+export const createSubFragment = (
+  info,
+  operation,
+  type,
+  subName,
+  isRecursive = false,
+) => {
+  const selectionSet = info.fieldNodes[0].selectionSet.selections.find(
+    field => field.name.value === subName,
+  ).selectionSet;
+
+  return `fragment ${operation} on ${type} ${assembleFields(
+    selectionSet,
+    isRecursive,
+  )}`;
+};

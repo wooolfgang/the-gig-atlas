@@ -15,6 +15,8 @@ export default {
     gigsListLanding: allow,
     searchGigs: allow,
     gigs: allow,
+    nextPage: allow,
   },
   Gig: allow,
+  GigSearch: allow,
 };

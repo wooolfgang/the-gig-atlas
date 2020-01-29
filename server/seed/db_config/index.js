@@ -1,9 +1,14 @@
+/**
+ * THIS FILE IS DEPRICATED, SEE MIGRATIONS IN PRISMA
+ */
+
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { client } from '../../src/serverless/postgres';
 import {
   createGigSearchFunction,
   setupSearch,
+  removeSearch,
   removeGigSearchFunction,
 } from './utils';
 
@@ -37,12 +42,14 @@ export default async () => {
     const res = await Promise.all([
       setupSearch(pg, gigSearch),
       setupSearch(pg, tagSearch),
-      // setupSearch(pg, employerNameSearch),
+      setupSearch(pg, employerNameSearch),
+      // removeSearch(pg, gigSearch),
+      // removeSearch(pg, gigSearch),
+      // removeSearch(pg, employerNameSearch),
       // removeGigSearchFunction(pg), // remove if exist (for updating only)
       createGigSearchFunction(pg),
     ]);
-
-    console.log('\n>>> Successful Gig Search idx initialization');
+    console.log('\n>>> Sucesful Gig Search idx initialization');
     // console.log(res);
     pg.end();
   } catch (e) {

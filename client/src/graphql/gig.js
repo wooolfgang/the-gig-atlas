@@ -1,7 +1,5 @@
 import { gql } from 'apollo-boost';
 
-/* Mutations */
-
 export const GET_CLIENT_INFO = gql`
   {
     employerData @client {
@@ -134,25 +132,71 @@ export const GET_GIGS = gql`
 `;
 
 export const GIG_SEARCH = gql`
-  query GIG_SEARCH(
-    $search: String!
-    $where: GigWhereInput
-    $skip: Int
-    $after: String
-    $before: String
-    $first: Int
-    $last: Int
-  ) {
-    searchGigs(
-      search: $search
-      where: $where
-      skip: $skip
-      after: $after
-      before: $before
-      first: $first
-      last: $last
-    ) {
-      ...${Gig}
+  query GIG_SEARCH($search: String!, $where: SearchOptions) {
+    searchGigs(search: $search, where: $where) {
+      gigs {
+        id
+        title
+        description
+        createdAt
+        description
+        tags {
+          id
+          name
+        }
+        projectType
+        paymentType
+        jobType
+        minFee
+        maxFee
+        jobType
+        locationRestriction
+        communicationType
+        communicationEmail
+        communicationWebsite
+        employer {
+          id
+          displayName
+        }
+        media {
+          id
+          url
+        }
+        from
+      }
+      ids
+    }
+  }
+`;
+
+export const GIG_NEXT_PAGE = gql`
+  query GIG_NEXT_PAGE($ids: [ID!]!) {
+    nextPage(ids: $ids) {
+      id
+      title
+      createdAt
+      description
+      tags {
+        id
+        name
+      }
+      projectType
+      paymentType
+      minFee
+      maxFee
+      jobType
+      locationRestriction
+      communicationType
+      communicationEmail
+      communicationWebsite
+      employer {
+        id
+        displayName
+      }
+      media {
+        id
+        url
+      }
     }
   }
 `;
