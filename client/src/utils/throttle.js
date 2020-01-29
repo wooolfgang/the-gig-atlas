@@ -1,5 +1,5 @@
 /**
- * Create a throtle callback function
+ * Creates a throttle callback function
  * Throttling is configured as a threshold on the maximum number of
  * requests that can be made during a specific time period.
  * @param {number} wait time in miliseconds

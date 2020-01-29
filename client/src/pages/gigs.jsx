@@ -1,23 +1,17 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable react/jsx-curly-newline */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-// import PropTypes from 'prop-types';
-// import { useRouter } from 'next/router';
 import { useApolloClient } from '@apollo/react-hooks';
 import withAuthSync from '../components/withAuthSync';
 import GigsList from '../components/GigsList';
 import { GIG_SEARCH, GIG_NEXT_PAGE } from '../graphql/gig';
 import { GigCardSkeleton } from '../components/GigCard';
-// import { JOB_TYPE, PROJECT_TYPE, PAYMENT_TYPE } from '../utils/constants';
 import { propTypes } from '../utils/globals';
-// import debounce from '../utils/debounce';
 import media from '../utils/media';
 import Button from '../primitives/Button';
-import createThrottle from '../utils/throtle';
+import createThrottle from '../utils/throttle';
 import Nav from '../components/Nav';
-import Search from '../components/Gig/GigSearch';
-import FilterSidebar from '../components/Gig/Sidebar';
+import Search from '../components/GigSearch';
+import FilterSidebar from '../components/GigFilterSidebar';
 
 const Container = styled.main`
   padding: 2rem 1rem;
@@ -53,7 +47,8 @@ const GigsContainer = styled.div`
 `;
 
 const Gigs = ({ user }) => {
-  const [isSearching, setSearching] = useState(false); // searching for new search only not for paging loaded query
+  // searching for new search only not for paging loaded query
+  const [isSearching, setSearching] = useState(false);
   const [paging, setPage] = useState({
     gigs: [], // gigs to be displayed
     totalResults: 0,
@@ -73,21 +68,16 @@ const Gigs = ({ user }) => {
     searchVariables.first * paging.page < paging.totalResults;
 
   const client = useApolloClient();
-  // let resultIds = [];
 
   const newSearch = async ({ search, first, where = {} }) => {
+    startSearching();
     const options = { search, where: { ...where, first } };
-    // console.log('new Search: ', options);
     try {
       const res = await client.query({
         query: GIG_SEARCH,
         variables: options,
       });
       const { gigs, ids } = res.data.searchGigs;
-      // console.log('new gigs: ', gigs.length, ids.length);
-      // console.log(gigs);
-      // resultIds = ids;
-      // console.log('new result ids: ', resultIds);
       setPage({
         gigs,
         totalResults: ids.length,
@@ -97,6 +87,7 @@ const Gigs = ({ user }) => {
     } catch (e) {
       console.error(e);
     }
+    stopSearching();
   };
 
   const nextPage = async () => {
@@ -106,17 +97,13 @@ const Gigs = ({ user }) => {
 
     const { page, resultIds } = paging;
     const { first } = searchVariables;
-    // const end = page * first + first >
     const nextIds = [];
     const start = page * first;
     const end = page * first + first;
-    // console.log(start, end, resultIds);
-    for (let i = start; i < end; i++) {
+    for (let i = start; i < end; i += 1) {
       if (!resultIds[i]) break;
       nextIds.push(resultIds[i]);
     }
-
-    // console.log('next ids: ', nextIds);
 
     try {
       setPage(prev => ({ ...prev, isLoading: true }));
@@ -125,7 +112,6 @@ const Gigs = ({ user }) => {
         variables: { ids: nextIds },
       });
       const newGigs = res.data.nextPage;
-      // console.log('next gigs: ', newGigs);
 
       setPage(prev => ({
         ...prev,
@@ -134,7 +120,6 @@ const Gigs = ({ user }) => {
         isLoading: false,
       }));
     } catch (e) {
-      console.error(e);
       setPage(prev => ({ ...prev, isLoading: false }));
     }
   };
@@ -147,12 +132,6 @@ const Gigs = ({ user }) => {
     startSearching();
     newSearch(newOption).then(() => stopSearching());
   });
-
-  // useEffect(() => {
-  //   startSearching();
-  //   newSearch({ search: 'senior' }).then(() => stopSearching());
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   const handleTextSearch = search => {
     setSearchVariables(p => ({ ...p, search }));
@@ -186,12 +165,6 @@ const Gigs = ({ user }) => {
       return vars;
     });
   };
-
-  // const handleShowMore = () =>
-  //   setSearchVariables(prevVal => ({
-  //     ...prevVal,
-  //     first: prevVal.first + 8,
-  //   }));
 
   return (
     <div>

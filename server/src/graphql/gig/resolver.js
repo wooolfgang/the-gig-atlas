@@ -1,11 +1,9 @@
-/* eslint-disable no-plusplus */
+/* eslint-disable import/no-cycle */
 import uuidv4 from 'uuid/v4';
 import argon2 from 'argon2';
 import prisma from '@thegigatlas/prisma';
 import { createFragment, createSubFragment } from '../utils/fragment';
-// eslint-disable-next-line import/no-cycle
 import { transformEmployerInput } from '../employer/resolver';
-// import { fullDisplay } from '../utils/display';
 import { gigSearchQuery } from './utils';
 
 export function transformGigInput({ avatarFileId, ...gigInput }) {
@@ -51,7 +49,7 @@ async function searchGigs(_r, { search, where = {} }, { pg }, info) {
   const id_in = [];
   const itemCount = first || 20;
   const begin = skip || 0;
-  for (let i = begin; i < itemCount; i++) {
+  for (let i = begin; i < itemCount; i += 1) {
     const id = ids[i];
     if (!id) break;
     id_in.push(id);
@@ -79,12 +77,10 @@ export default {
     gigs: (_, args, _1, info) =>
       prisma.gigs(args).$fragment(createFragment(info, 'Gigs', 'Gig', true)),
     gigsListLanding: () => prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
-    // .$fragment(createFragment(info, 'GigsLand', 'Gig', true)),
   },
   Mutation: {
     createGig: async (_, { gig, employer }) => {
       const existingUser = await prisma.$exists.user({ email: employer.email });
-      // const password = await argon2.hash(uuidv4());
 
       // Create tags that do not exist
       const existingTags = await Promise.all(
@@ -124,7 +120,6 @@ export default {
       };
 
       return prisma.createGig(createGigInput);
-      // .$fragment(createFragment(info, 'GigCreateFrag', 'Gig', true));
     },
     deleteGig: async (_, args) => {
       await prisma.deleteGig(args);
@@ -137,10 +132,6 @@ export default {
     tags: ({ id, tags }) => tags || prisma.gig({ id }).tags(),
     media: ({ id, media }) => media || prisma.gig({ id }).media(),
   },
-  // GigSearch: {
-  //   gigs: ({ gigs }) => gigs,
-  //   ids: ({ ids }) => ids,
-  // },
 };
 
 /**

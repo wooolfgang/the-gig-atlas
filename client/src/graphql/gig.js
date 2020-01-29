@@ -1,7 +1,5 @@
 import { gql } from 'apollo-boost';
 
-/* Mutations */
-
 export const GET_CLIENT_INFO = gql`
   {
     employerData @client {
@@ -139,6 +137,7 @@ export const GIG_SEARCH = gql`
       gigs {
         id
         title
+        description
         createdAt
         description
         tags {
@@ -147,6 +146,7 @@ export const GIG_SEARCH = gql`
         }
         projectType
         paymentType
+        jobType
         minFee
         maxFee
         jobType
@@ -162,6 +162,7 @@ export const GIG_SEARCH = gql`
           id
           url
         }
+        from
       }
       ids
     }

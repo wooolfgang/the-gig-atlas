@@ -1,6 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable func-names */
+/* eslint-disable object-curly-newline */
 /**
  * Search indexing config data
  * @typedef {Object} SearchConfig

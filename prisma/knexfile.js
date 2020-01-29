@@ -3,7 +3,7 @@
 const result = require('dotenv').config();
 
 if (result.error) {
-  throw result.error
+  throw result.error;
 }
 
 // eslint-disable-next-line prettier/prettier
