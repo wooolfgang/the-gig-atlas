@@ -1,36 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { JOB_TYPE, PROJECT_TYPE, PAYMENT_TYPE } from '../../utils/constants';
 import { useMedia } from '../MediaProvider';
 import Button from '../../primitives/Button';
+import { Filter, FilterContainer } from './style';
 
-const Filter = styled.div``;
-
-// eslint-disable-next-line react/prop-types
-
-const FilterContainer = styled.div`
-  grid-area: filter;
-  padding: 1rem;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-
-  .filter-name {
-    margin: 0.75rem 0;
-    color: ${props => props.theme.color.neutral80};
-  }
-
-  .filter-label {
-    display: block;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    color: ${props => props.theme.color.neutral70};
-  }
-`;
-
-// eslint-disable-next-line react/prop-types
-const FilterSidebar = ({ handleFiltering }) => {
+const GigFilterSidebar = ({ handleFiltering }) => {
   const { size } = useMedia({}, { debounceTime: 5 });
   const isBigScreen = size === 'desktop' || size === 'giant';
   const [showFilter, setShowFilter] = useState(isBigScreen);
@@ -131,4 +106,8 @@ const FilterSidebar = ({ handleFiltering }) => {
   );
 };
 
-export default FilterSidebar;
+GigFilterSidebar.propTypes = {
+  handleFiltering: PropTypes.func.isRequired,
+};
+
+export default GigFilterSidebar;

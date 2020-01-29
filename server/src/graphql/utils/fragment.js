@@ -1,5 +1,3 @@
-// import { fullDisplay } from './display';
-
 const assembleFields = (selectionSet, isRecursive) => {
   const fields = selectionSet.selections.reduce((collected, current) => {
     if (current.selectionSet) {
