@@ -43,7 +43,6 @@ const envSeeds = {
  */
 const seeds = {
   admin: require('./admin').default,
-  // 'db-config': require('./db_config').default,
 };
 
 const toSeeds = [];

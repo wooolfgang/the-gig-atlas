@@ -16,7 +16,6 @@
     "test:subscribe": "cross-env NODE_ENV=dev jest src/graphql/subscription/test.js",
     "seed:dev": "cross-env NODE_ENV=dev node -r dotenv/config ./seed/index.js",
     "seed:prod": "cross-env NODE_ENV=production node -r dotenv/config ./seed/index.js",
-    "seed:default": "yarn run seed:dev admin plan db-config",
     "watchers": "echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p",
     "purge": "cross-env NODE_ENV=dev node -r dotenv/config seed/_purge.js"
   },
