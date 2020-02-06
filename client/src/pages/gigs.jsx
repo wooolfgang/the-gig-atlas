@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import withAuthSync from '../components/withAuthSync';
 import GigsList from '../components/GigsList';
-import { GIG_SEARCH, GIG_NEXT_PAGE } from '../graphql/gig';
+import { GIG_SEARCH } from '../graphql/gig';
 import { GigCardSkeleton } from '../components/GigCard';
 import { propTypes } from '../utils/globals';
 import media from '../utils/media';
 import Button from '../primitives/Button';
-import createThrottle from '../utils/throttle';
 import Nav from '../components/Nav';
 import Search from '../components/GigSearch';
 import FilterSidebar from '../components/GigFilterSidebar';
@@ -46,111 +45,52 @@ const GigsContainer = styled.div`
   grid-area: gigs;
 `;
 
+const GigsSkeletonLoading = () => (
+  <div>
+    <GigCardSkeleton />
+    <GigCardSkeleton />
+    <GigCardSkeleton />
+    <GigCardSkeleton />
+  </div>
+);
+
+const PAGE_COUNT = 8;
+
 const Gigs = ({ user }) => {
-  // searching for new search only not for paging loaded query
-  const [isSearching, setSearching] = useState(false);
-  const [paging, setPage] = useState({
-    gigs: [], // gigs to be displayed
-    totalResults: 0,
-    page: 1, // number of gig batch loaded as page
-    isLoading: false, // state for loading for next gigs
-    resultIds: [], // containes all ids that will be referenced for paging
-  });
   const [searchVariables, setSearchVariables] = useState({
     search: '',
-    first: 8, // first is the number of items gigs to be queried and incremental loaded
-    where: {}, // where reference to client only not on server searchGig where parameter
+    first: PAGE_COUNT,
+    where: {},
+  });
+  const [isShowMoreLoading, setIsShowMoreLoading] = useState(false);
+  const { data, loading } = useQuery(GIG_SEARCH, {
+    variables: searchVariables,
+    fetchPolicy: 'cache-and-network',
+    onCompleted: () => setIsShowMoreLoading(false),
   });
 
-  const startSearching = () => setSearching(true);
-  const stopSearching = () => setSearching(false);
-  const hasNextPage = () =>
-    searchVariables.first * paging.page < paging.totalResults;
+  const hasNextPage = !!(
+    data &&
+    data.searchGigs.total &&
+    data.searchGigs.total > searchVariables.first
+  );
 
-  const client = useApolloClient();
-
-  const newSearch = async ({ search, first, where = {} }) => {
-    startSearching();
-    const options = { search, where: { ...where, first } };
-    try {
-      const res = await client.query({
-        query: GIG_SEARCH,
-        variables: options,
-      });
-      const { gigs, ids } = res.data.searchGigs;
-      setPage({
-        gigs,
-        totalResults: ids.length,
-        page: 1,
-        resultIds: ids,
-      });
-    } catch (e) {
-      console.error(e);
-    }
-    stopSearching();
-  };
-
-  const nextPage = async () => {
-    if (!hasNextPage()) {
-      return;
-    }
-
-    const { page, resultIds } = paging;
-    const { first } = searchVariables;
-    const nextIds = [];
-    const start = page * first;
-    const end = page * first + first;
-    for (let i = start; i < end; i += 1) {
-      if (!resultIds[i]) break;
-      nextIds.push(resultIds[i]);
-    }
-
-    try {
-      setPage(prev => ({ ...prev, isLoading: true }));
-      const res = await client.query({
-        query: GIG_NEXT_PAGE,
-        variables: { ids: nextIds },
-      });
-      const newGigs = res.data.nextPage;
-
-      setPage(prev => ({
-        ...prev,
-        gigs: [...prev.gigs, ...newGigs],
-        page: prev.page + 1,
-        isLoading: false,
-      }));
-    } catch (e) {
-      setPage(prev => ({ ...prev, isLoading: false }));
-    }
-  };
-
-  const throttleSearching = createThrottle(1000, newOption => {
-    if (!searchVariables.search.trim()) {
-      return;
-    }
-
-    startSearching();
-    newSearch(newOption).then(() => stopSearching());
-  });
-
-  const handleTextSearch = search => {
-    setSearchVariables(p => ({ ...p, search }));
-    newSearch({ ...searchVariables, search });
-  };
+  const handleTextSearch = val =>
+    setSearchVariables(prevVal => ({ ...prevVal, search: val }));
 
   const handleFiltering = (filter, value, checked) => {
     setSearchVariables(prevVal => {
-      const where = {
-        ...prevVal.where,
-      };
+      const where = { ...prevVal.where };
+      let isKeyFilterArray = where[filter] instanceof Array;
 
-      if (checked && !(where[filter] instanceof Array)) {
+      if (checked && !isKeyFilterArray) {
         where[filter] = [];
+        isKeyFilterArray = true;
       }
 
-      if (checked && where[filter] instanceof Array) {
+      if (checked && isKeyFilterArray) {
         where[filter].push(value);
-      } else if (!checked && where[filter] instanceof Array) {
+      } else if (!checked && isKeyFilterArray) {
         where[filter] = where[filter].filter(v => v !== value);
       }
 
@@ -158,12 +98,16 @@ const Gigs = ({ user }) => {
         delete where[filter];
       }
 
-      const vars = { ...prevVal, where };
-
-      throttleSearching(vars);
-
-      return vars;
+      return { ...prevVal, where };
     });
+  };
+
+  const handleShowMore = () => {
+    setIsShowMoreLoading(true);
+    setSearchVariables(prevVal => ({
+      ...prevVal,
+      first: prevVal.first + PAGE_COUNT,
+    }));
   };
 
   return (
@@ -172,23 +116,22 @@ const Gigs = ({ user }) => {
         type={user ? 'AUTHENTICATED_FREELANCER' : 'NOT_AUTHENTICATED'}
         user={user}
       />
-
       <Container>
         <Search onSearch={handleTextSearch} />
         <FilterSidebar handleFiltering={handleFiltering} />
         <GigsContainer>
-          {isSearching ? (
-            <div>
-              <GigCardSkeleton />
-              <GigCardSkeleton />
-              <GigCardSkeleton />
-              <GigCardSkeleton />
-            </div>
+          {loading && !isShowMoreLoading ? (
+            <GigsSkeletonLoading />
           ) : (
             <>
-              <GigsList gigs={paging.gigs} />
-              {hasNextPage() && (
-                <Button onClick={nextPage} loading={paging.isLoading}>
+              <GigsList gigs={data ? data.searchGigs.gigs : []} />
+              {loading && isShowMoreLoading && <GigsSkeletonLoading />}
+              {hasNextPage && (
+                <Button
+                  onClick={handleShowMore}
+                  loading={isShowMoreLoading}
+                  disabled={isShowMoreLoading}
+                >
                   Show More
                 </Button>
               )}

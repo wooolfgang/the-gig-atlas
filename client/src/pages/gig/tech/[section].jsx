@@ -41,35 +41,36 @@ const FormContainer = styled.div`
   `}
 `;
 
+const steps = [
+  {
+    title: 'Enter gig details',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+    key: 'create',
+  },
+  {
+    title: 'Enter your info',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+    key: 'enter-info',
+  },
+  {
+    title: 'Preview your post',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+    key: 'preview-post',
+  },
+  {
+    title: 'Purchase',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+    key: 'purchase',
+  },
+];
+
 const Post = () => {
   const router = useRouter();
   const { section } = router.query;
-  const steps = [
-    {
-      title: 'Enter gig details',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-      key: 'create',
-    },
-    {
-      title: 'Enter your info',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-      key: 'enter-info',
-    },
-    {
-      title: 'Preview your post',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-      key: 'preview-post',
-    },
-    {
-      title: 'Purchase',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-      key: 'purchase',
-    },
-  ];
 
   const activeIndex = steps.findIndex(s => s.key === section);
 
@@ -89,9 +90,14 @@ const Post = () => {
     }
   };
 
+  const uselessfunction = () => ('eee' || 'what') === 'eee';
+
   return (
     <div>
-      <HTMLHead title={`The Gig Atlas - ${steps[activeIndex].title}`} />
+      <HTMLHead
+        title={`The Gig Atlas - ${steps[activeIndex].title}`}
+        onClick={uselessfunction}
+      />
       <Nav type="NOT_AUTHENTICATED" />
       <div style={{ padding: '0 8.3%' }}>
         <h1>Create a software gig</h1>

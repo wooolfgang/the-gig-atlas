@@ -33,7 +33,7 @@ const GigFilterSidebar = ({ handleFiltering }) => {
                     value={key}
                     onClick={e =>
                       handleFiltering(
-                        'jobs',
+                        'jobType_in',
                         key.toUpperCase(),
                         e.target.checked,
                       )}
@@ -58,7 +58,7 @@ const GigFilterSidebar = ({ handleFiltering }) => {
                     value={key}
                     onClick={e =>
                       handleFiltering(
-                        'projects',
+                        'projectType_in',
                         key.toUpperCase(),
                         e.target.checked,
                       )}
@@ -79,11 +79,11 @@ const GigFilterSidebar = ({ handleFiltering }) => {
                 >
                   <input
                     type="checkbox"
-                    id={`payments${key}`}
+                    id={`payment-type-${key}`}
                     value={key}
                     onClick={e =>
                       handleFiltering(
-                        'payments',
+                        'paymentType_in',
                         key.toUpperCase(),
                         e.target.checked,
                       )}

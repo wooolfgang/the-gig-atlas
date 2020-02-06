@@ -132,8 +132,13 @@ export const GET_GIGS = gql`
 `;
 
 export const GIG_SEARCH = gql`
-  query GIG_SEARCH($search: String!, $where: SearchOptions) {
-    searchGigs(search: $search, where: $where) {
+  query GIG_SEARCH(
+    $search: String!
+    $where: GigWhereInput
+    $first: Int
+    $skip: Int
+  ) {
+    searchGigs(search: $search, where: $where, first: $first, skip: $skip) {
       gigs {
         id
         title
@@ -164,39 +169,7 @@ export const GIG_SEARCH = gql`
         }
         from
       }
-      ids
-    }
-  }
-`;
-
-export const GIG_NEXT_PAGE = gql`
-  query GIG_NEXT_PAGE($ids: [ID!]!) {
-    nextPage(ids: $ids) {
-      id
-      title
-      createdAt
-      description
-      tags {
-        id
-        name
-      }
-      projectType
-      paymentType
-      minFee
-      maxFee
-      jobType
-      locationRestriction
-      communicationType
-      communicationEmail
-      communicationWebsite
-      employer {
-        id
-        displayName
-      }
-      media {
-        id
-        url
-      }
+      total
     }
   }
 `;
