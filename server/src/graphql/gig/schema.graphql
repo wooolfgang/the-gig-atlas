@@ -9,7 +9,12 @@ type Query {
     first: Int
     last: Int
   ): [Gig]!
-  searchGigs(search: String!, where: SearchOptions): GigSearch!
+  searchGigs(
+    search: String!
+    where: GigWhereInput
+    first: Int
+    skip: Int
+  ): GigSearch!
   gigsListLanding: [Gig]!
   nextPage(ids: [ID!]!): [Gig]!
 }
@@ -65,5 +70,5 @@ input SearchOptions {
 
 type GigSearch {
   gigs: [Gig]!
-  ids: [String]!
+  total: Int
 }

@@ -2,7 +2,7 @@
 import uuidv4 from 'uuid/v4';
 import argon2 from 'argon2';
 import prisma from '@thegigatlas/prisma';
-import { createFragment, createSubFragment } from '../utils/fragment';
+import { createFragment } from '../utils/fragment';
 import { transformEmployerInput } from '../employer/resolver';
 import { gigSearchQuery } from './utils';
 
@@ -20,60 +20,39 @@ export function transformGigInput({ avatarFileId, ...gigInput }) {
   };
 }
 
-function _sortGigsByIds(ids, gigs) {
-  const idMap = ids.reduce((map, id, i) => {
-    // eslint-disable-next-line no-param-reassign
-    map[id] = i;
+async function searchGigs(_r, args, { pg }, info) {
+  const { search, where = {}, first = 8, skip = 0 } = args;
 
-    return map;
-  }, {});
+  if (!search) {
+    const gigs = await prisma.gigs(
+      { where, first, skip, orderBy: 'createdAt_DESC' },
+      info,
+    );
+    const total = await prisma
+      .gigsConnection()
+      .aggregate()
+      .count();
 
-  gigs.sort((a, b) => idMap[a.id] - idMap[b.id]);
-  return gigs;
-}
-
-/**
- * Search gigs
- * target fields: 1.titles, 2.tags, 3.employers
- */
-async function searchGigs(_r, { search, where = {} }, { pg }, info) {
-  const { first, skip } = where;
-  const qs = gigSearchQuery(search, where);
-  const { rows } = await pg.query(qs); // .catch(e => console.log(e));
-  const ids = rows.map(r => r.id);
-
-  if (rows.length === 0) {
-    return { gigs: [], ids: [] };
+    return { gigs, total };
   }
 
-  const id_in = [];
-  const itemCount = first || 20;
-  const begin = skip || 0;
-  for (let i = begin; i < itemCount; i += 1) {
-    const id = ids[i];
-    if (!id) break;
-    id_in.push(id);
-  }
+  const qs = gigSearchQuery({
+    search,
+    where,
+    first,
+    skip,
+  });
 
-  const frag = createSubFragment(info, 'GigSearch', 'Gig', 'gigs', true);
-  const gigs = await prisma.gigs({ where: { id_in } }).$fragment(frag);
-  const sortedGigs = _sortGigsByIds(id_in, gigs);
-
-  return { ids, gigs: sortedGigs };
-}
-
-async function nextPage(_, { ids }, _c, info) {
-  const frag = createFragment(info, 'NextGig', 'Gig', true);
-  const gigs = await prisma.gigs({ where: { id_in: ids } }).$fragment(frag);
-
-  return _sortGigsByIds(ids, gigs);
+  const { rows } = await pg.query(qs);
+  const gigs = rows.length === 0 ? [] : rows;
+  const total = rows[0] && rows[0].total ? rows[0].total : 0;
+  return { gigs, total };
 }
 
 export default {
   Query: {
     gig: (_, { id }) => prisma.gig({ id }),
     searchGigs,
-    nextPage,
     gigs: (_, args, _1, info) =>
       prisma.gigs(args).$fragment(createFragment(info, 'Gigs', 'Gig', true)),
     gigsListLanding: () => prisma.gigs({ first: 6, orderBy: 'createdAt_DESC' }),
@@ -81,8 +60,6 @@ export default {
   Mutation: {
     createGig: async (_, { gig, employer }) => {
       const existingUser = await prisma.$exists.user({ email: employer.email });
-
-      // Create tags that do not exist
       const existingTags = await Promise.all(
         gig.tags.map(tag =>
           prisma.$exists.tag({
@@ -128,19 +105,19 @@ export default {
     },
   },
   Gig: {
-    employer: ({ id, employer }) => employer || prisma.gig({ id }).employer(),
-    tags: ({ id, tags }) => tags || prisma.gig({ id }).tags(),
-    media: ({ id, media }) => media || prisma.gig({ id }).media(),
+    employer: ({ id }) => prisma.gig({ id }).employer(),
+    tags: ({ id }) => prisma.gig({ id }).tags(),
+    media: ({ id }) => prisma.gig({ id }).media(),
   },
 };
 
 /**
- * text query references
+ * -- text query references --
+ * Full text search in postgres: http://rachbelaid.com/postgres-full-text-search-is-good-enough/
+ * Getting total before offset/limit: https://stackoverflow.com/questions/28888375/run-a-query-with-a-limit-offset-and-also-get-the-total-number-of-rows
  * full text SQL architecture: https://docs.microsoft.com/en-us/sql/relational-databases/search/full-text-search?view=sql-server-ver15
  * postgres full text reference: https://www.postgresql.org/docs/9.5/textsearch.html
  * using view: https://www.postgresql.org/docs/9.5/tutorial-views.html
- *
  * working example: https://stackoverflow.com/questions/45123689/can-a-view-of-multiple-tables-be-used-for-full-text-search
- *
  * import/export pg db: https://www.a2hosting.com/kb/developer-corner/postgresql/import-and-export-a-postgresql-database
  */

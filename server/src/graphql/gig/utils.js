@@ -1,7 +1,8 @@
+/* eslint-disable no-multi-spaces, operator-linebreak */
 import { toAndQuery, toOrQuery } from '../../serverless/postgres';
 
 /**
- * converts string array to sql tupple
+ * Converts string array to sql tupple
  * e.g: ('foo','bar','baz')
  * @param {string[]} arr of string
  */
@@ -9,69 +10,79 @@ function _toSqlTuple(arr) {
   return `${arr.reduce((t, e) => `${t}'${e}',`, '(').slice(0, -1)})`;
 }
 
-export function gigSearchQuery(search, where) {
-  const { jobs, projects, payments } = where;
-  const orQuery = toOrQuery(search);
-  const andQuery = toAndQuery(search);
-  const gigPredicate = /* sql */ `
-     g.status='POSTED'
-    ${jobs && jobs.length > 0 ? `AND g."jobType" IN ${_toSqlTuple(jobs)}` : ''}
-    ${
-      projects && projects.length > 0
-        ? `AND g."projectType" IN ${_toSqlTuple(projects)}`
-        : ''
-    }
-    ${
-      payments && payments.length > 0
-        ? `AND g."paymentType" IN ${_toSqlTuple(payments)}`
-        : ''
-    }
-  `;
-  const qs = /* sql */ `
-    WITH
-    ts AS (
-      SELECT
-        to_tsquery('english', '${andQuery}') AS and_vec,
-        to_tsquery('english', '${orQuery}') AS or_vec
-    ),
-    gtc AS (
-      SELECT g.id, g._srch_idx
-      FROM "default$default"."Gig" AS g, ts
-      WHERE ${gigPredicate}
-        AND g._srch_idx @@ ts.or_vec
-    )
-    SELECT c.id, MIN(c.p) AS p
-      FROM (
-        SELECT gtc.id, 1 AS p FROM gtc, ts
-        WHERE gtc._srch_idx @@ ts.and_vec
-      UNION
-        SELECT gtc.id, 2 as p FROM gtc
-      UNION
-        SELECT g.id, 3 as p FROM "default$default"."Gig" AS g
-        WHERE ${gigPredicate}
-          AND g.id IN (
-            SELECT mid."A" AS gid
-            FROM "default$default"."_GigTags" AS mid
-            WHERE mid."B" IN (
-              SELECT t.id
-              FROM "default$default"."Tag" as t, ts
-              WHERE t._srch_idx @@ ts.or_vec
-            )
-            GROUP BY gid
-          )
-      UNION
-        SELECT g.id, 4 as p FROM "default$default"."Gig" AS g
-        WHERE ${gigPredicate}
-          AND g.employer IN (
-            SELECT emp.id
-            FROM "default$default"."Employer" AS emp, ts
-            WHERE emp._srch_idx @@ ts.or_vec
-          )
-    ) AS c
-    GROUP BY c.id
-    ORDER BY p ASC
-    FETCH NEXT 500 ROWS ONLY;
-  `; // .replace(/\s\s/g, ''); // trim spaces
+export function gigSearchQuery(args) {
+  const { search, where, first, skip } = args;
+  const tsQuery = `${toAndQuery(search)} | ${toOrQuery(search)}`;
 
-  return qs;
+  const limit = first;
+  const offset = skip;
+  const { projectType_in, paymentType_in, jobType_in } = where;
+
+  const projectTypeAnd =
+    projectType_in && projectType_in.length > 0
+      ? `AND gig."projectType" IN ${_toSqlTuple(projectType_in)}`
+      : '';
+  const paymentTypeAnd =
+    paymentType_in && paymentType_in.length > 0
+      ? `AND gig."paymentType" IN ${_toSqlTuple(paymentType_in)}`
+      : '';
+  const jobTypeAnd =
+    jobType_in && jobType_in.length > 0
+      ? `AND gig."jobType" IN ${_toSqlTuple(jobType_in)}`
+      : '';
+
+  const query = /* sql */ `
+    SELECT
+      search_results.id,
+      search_results.title,
+      search_results."createdAt",
+      search_results."updatedAt",
+      search_results.description,
+      search_results."projectType",
+      search_results."paymentType",
+      search_results."jobType",
+      search_results."communicationType",
+      search_results."communicationEmail",
+      search_results."communicationWebsite",
+      search_results.from,
+      search_results."fromId",
+      search_results.media,
+      search_results.employer,
+      search_results."minFee",
+      search_results."maxFee",
+      search_results."locationRestriction",
+      search_results.status,
+      COUNT(*) OVER() AS total
+    FROM (
+      SELECT
+      gig.*,
+      setweight(gig.search_idx_title, 'A') || 
+      setweight(tsvector_agg(tag.search_idx_name), 'B') || 
+      setweight(gig.search_idx_description, 'C') as document
+    FROM
+      "default$default"."Gig" as gig
+      LEFT JOIN "default$default"."_GigTags" as gig_tags ON gig_tags."A" = gig.id
+      LEFT JOIN "default$default"."Tag" as tag ON gig_tags."B" = tag.id
+      LEFT JOIN "default$default"."Employer" as employer ON gig.employer = employer.id
+    WHERE
+      gig.status = 'POSTED' 
+      ${projectTypeAnd}
+      ${paymentTypeAnd}
+      ${jobTypeAnd}
+    GROUP BY
+      gig.id
+    ) search_results
+    WHERE
+      search_results.document @@ to_tsquery('english', '${tsQuery}')
+    ORDER BY
+      ts_rank(
+        search_results.document,
+        to_tsquery('english', '${tsQuery}')
+      ) DESC
+    LIMIT ${limit}
+    OFFSET ${offset}
+      ;
+  `;
+
+  return query;
 }

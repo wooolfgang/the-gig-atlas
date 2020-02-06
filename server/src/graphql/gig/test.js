@@ -302,7 +302,7 @@ describe('Testing gig resolvers', () => {
               name
             }
           }
-          ids
+          total
         }
       }
     `;
@@ -310,9 +310,9 @@ describe('Testing gig resolvers', () => {
     const res = await post({ query });
     // fullDisplay(res);
     // results varies upon unrelated seeded gigs
-    const { gigs, ids } = res.searchGigs;
+    const { gigs, total } = res.searchGigs;
     expect(gigs[0].title).toBe(searchGigs[0].title);
-    expect(ids.length >= 2).toBe(true);
+    expect(total >= 2).toBe(true);
   });
 });
 
