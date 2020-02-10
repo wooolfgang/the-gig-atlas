@@ -24,10 +24,13 @@ async function searchGigs(_r, args, { pg }, info) {
   const { search, where = {}, first = 8, skip = 0 } = args;
 
   if (!search) {
-    const gigs = await prisma.gigs(
-      { where, first, skip, orderBy: 'createdAt_DESC' },
-      info,
-    );
+    const gigs = await prisma.gigs({
+      where,
+      first,
+      skip,
+      orderBy: 'createdAt_DESC',
+      status: 'POSTED',
+    });
     const total = await prisma
       .gigsConnection()
       .aggregate()
@@ -44,9 +47,8 @@ async function searchGigs(_r, args, { pg }, info) {
   });
 
   const { rows } = await pg.query(qs);
-  const gigs = rows.length === 0 ? [] : rows;
-  const total = rows[0] && rows[0].total ? rows[0].total : 0;
-  return { gigs, total };
+  const total = (rows[0] && rows[0].total) || 0;
+  return { gigs: rows, total };
 }
 
 export default {
